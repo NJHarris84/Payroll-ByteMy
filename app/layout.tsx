@@ -1,22 +1,16 @@
 // app/layout.tsx
 
 import { type Metadata } from 'next'
-import {
-  ClerkProvider,
-} from '@clerk/nextjs'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
+import { Inter } from 'next/font/google'  // Use Inter instead of Geist
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
-import { ApolloProviderWrapper } from './providers'
+import { AppProviders } from './providers'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+// Use Inter as a fallback if you don't have Geist
+const inter = Inter({
   subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  variable: '--font-sans',
 })
 
 export const metadata: Metadata = {
@@ -38,10 +32,9 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={`${inter.variable} antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <ApolloProviderWrapper>{children}</ApolloProviderWrapper>
+            <AppProviders>{children}</AppProviders>
           </ThemeProvider>
         </body>
       </html>
