@@ -80,5 +80,7 @@ export function useUserRole(): UserRoleState {
     checkRole();
   }, [isLoaded, getToken]);
   
+  const { userRole } = useUserRole();
+
   return roleState;
 }
