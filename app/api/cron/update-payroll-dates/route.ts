@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getServerApolloClient } from "@/lib/apollo-client";
 import { format, addMonths } from "date-fns";
-import { GENERATE_PAYROLL_DATES } from "@/graphql/mutations/payrolls/generatePayrollDates";
+import { GENERATE_PAYROLL_DATES } from "@/graphql/mutations/payroll_dates/generatePayrollDates";
 import { UPDATE_PAYROLL_STATUS } from "@/graphql/mutations/payrolls/updatePayrollStatus";
 
 export async function POST(req: NextRequest) {
@@ -28,8 +28,8 @@ export async function POST(req: NextRequest) {
     // Parse request body
     const {
       payrollIds,
-      updateStatus = false, // Optional flag to update status
-      newStatus = "Active", // Default new status
+      updateStatus = false,
+      newStatus = "Active",
     } = await req.json();
 
     // Validate input
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
           results.failed++;
           results.errors.push({
             payrollId,
-            error: dateErrors.map((e) => e.message).join(", "),
+            error: dateErrors.map((e: any) => e.message).join(", "),
           });
           continue;
         }

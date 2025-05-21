@@ -1,26 +1,9 @@
 // app/api/cron/generate-batch/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { adminApolloClient } from "@/lib/apollo-client"; // Updated import to use the consolidated file
-import { gql } from "@apollo/client";
+import { adminApolloClient } from "@/lib/apollo-client";
 import { format, addMonths } from "date-fns";
-
-// GraphQL mutation to generate payroll dates for a single payroll
-const GENERATE_PAYROLL_DATES = gql`
-  mutation GeneratePayrollDates(
-    $payrollId: uuid!,
-    $startDate: date!,
-    $endDate: date!
-  ) {
-    generate_payroll_dates(
-      p_payroll_id: $payrollId, 
-      p_start_date: $startDate, 
-      p_end_date: $endDate
-    ) {
-      id
-    }
-  }
-`;
+import { GENERATE_PAYROLL_DATES } from "@/graphql/mutations/payroll_dates/generatePayrollDates";
 
 export async function POST(req: NextRequest) {
   try {
@@ -95,7 +78,7 @@ export async function POST(req: NextRequest) {
           results.failed++;
           results.errors.push({
             payrollId,
-            error: errors.map(e => e.message).join(', ')
+            error: errors.map((e: any) => e.message).join(', ')
           });
           continue;
         }

@@ -180,23 +180,4 @@ export async function syncMultipleYears(startYear: number = new Date().getFullYe
       const year = startYear + i;
       try {
         const result = await syncAustralianHolidays(year);
-        if (result.success) {
-          totalSynced++;
-        }
-      } catch (error) {
-        errors.push(`Error syncing year ${year}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      }
-    }
-    
-    return {
-      success: totalSynced > 0,
-      message: `Successfully synced holidays for ${totalSynced}/${years} years${errors.length ? `. Errors: ${errors.join('; ')}` : ''}`
-    };
-  } catch (error) {
-    console.error("Error in multi-year sync:", error);
-    return {
-      success: false,
-      message: `Failed to sync multiple years: ${error instanceof Error ? error.message : "Unknown error"}`
-    };
-  }
-}
+        if
