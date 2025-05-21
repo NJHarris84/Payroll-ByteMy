@@ -15,6 +15,7 @@ export * from "./ui/form-layout";
 export * from "./ui/table";
 export * from "./ui/badge";
 export * from "./ui/scroll-area";
+export * from "./ui/spinner";
 
 // Layout Components
 export * from "./layout/main-nav";
@@ -60,6 +61,7 @@ export * from "./common/export-pdf";
 export * from "./common/mardown-viewer";
 export * from "./common/ai-chat";
 export * from "./common/hasura-test";
+export * from "./common/alert";
 export * from "./common/role-gates";
 export * from "./common/real-time-updates";
 export * from "./common/recent-activity";
@@ -68,3 +70,6 @@ export * from "./common/simple-test";
 export * from "./common/subscription-test";
 export * from "./common/test-subscription";
 export * from "./common/urgent-alerts";
+
+// Add the LiveDataTable to exports
+export * from "./LiveDataTable";

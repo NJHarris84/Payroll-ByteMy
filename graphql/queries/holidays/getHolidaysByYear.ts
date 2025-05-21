@@ -1,13 +1,12 @@
-// graphql/queries/holidays/getHolidays.ts
 import { gql } from "@apollo/client";
 
-export const GET_HOLIDAYS = gql`
-  query GetHolidays($startDate: date, $endDate: date) {
+export const GET_HOLIDAYS_BY_YEAR = gql`
+  query GetHolidaysByYear($year: Int!) {
     holidays(
       where: {
         date: {
-          _gte: $startDate,
-          _lte: $endDate
+          _gte: $year-01-01,
+          _lte: $year-12-31
         }
       },
       order_by: { date: asc }
@@ -18,8 +17,6 @@ export const GET_HOLIDAYS = gql`
       description
       is_national
       state
-      created_at
-      updated_at
     }
   }
 `;

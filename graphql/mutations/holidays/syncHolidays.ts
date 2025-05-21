@@ -1,16 +1,21 @@
 import { gql } from "@apollo/client";
 
-export const SYNC_HOLIDAYS = gql`  
-mutation SyncHolidays($objects: [holidays_insert_input!]!) {
+export const SYNC_HOLIDAYS = gql`
+  mutation SyncHolidays($holidays: [holidays_insert_input!]!) {
     insert_holidays(
-      objects: $objects,
+      objects: $holidays,
       on_conflict: {
-        constraint: holidays_date_country_code_key,
-        update_columns: [local_name, name, is_global, updated_at]
+        constraint: holidays_date_holiday_type_key,
+        update_columns: [name, description, is_national, updated_at]
       }
     ) {
       affected_rows
+      returning {
+        id
+        date
+        name
+        description
+      }
     }
-  }`
-  ;
-  
+  }
+`;
