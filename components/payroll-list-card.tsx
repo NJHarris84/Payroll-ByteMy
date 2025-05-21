@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@apollo/client";
-import { Search, Download } from "lucide-react";
+import { Search, Download, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import {
 import { GET_PAYROLLS } from "@/graphql/queries/payrolls/getPayrolls";
 import { Payroll } from "@/types/interface";
 import { useSmartPolling } from "@/hooks/usePolling";
+import { PermissionGate } from "@/components/role-gates";
 
 interface PayrollListCardProps {
   searchQuery: string;
@@ -209,13 +210,22 @@ export function PayrollListCard({
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Payroll List</CardTitle>
-          <CardDescription>Overview of all payrolls</CardDescription>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Payrolls</CardTitle>
+            <CardDescription>Manage your client payrolls</CardDescription>
+          </div>
+          <PermissionGate requiredPermission="manage_payrolls">
+            <Button asChild>
+              <Link href="/payrolls/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Payroll
+              </Link>
+            </Button>
+          </PermissionGate>
         </div>
       </CardHeader>
-
       <CardContent>
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2">
@@ -314,50 +324,52 @@ export function PayrollListCard({
           </div>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Payroll Name</TableHead>
-              <TableHead>Client</TableHead>
-              <TableHead>Pay Cycle</TableHead>
-              <TableHead>Date Type</TableHead>
-              <TableHead>Date Value</TableHead>
-              <TableHead>Primary Consultant</TableHead>
-              <TableHead>Employee Count</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredPayrolls.length > 0 ? (
-              filteredPayrolls.map((payroll) => (
-                <TableRow key={payroll.id}>
-                  <TableCell>
-                    <Link href={`/payrolls/${payroll.id}`} className="text-primary hover:underline">
-                      {payroll.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{payroll.client?.name || "N/A"}</TableCell>
-                  <TableCell>{formatName(payroll.payroll_cycle?.name)}</TableCell>
-                  <TableCell>{formatName(payroll.payroll_date_type?.name)}</TableCell>
-                  <TableCell>{displayDateValue(payroll)}</TableCell>
-                  <TableCell>{payroll.userByPrimaryConsultantUserId?.name || "N/A"}</TableCell>
-                  <TableCell>{payroll.employeeCount !== null && payroll.employee_count !== undefined ? payroll.employee_count : "N/A"}</TableCell>
-                  <TableCell>
-                    <Badge variant={payroll.status === "Active" ? "default" : "secondary"}>
-                      {payroll.status}
-                    </Badge>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Payroll Name</TableHead>
+                <TableHead>Client</TableHead>
+                <TableHead>Pay Cycle</TableHead>
+                <TableHead>Date Type</TableHead>
+                <TableHead>Date Value</TableHead>
+                <TableHead>Primary Consultant</TableHead>
+                <TableHead>Employee Count</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredPayrolls.length > 0 ? (
+                filteredPayrolls.map((payroll) => (
+                  <TableRow key={payroll.id}>
+                    <TableCell>
+                      <Link href={`/payrolls/${payroll.id}`} className="text-primary hover:underline">
+                        {payroll.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{payroll.client?.name || "N/A"}</TableCell>
+                    <TableCell>{formatName(payroll.payroll_cycle?.name)}</TableCell>
+                    <TableCell>{formatName(payroll.payroll_date_type?.name)}</TableCell>
+                    <TableCell>{displayDateValue(payroll)}</TableCell>
+                    <TableCell>{payroll.userByPrimaryConsultantUserId?.name || "N/A"}</TableCell>
+                    <TableCell>{payroll.employeeCount !== null && payroll.employee_count !== undefined ? payroll.employee_count : "N/A"}</TableCell>
+                    <TableCell>
+                      <Badge variant={payroll.status === "Active" ? "default" : "secondary"}>
+                        {payroll.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="h-24 text-center">
+                    No payrolls found with the current filters.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={8} className="h-24 text-center">
-                  No payrolls found with the current filters.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );

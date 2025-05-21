@@ -32,6 +32,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { roleMapping, validRoles } from '@/lib/roles';
 
 // Define Staff Type
 interface Staff {
@@ -55,15 +56,6 @@ interface Staff {
   }>;
 }
 
-// Role name mapping
-const roleMapping: Record<string, string> = {
-  "admin": "Developer",
-  "org_admin": "Admin",
-  "manager": "Manager",
-  "consultant": "Consultant",
-  "viewer": "Viewer"
-};
-
 export default function UsersPage() {
   // Call all hooks at the top level - never conditionally
   const { isAdmin, isManager, isConsultant, isDeveloper } = useUserRole();
@@ -80,14 +72,17 @@ export default function UsersPage() {
       if (data?.update_users_by_pk) {
         const updatedUser = data.update_users_by_pk;
         toast.success(`Role updated to ${roleMapping[updatedUser.role] || updatedUser.role} successfully!`);
-        refetch(); // Refresh the staff list
-      } else {
-        console.error("Unexpected mutation response:", data);
-        toast.error("Update completed but returned unexpected data");
+        
+        // Update UI state
+        setStaffList(prevStaff => prevStaff.map(staff => 
+          staff.id === updatedUser.id ? updatedUser : staff
+        ));
+        
+        // Clear editing state
+        cancelEditing(updatedUser.id);
       }
     },
     onError: (error) => {
-      console.error("GraphQL mutation error:", error);
       toast.error(`Failed to update role: ${error.message}`);
     }
   });
@@ -228,11 +223,11 @@ export default function UsersPage() {
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Developer</SelectItem>
-                  <SelectItem value="org_admin">Admin</SelectItem>
-                  <SelectItem value="manager">Manager</SelectItem>
-                  <SelectItem value="consultant">Consultant</SelectItem>
-                  <SelectItem value="viewer">Viewer</SelectItem>
+                  {validRoles.includes('admin') && <SelectItem value="admin">{roleMapping.admin}</SelectItem>}
+                  <SelectItem value="org_admin">{roleMapping.org_admin}</SelectItem>
+                  <SelectItem value="manager">{roleMapping.manager}</SelectItem>
+                  <SelectItem value="consultant">{roleMapping.consultant}</SelectItem>
+                  <SelectItem value="viewer">{roleMapping.viewer}</SelectItem>
                 </SelectContent>
               </Select>
               <Button

@@ -1,26 +1,38 @@
 // types/globals.d.ts
-export {}
+import { HasuraRole } from '@/lib/roles';
 
-declare global {
-  interface ClerkAuthorization {
-    // Define roles that match your Hasura roles
-    role: 'admin' |'org_admin' | 'manager' | 'consultant' | 'viewer'
-    
-    // Define permissions if needed
-    permission: 'manage:users' | 'manage:clients' | 'manage:payrolls' | 'view:reports'
+declare module '@clerk/nextjs/server' {
+  interface AuthObject {
+    userId: string | null;
+    sessionId: string | null;
+    getToken: (options?: { template?: string }) => Promise<string | null>;
+    sessionClaims: {
+      hasura?: {
+        role: HasuraRole;
+      }
+    };
   }
-  
-  // Define JWT claims structure for Hasura
-  interface CustomJwtSessionClaims {
-    'https://hasura.io/jwt/claims': {
-      'x-hasura-allowed-roles': string[]
-      'x-hasura-default-role': string
-      'x-hasura-user-id': string
-      'x-hasura-org-id'?: string
-    }
-    metadata: {
-      role?: string
-    }
+}
+
+declare module '@clerk/clerk-react' {
+  interface User {
+    publicMetadata: {
+      defaultRole?: HasuraRole;
+      allowedRoles?: HasuraRole[];
+    };
+  }
+}
+
+// JWT claims structure for Hasura
+interface CustomJwtSessionClaims {
+  'https://hasura.io/jwt/claims': {
+    'x-hasura-allowed-roles': string[]
+    'x-hasura-default-role': string
+    'x-hasura-user-id': string
+    'x-hasura-org-id'?: string
+  }
+  metadata: {
+    role?: HasuraRole
   }
 }
 
@@ -46,7 +58,7 @@ export interface Payroll {
   payroll_system?: string;
   date_value?: number;
   status: PayrollStatus;
-  payroll_dates?: PayrollDate[]; // ✅ Updated type reference
+  payroll_dates?: PayrollDate[];
   created_at: string;
   updated_at: string;
 }
@@ -129,10 +141,4 @@ export interface StaffMember {
   updated_at: string;
 }
 
-// User Interface (For Authentication & Role Management)
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: "admin" | "org_admin" | "manager" | "consultant" | "viewer";
-}
+export {}

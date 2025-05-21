@@ -1,57 +1,84 @@
 // hooks/useUserRole.ts
-import { useState, useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
+"use client";
 
-export function useUserRole() {
-  const { isLoaded, userId, getToken } = useAuth();
-  const [userRole, setUserRole] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+import { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
+import { hasPermission, HasuraRole, Permission } from '@/lib/roles';
+
+interface UserRoleState {
+  userRole: HasuraRole | null;  // Changed from 'role' to 'userRole' for consistency
+  isAdmin: boolean;
+  isOrgAdmin: boolean;
+  isManager: boolean;
+  isConsultant: boolean;
+  isViewer: boolean;
+  hasPermission: (permission: Permission) => boolean;
+  isLoading: boolean;
+}
+
+export function useUserRole(): UserRoleState {
+  const { isLoaded, getToken } = useAuth();
+  const [roleState, setRoleState] = useState<UserRoleState>({
+    userRole: null,
+    isAdmin: false,
+    isOrgAdmin: false,
+    isManager: false,
+    isConsultant: false,
+    isViewer: false,
+    hasPermission: () => false,
+    isLoading: true
+  });
 
   useEffect(() => {
-    async function fetchUserRole() {
+    async function checkRole() {
       if (!isLoaded) return;
+      
       try {
-        if (userId) {
-          const token = await getToken({ template: "hasura" });
-          if (token) {
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            setUserRole(payload["https://hasura.io/jwt/claims"]?.["x-hasura-default-role"]);
-          }
+        // Get the token with Hasura claims
+        const token = await getToken({ template: 'hasura' });
+        
+        if (!token) {
+          setRoleState(prev => ({ ...prev, isLoading: false }));
+          return;
         }
-      } catch (err) {
-        console.error("Error getting user role:", err);
-      } finally {
-        setIsLoading(false);
+        
+        // Decode the JWT to get the claims
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+          console.error('Invalid JWT format');
+          setRoleState(prev => ({ ...prev, isLoading: false }));
+          return;
+        }
+        
+        const payload = JSON.parse(atob(parts[1]));
+        const hasuraClaims = payload['https://hasura.io/jwt/claims'];
+        
+        if (!hasuraClaims) {
+          console.error('No Hasura claims found in token');
+          setRoleState(prev => ({ ...prev, isLoading: false }));
+          return;
+        }
+        
+        const userRole = hasuraClaims['x-hasura-default-role'] as HasuraRole;
+        
+        setRoleState({
+          userRole,
+          isAdmin: userRole === 'admin',
+          isOrgAdmin: userRole === 'org_admin',
+          isManager: userRole === 'manager',
+          isConsultant: userRole === 'consultant',
+          isViewer: userRole === 'viewer',
+          hasPermission: (permission: Permission) => hasPermission(userRole, permission),
+          isLoading: false
+        });
+      } catch (error) {
+        console.error('Error checking role:', error);
+        setRoleState(prev => ({ ...prev, isLoading: false }));
       }
     }
-
-    fetchUserRole();
-  }, [isLoaded, userId, getToken]);
-
-  // Helper functions for role checks - mapping Hasura roles to your application roles
-  const isDeveloper = userRole === 'admin'; // Developer = admin in Hasura
-  const isAdmin = userRole === 'org_admin'; // Admin = org_admin in Hasura
-  const isManager = userRole === 'manager';
-  const isConsultant = userRole === 'consultant';
-  const isViewer = userRole === 'viewer';
-
-  // Check if user has admin-level permissions (either Developer or Admin role)
-  const hasAdminAccess = isDeveloper || isAdmin;
-
-  // Function to check if user has one of the specified roles
-  const hasRole = (roles: string[]) => {
-    return userRole ? roles.includes(userRole) : false;
-  };
-
-  return {
-    userRole,
-    isLoading,
-    isDeveloper,
-    isAdmin,
-    isManager,
-    isConsultant,
-    isViewer,
-    hasAdminAccess,
-    hasRole
-  };
+    
+    checkRole();
+  }, [isLoaded, getToken]);
+  
+  return roleState;
 }
