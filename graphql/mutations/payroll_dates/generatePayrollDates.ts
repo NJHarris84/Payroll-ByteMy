@@ -13,6 +13,7 @@ export const GENERATE_PAYROLL_DATES = gql`
       calculation_date
       eft_date
       adjusted_eft_date
+      processing_date
       created_at
       updated_at
     }

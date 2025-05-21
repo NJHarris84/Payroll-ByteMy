@@ -1,17 +1,13 @@
 // graphql/queries/clients/getClientsList.ts
 import { gql } from '@apollo/client';
+import { CLIENT_FRAGMENT } from '../../fragments/clientFragment';
 
 export const GET_CLIENTS = gql`
-  query GetClient {
-    clients{
-      id
-      name
-      contact_person
-      contact_email
-      contact_phone
-      active
-      created_at
-      updated_at
+  ${CLIENT_FRAGMENT}
+  
+  query GetClientList {
+    clients {
+      ...ClientFields
       payrolls {
         id
         name

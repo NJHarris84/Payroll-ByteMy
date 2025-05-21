@@ -1,11 +1,11 @@
-// graphql/queries/payrolls/getPayrollDates.ts
 import { gql } from "@apollo/client";
 
 export const GET_PAYROLL_DATES = gql`
-  query GetPayrollDates($id: uuid!) {
+  query GetPayrollDates($payrollId: uuid!, $limit: Int) {
     payroll_dates(
-      where: { payroll_id: { _eq: $id } },
-      order_by: { adjusted_eft_date: asc }
+      where: {payroll_id: {_eq: $payrollId}},
+      order_by: {adjusted_eft_date: asc},
+      limit: $limit
     ) {
       id
       original_eft_date

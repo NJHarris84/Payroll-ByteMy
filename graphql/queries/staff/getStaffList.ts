@@ -1,38 +1,20 @@
 // graphql/queries/staff/getStaffList.ts
 import { gql } from "@apollo/client";
+import { STAFF_FRAGMENT } from "../../fragments/staffFragment";
 
 export const GET_STAFF_LIST = gql`
-  query Staff {
+  ${STAFF_FRAGMENT.StaffFields}
+  ${STAFF_FRAGMENT.StaffManagerFields}
+  ${STAFF_FRAGMENT.StaffLeaveFields}
+  
+  query GetStaffList {
     users(where: {is_staff: {_eq: true}}) {
-      id
-      email
-      image
-      is_staff
-      name
-      role
-      manager_id
-      manager {
-        name
-        is_staff
-        email
-        id
-      }
+      ...StaffFields
+      ...StaffManagerFields
       staffByManager {
-        name
-        is_staff
-        id
-        email
-        image
-        role
+        ...StaffFields
       }
-      leaves {
-        id
-        end_date
-        leave_type
-        reason
-        start_date
-        status
-      }
+      ...StaffLeaveFields
     }
   }
 `;
