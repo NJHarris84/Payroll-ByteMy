@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { UserRoleManagement } from "@/components/user-role-management"
+import { UserRoleManagement } from "@/components/forms/user-role-management"
 
 const roles = ["dev", "admin", "manager", "consultant"]
 const features = [

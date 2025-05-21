@@ -1,6 +1,7 @@
 // app/api/user/route.ts
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
+import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiValidationError } from '@/lib/api-response'
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,14 +9,14 @@ export async function POST(req: NextRequest) {
     const { userId, getToken } = await auth()
     
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return apiUnauthorized()
     }
 
     // Get the token to check user role
     const token = await getToken({ template: 'hasura' })
     
     if (!token) {
-      return NextResponse.json({ error: 'Failed to verify permissions' }, { status: 403 })
+      return apiError('Failed to verify permissions', 403)
     }
 
     // Decode the JWT to get the claims
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     
     // Only admins and managers can create users
     if (!['admin', 'org_admin', 'manager'].includes(userRole)) {
-      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
+      return apiForbidden('Insufficient permissions')
     }
 
     // Parse request body
@@ -34,18 +35,18 @@ export async function POST(req: NextRequest) {
     
     // Validate inputs
     if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
+      return apiValidationError(['Email and password are required'])
     }
 
     // Validate role
     const validRoles = ['org_admin', 'manager', 'consultant', 'viewer']
     if (!validRoles.includes(role)) {
-      return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
+      return apiValidationError(['Invalid role'])
     }
 
     // Managers can't create admin users
     if (userRole === 'manager' && role === 'org_admin') {
-      return NextResponse.json({ error: 'Managers cannot create admin users' }, { status: 403 })
+      return apiForbidden('Managers cannot create admin users')
     }
 
     // Create user in Clerk
@@ -71,21 +72,15 @@ export async function POST(req: NextRequest) {
 
     const userData = await response.json()
     
-    return NextResponse.json({
-      success: true,
-      message: 'User created successfully',
-      user: {
-        id: userData.id,
-        email,
-        firstName,
-        lastName,
-        role
-      }
-    })
+    return apiSuccess({
+      id: userData.id,
+      email,
+      firstName,
+      lastName,
+      role
+    }, 'User created successfully')
   } catch (error) {
     console.error('Error creating user:', error)
-    return NextResponse.json({
-      error: error instanceof Error ? error.message : 'Failed to create user'
-    }, { status: 500 })
+    return apiError(error)
   }
 }

@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PayrollsMissingDates } from "@/components/payrolls-missing-dates";
+import { PayrollsMissingDates } from "@/components/payroll/payrolls-missing-dates";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
-import { PayrollListCard } from "@/components/payroll-list-card";
+import { PayrollListCard } from "@/components/payroll/payroll-list-card";
 
 export default function PayrollsPage() {
   const [searchQuery, setSearchQuery] = useState("");

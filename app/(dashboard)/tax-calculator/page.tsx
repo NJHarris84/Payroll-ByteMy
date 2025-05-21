@@ -1,5 +1,5 @@
 // app/(dashboard)/tax-calculator/page.tsx
-import { AustralianTaxCalculator } from "@/components/australian-tax-calculator"
+import { AustralianTaxCalculator } from "@/components/payroll/australian-tax-calculator"
 
 export default function TaxCalculatorPage() {
   return (

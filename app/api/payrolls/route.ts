@@ -1,8 +1,9 @@
 // app/api/payrolls/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { getServerApolloClient } from "@/lib/apollo-client";
 import { GET_PAYROLLS } from "@/graphql/queries/payrolls/getPayrolls";
 import { auth } from "@clerk/nextjs/server";
+import { apiSuccess, apiError, apiUnauthorized } from "@/lib/api-response";
 
 export async function GET(_req: NextRequest) {
   try {
@@ -11,7 +12,7 @@ export async function GET(_req: NextRequest) {
     
     // Check if user is authenticated
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiUnauthorized();
     }
 
     // Get Hasura token
@@ -19,7 +20,7 @@ export async function GET(_req: NextRequest) {
 
     // Ensure we have a token
     if (!token) {
-      return NextResponse.json({ error: "Failed to obtain authentication token" }, { status: 401 });
+      return apiError("Failed to obtain authentication token", 401);
     }
 
     // Create server-side Apollo client
@@ -35,12 +36,9 @@ export async function GET(_req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ payrolls: data.payrolls });
+    return apiSuccess({ payrolls: data.payrolls });
   } catch (error) {
     console.error("Payroll Fetch Error:", error);
-    return NextResponse.json({ 
-      error: "Failed to fetch payrolls", 
-      details: error instanceof Error ? error.message : "Unknown error" 
-    }, { status: 500 });
+    return apiError(error);
   }
 }

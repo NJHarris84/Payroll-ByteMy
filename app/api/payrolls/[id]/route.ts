@@ -1,15 +1,21 @@
 // app/api/payrolls/[id]/route.ts
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import { getServerApolloClient } from "@/lib/apollo-client"
 import { GET_PAYROLL_BY_ID } from "@/graphql/queries/payrolls/getPayrollById"
 import { auth } from "@clerk/nextjs/server"
+import { apiSuccess, apiError, apiNotFound, apiUnauthorized } from "@/lib/api-response"
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    if (!params.id) return NextResponse.json({ error: "Missing ID" }, { status: 400 })
+    if (!params.id) return apiError("Missing ID", 400)
 
     // Get Clerk authentication token
     const authInstance = await auth()
+    
+    if (!authInstance.userId) {
+      return apiUnauthorized("Authentication required")
+    }
+    
     const token = await authInstance.getToken({ template: "hasura" })
 
     // Get Apollo Client
@@ -21,11 +27,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       context: { headers: { authorization: `Bearer ${token}` } },
     })
 
-    if (!data.payrolls.length) return NextResponse.json({ error: "Not Found" }, { status: 404 })
+    if (!data.payrolls.length) return apiNotFound("Payroll not found")
 
-    return NextResponse.json(data.payrolls[0])
+    return apiSuccess(data.payrolls[0])
   } catch (error) {
     console.error("Payroll fetch error:", error)
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
+    return apiError(error)
   }
 }

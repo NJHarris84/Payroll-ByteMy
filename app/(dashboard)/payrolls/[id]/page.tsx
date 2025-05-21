@@ -4,18 +4,18 @@
 import { useParams, notFound } from "next/navigation";
 import { useQuery } from "@apollo/client";
 import { GET_PAYROLL_BY_ID } from "@/graphql/queries/payrolls/getPayrollById";
-import { PayrollDatesView } from "@/components/payroll-dates-view";
-import { ClientCard } from "@/components/client-card";
-import { PayrollDetailsCard } from "@/components/payroll-details-card";
-import { ExportCsv } from "@/components/export-csv";
-import { ExportPdf } from "@/components/export-pdf";
+import { PayrollDatesView } from "@/components/payroll/payroll-dates-view";
+import { ClientCard } from "@/components/client/client-card";
+import { PayrollDetailsCard } from "@/components/payroll/payroll-details-card";
+import { ExportCsv } from "@/components/common/export-csv";
+import { ExportPdf } from "@/components/common/export-pdf";
 import { toast } from 'sonner';
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, PlusCircle, RefreshCw } from "lucide-react";
-import { RefreshButton } from "@/components/refresh-button";
-import { NotesListWithAdd } from "@/components/notes-list-with-add";
+import { RefreshButton } from "@/components/common/refresh-button";
+import { NotesListWithAdd } from "@/components/common/notes-list-with-add";
 import { useEffect, useState } from "react";
 
 

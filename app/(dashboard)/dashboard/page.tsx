@@ -4,8 +4,8 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { UpcomingPayrolls } from "@/components/upcoming-payrolls"
-import { UrgentAlerts } from "@/components/urgent-alerts"
+import { UpcomingPayrolls } from "@/components/payroll/upcoming-payrolls"
+import { UrgentAlerts } from "@/components/common/urgent-alerts"
 
 
 export default function DashboardPage() {

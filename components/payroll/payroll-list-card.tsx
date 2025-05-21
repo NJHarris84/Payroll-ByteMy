@@ -18,7 +18,7 @@ import {
 import { GET_PAYROLLS } from "@/graphql/queries/payrolls/getPayrolls";
 import { Payroll } from "@/types/interface";
 import { useSmartPolling } from "@/hooks/usePolling";
-import { PermissionGate } from "@/components/role-gates";
+import { PermissionGate } from "@/components/common/role-gates";
 
 interface PayrollListCardProps {
   searchQuery: string;

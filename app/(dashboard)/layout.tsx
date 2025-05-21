@@ -2,12 +2,12 @@
 "use client"
 
 import type React from "react"
-import { Sidebar } from "@/components/sidebar"
+import { Sidebar } from "@/components/layout/sidebar"
 import { Toaster } from "@/components/ui/sonner"
-import { ClientWrapper } from "@/components/client-wrapper"
-import { DashboardShell } from "@/components/dashboard-shell"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { UserNav } from "@/components/user-nav"
+import { ClientWrapper } from "@/components/layout/client-wrapper"
+import { DashboardShell } from "@/components/layout/dashboard-shell"
+import { ThemeToggle } from "@/components/layout/theme-toggle"
+import { UserNav } from "@/components/layout/user-nav"
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

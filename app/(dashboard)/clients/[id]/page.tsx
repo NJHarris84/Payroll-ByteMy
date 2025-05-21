@@ -11,9 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { NotesListWithAdd } from "@/components/notes-list-with-add";
+import { NotesListWithAdd } from "@/components/common/notes-list-with-add";
 import { useSmartPolling } from "@/hooks/usePolling";
-import { ClientPayrollsTable } from "@/components/client-payroll-table";
+import { ClientPayrollsTable } from "@/components/client/client-payroll-table";
 import { GET_CLIENTS_BY_ID } from "@/graphql/queries/clients/getClientById";
 
 export default function ClientPage() {

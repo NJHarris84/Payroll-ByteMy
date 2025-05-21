@@ -27,7 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { appRoles, validRoles } from "@/lib/roles"
-import { HasuraRoleGate } from "@/components/role-gates"
+import { HasuraRoleGate } from "@/components/common/role-gates"
 
 // Sample user data
 const users = [

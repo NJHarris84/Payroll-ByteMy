@@ -15,7 +15,7 @@ import { useSmartPolling } from "@/hooks/usePolling";
 import { useUserRole } from "@/hooks/useUserRole";
 import { GET_CLIENTS } from "@/graphql/queries/clients/getClientsList"; 
 import { Client } from "@/types/interface";
-import { ClientsTable } from "@/components/clients-table";
+import { ClientsTable } from "@/components/client/clients-table";
 
 export default function ClientsPage() {
   const { isAdmin, isManager, isDeveloper } = useUserRole();
