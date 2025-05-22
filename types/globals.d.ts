@@ -1,5 +1,5 @@
 // types/globals.d.ts
-import { HasuraRole } from '@/lib/roles';
+import { HasuraRole } from '@/lib/auth/roles';
 
 declare module '@clerk/nextjs/server' {
   interface AuthObject {
@@ -141,4 +141,55 @@ export interface StaffMember {
   updated_at: string;
 }
 
-export {}
+// Auth and System Types
+import { User, PayrollStatus } from './interface';
+
+export type HasuraRole = "admin" | "org_admin" | "manager" | "consultant" | "viewer";
+
+export interface HasuraJwtClaims {
+  "x-hasura-allowed-roles": HasuraRole[];
+  "x-hasura-default-role": HasuraRole;
+  "x-hasura-user-id": string;
+  "x-hasura-org-id"?: string;
+}
+
+export interface UserClerkAuthJson {
+  id: string;
+  hasuraRoles: HasuraRole[];
+  defaultRole: HasuraRole;
+  orgId?: string;
+}
+
+// API Response Types
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+// Apollo Cache Types
+export interface CacheReference {
+  __typename: string;
+  id: string;
+}
+
+// View State Types
+export interface FilterState {
+  client?: string;
+  payroll?: string;
+  consultant?: string;
+  status?: PayrollStatus;
+  dateRange?: [Date, Date];
+}
+
+export interface SortState {
+  field: string;
+  direction: 'asc' | 'desc';
+}
+
+export interface PaginationState {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+}

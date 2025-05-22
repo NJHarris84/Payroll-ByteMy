@@ -4,7 +4,7 @@
 import { ReactNode } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUserRole } from '@/hooks/useUserRole';
-import { HasuraRole, Permission } from '@/lib/roles';
+import { HasuraRole, Permission } from '@/lib/auth/roles';
 
 type RoleGateProps = {
   children: ReactNode

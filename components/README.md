@@ -1,22 +1,44 @@
-# Component Architecture
+# Payroll-ByteMy Component Library
 
-This directory contains all React components organized by their purpose and usage.
+This directory contains all the UI components used throughout the application. The components are organized into several categories to maintain a clear separation of concerns and improve code reusability.
 
-## Directory Structure
+## Component Categories
 
-- `ui/`: Basic UI building blocks like buttons, inputs, and cards
-- `layout/`: Page layout components like headers, sidebars, and containers
-- `payroll/`: Payroll-specific components
-- `client/`: Client-specific components
-- `common/`: Shared utility components used across features
-- `dialogs/`: Modal and dialog components
-- `forms/`: Form components and form-related utilities
+### UI Components (`/ui`)
+Basic UI elements based on shadcn/ui patterns, serving as the building blocks for all other components.
 
-## Best Practices
+### Layout Components (`/layout`)
+Components related to the application layout and navigation structure.
 
-1. **Component Organization**: Place components in the appropriate category
-2. **Component Naming**: Use PascalCase for component names
-3. **Exports**: Export components as named exports
-4. **Props**: Define prop interfaces with descriptive names
-5. **Documentation**: Add JSDoc comments for component documentation
-6. **Imports**: Import from the barrel file when possible (`import { Button } from "@/components"`)
+### Common Components (`/common`)
+Reusable utility components that can be used across different features of the application.
+
+### Payroll Components (`/payroll`)
+Domain-specific components for payroll functionality.
+
+### Client Components (`/client`)
+Domain-specific components for client management.
+
+### Dialog Components (`/dialogs`)
+Modal interfaces for user interactions.
+
+### Provider Components (`/providers`)
+Context providers and wrappers for global state management.
+
+### Form Components (`/forms`)
+Reusable form components and complex form implementations.
+
+## Usage Guidelines
+
+### Importing Components
+
+Always import components using the barrel files to maintain consistency:
+
+```tsx
+// Import from main barrel file
+import { Button, Card, Alert } from "@/components";
+
+// Or import from specific category
+import { Button, Card } from "@/components/ui";
+import { ClientCard } from "@/components/client";
+```

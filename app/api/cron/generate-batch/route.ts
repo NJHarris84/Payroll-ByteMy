@@ -1,9 +1,9 @@
 // app/api/cron/generate-batch/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { adminApolloClient } from "@/lib/apollo-client";
+import { adminApolloClient } from "@/lib/api/apollo-client";
 import { format, addMonths } from "date-fns";
-import { GENERATE_PAYROLL_DATES } from "@/graphql/mutations/payroll_dates/generatePayrollDates";
+import { GENERATE_PAYROLL_DATES } from "@/lib/graphql/mutations/payroll_dates/generatePayrollDates";
 
 export async function POST(req: NextRequest) {
   try {

@@ -1,8 +1,8 @@
 // components/payroll-subscription.tsx
 import { useSubscription, ApolloQueryResult } from "@apollo/client";
-import { PAYROLLS_SUBSCRIPTION } from "@/graphql/subscriptions/payrolls/payrollUpdates";
+import { PAYROLLS_SUBSCRIPTION } from "@/lib/graphql/subscriptions/payrolls/payrollUpdates";
 import { toast } from "sonner";
-import { useErrorHandler } from "@/lib/error-handling";
+import { useErrorHandler } from "@/lib/utils/error-handling";
 
 type RefetchFunction = () => Promise<ApolloQueryResult<unknown>>;
 

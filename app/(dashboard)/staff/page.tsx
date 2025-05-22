@@ -11,10 +11,10 @@ import {
   CellContext
 } from "@tanstack/react-table";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_STAFF_LIST } from "@/graphql/queries/staff/getStaffList";
-import { UPDATE_STAFF } from "@/graphql/mutations/staff/updateStaff";
-import { DELETE_STAFF } from "@/graphql/mutations/staff/deleteStaff";
-import { useUserRole } from "@/hooks/useUserRole";
+import { GET_STAFF_LIST } from "@/lib/graphql/queries/staff/getStaffList";
+import { UPDATE_STAFF } from "@/lib/graphql/mutations/staff/updateStaff";
+import { DELETE_STAFF } from "@/lib/graphql/mutations/staff/deleteStaff";
+import { useUserRole } from "@/lib/hooks";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
@@ -32,7 +32,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { roleMapping, validRoles } from '@/lib/roles';
+import { roleMapping, validRoles } from '@/lib/auth/roles';
 
 // Define Staff Type
 interface Staff {

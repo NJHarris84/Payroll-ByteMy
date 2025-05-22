@@ -1,7 +1,7 @@
 // app/api/user/route.ts
 import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiValidationError } from '@/lib/api-response'
+import { apiSuccess, apiError, apiUnauthorized, apiForbidden, apiValidationError } from '@/lib/api/api-response'
 
 export async function POST(req: NextRequest) {
   try {

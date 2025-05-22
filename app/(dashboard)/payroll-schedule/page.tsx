@@ -28,13 +28,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils/utils"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { GET_PAYROLLS_BY_MONTH } from "@/graphql/queries/payrolls/getPayrollsByMonth"
-import { GET_HOLIDAYS } from "@/graphql/queries/holidays/getHolidays"
-import { useSmartPolling } from "@/hooks/usePolling"
+import { GET_PAYROLLS_BY_MONTH } from "@/lib/graphql/queries/payrolls/getPayrollsByMonth"
+import { GET_HOLIDAYS } from "@/lib/graphql/queries/holidays/getHolidays"
+import { useSmartPolling } from "@/lib/hooks"
 
 // Types for our data
 interface Leave {

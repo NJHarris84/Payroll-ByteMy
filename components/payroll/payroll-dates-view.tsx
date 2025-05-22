@@ -15,7 +15,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown } from "lucide-react";
 import { useQuery } from "@apollo/client";
-import { GET_PAYROLL_DATES } from "@/graphql/queries/payrolls/getPayrollDates";
+import { GET_PAYROLL_DATES } from "@/lib/graphql/queries/payrolls/getPayrollDates";
 import { format, parseISO, isEqual } from "date-fns";
 
 import { Button } from "@/components/ui/button";

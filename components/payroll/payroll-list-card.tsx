@@ -15,7 +15,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { GET_PAYROLLS } from "@/graphql/queries/payrolls/getPayrolls";
+import { GET_PAYROLLS } from "@/lib/graphql/queries/payrolls/getPayrolls";
 import { Payroll } from "@/types/interface";
 import { useSmartPolling } from "@/hooks/usePolling";
 import { PermissionGate } from "@/components/common/role-gates";

@@ -12,9 +12,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { NotesListWithAdd } from "@/components/common/notes-list-with-add";
-import { useSmartPolling } from "@/hooks/usePolling";
+import { useSmartPolling } from "@/lib/hooks";
 import { ClientPayrollsTable } from "@/components/client/client-payroll-table";
-import { GET_CLIENTS_BY_ID } from "@/graphql/queries/clients/getClientById";
+import { GET_CLIENTS_BY_ID } from "@/lib/graphql/queries/clients/getClientById";
 
 export default function ClientPage() {
   const params = useParams();

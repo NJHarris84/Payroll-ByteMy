@@ -31,3 +31,5 @@ export function Alert({
     </div>
   );
 }
+
+export { Alert, AlertTitle, AlertDescription } from "../ui/alert";

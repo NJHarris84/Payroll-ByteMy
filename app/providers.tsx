@@ -6,8 +6,8 @@ import { ApolloProvider, ApolloClient, HttpLink, from, InMemoryCache, Normalized
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 import { Observable } from '@apollo/client'
-import { TokenProvider, useToken, isTokenExpiringSoon } from '@/lib/token-provider'
-import { TokenRefreshHandler } from '@/lib/token-refresh-handler'
+import { TokenProvider, useToken, isTokenExpiringSoon } from '@/lib/auth/token-provider'
+import { TokenRefreshHandler } from '@/lib/auth/token-refresh-handler'
 
 // Define ErrorHandler type to fix TypeScript errors
 type ErrorHandler = ReturnType<typeof onError>;

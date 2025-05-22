@@ -1,9 +1,9 @@
 // app/api/payrolls/route.ts
 import { NextRequest } from "next/server";
-import { getServerApolloClient } from "@/lib/apollo-client";
-import { GET_PAYROLLS } from "@/graphql/queries/payrolls/getPayrolls";
+import { getServerApolloClient } from "@/lib/api/apollo-client";
+import { GET_PAYROLLS } from "@/lib/graphql/queries/payrolls/getPayrolls";
 import { auth } from "@clerk/nextjs/server";
-import { apiSuccess, apiError, apiUnauthorized } from "@/lib/api-response";
+import { apiSuccess, apiError, apiUnauthorized } from "@/lib/api/api-response";
 
 export async function GET(_req: NextRequest) {
   try {
