@@ -1,141 +1,157 @@
 // components/edit-payroll-dialog.tsx
 'use client';
 
-import { useState } from "react"
-import { useMutation } from "@apollo/client"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { UPDATE_PAYROLL } from "@/lib/graphql/mutations/payrolls/updatePayroll"
-import { GET_PAYROLLS } from "@/lib/graphql/queries/payrolls/getPayrolls"
-import { GET_PAYROLL_BY_ID } from "@/lib/graphql/queries/payrolls/getPayrollById"
-import { handleMutationError } from "@/lib/utils/error-handling"
-import { toast } from "sonner"
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { UPDATE_PAYROLL } from '@/lib/graphql/mutations/payrolls/updatePayroll';
+import { CYCLE_TYPES } from '@/lib/services/payroll-service';
 
 // Define the interface for the component props
 interface EditPayrollDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
   payroll: {
     id: string;
-    name?: string;
-    notes?: string;
+    name: string;
+    cycle_type: number;
+    status: string;
   };
-  // Add the trigger prop to the interface
-  trigger: React.ReactNode;
   onSuccess?: () => void;
 }
 
-export function EditPayrollDialog({ 
-  payroll, 
-  trigger,
-  onSuccess 
-}: EditPayrollDialogProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [name, setName] = useState(payroll.name || "")
-  const [notes, setNotes] = useState(payroll.notes || "")
+export function EditPayrollDialog({ isOpen, onClose, payroll, onSuccess }: EditPayrollDialogProps) {
+  // Form state
+  const [formData, setFormData] = useState({
+    name: payroll.name,
+    cycleType: payroll.cycle_type.toString(),
+    status: payroll.status.toLowerCase(),
+  });
 
-  const [updatePayroll, { loading: updating }] = useMutation(UPDATE_PAYROLL, {
-    refetchQueries: [
-      { 
-        query: GET_PAYROLLS 
-      },
-      { 
-        query: GET_PAYROLL_BY_ID,
-        variables: { id: payroll.id } 
-      }
-    ],
-    awaitRefetchQueries: true,
+  // Update payroll mutation
+  const [updatePayroll, { loading }] = useMutation(UPDATE_PAYROLL, {
     onCompleted: () => {
       toast.success('Payroll updated successfully');
-      setIsOpen(false);
-      if (onSuccess) onSuccess();
-    },
-    onError: (error) => handleMutationError(error, "Failed to update payroll"),
-    optimisticResponse: {
-      update_payrolls_by_pk: {
-        __typename: "payrolls",
-        id: payroll.id,
-        name: name,
-        notes: notes.trim() || null,
-        updated_at: new Date().toISOString()
+      onClose();
+      if (onSuccess) {
+        onSuccess();
       }
-    }
-  })
+    },
+    onError: (error) => {
+      toast.error(`Failed to update payroll: ${error.message}`);
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Handle input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle select change
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     
-    try {
-      await updatePayroll({
-        variables: {
-          id: payroll.id,
-          name: name.trim(),
-          notes: notes.trim() || null
-        }
-      })
-    } catch (error) {
-      // Error is handled by onError callback
-    }
-  }
+    // Use standardized pattern for mutation variables
+    updatePayroll({
+      variables: {
+        id: payroll.id,
+        input: {
+          name: formData.name,
+          cycle_type: parseInt(formData.cycleType),
+          status: formData.status.toUpperCase(),
+        },
+      },
+    });
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Payroll</DialogTitle>
-          <DialogDescription>
-            Update payroll details.
-          </DialogDescription>
+          <DialogDescription>Update the payroll details below.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="notes" className="text-right">
-                Notes
-              </Label>
-              <Textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="col-span-3"
-                rows={3}
-              />
-            </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Payroll Name</Label>
+            <Input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter payroll name"
+              required
+            />
           </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="cycleType">Cycle Type</Label>
+            <Select
+              value={formData.cycleType}
+              onValueChange={(value) => handleSelectChange('cycleType', value)}
+            >
+              <SelectTrigger id="cycleType">
+                <SelectValue placeholder="Select cycle type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={CYCLE_TYPES.WEEKLY.toString()}>Weekly</SelectItem>
+                <SelectItem value={CYCLE_TYPES.FORTNIGHTLY.toString()}>Fortnightly</SelectItem>
+                <SelectItem value={CYCLE_TYPES.MONTHLY_SPECIFIC_DAY.toString()}>Monthly (Specific Day)</SelectItem>
+                <SelectItem value={CYCLE_TYPES.MONTHLY_LAST_DAY.toString()}>Monthly (Last Day)</SelectItem>
+                <SelectItem value={CYCLE_TYPES.QUARTERLY.toString()}>Quarterly</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <Select
+              value={formData.status}
+              onValueChange={(value) => handleSelectChange('status', value)}
+            >
+              <SelectTrigger id="status">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+            <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
               Cancel
             </Button>
-            <Button type="submit" disabled={updating}>
-              {updating ? "Updating..." : "Save Changes"}
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                'Update Payroll'
+              )}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

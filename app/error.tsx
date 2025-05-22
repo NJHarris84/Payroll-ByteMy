@@ -2,8 +2,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import Link from "next/link";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export default function GlobalError({
   error,
@@ -12,53 +20,67 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const router = useRouter();
-
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error(error);
+    console.error("Unhandled application error:", error);
   }, [error]);
 
   return (
-    <html lang="en">
-      <body>
-        <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
-          <div className="mx-auto max-w-[500px] rounded-lg border border-destructive/30 bg-destructive/10 p-6">
-            <h2 className="mb-2 text-2xl font-bold text-destructive">
-              Something went wrong!
-            </h2>
-            <p className="mb-6 text-muted-foreground">
-              An unexpected error occurred. Our team has been notified.
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
+      <Card className="w-full max-w-md border-red-200 shadow-lg">
+        <CardHeader className="bg-red-50 text-red-900">
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-6 w-6" />
+            <span>Application Error</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="mb-4">
+            <p className="text-lg font-medium mb-2">Something went wrong!</p>
+            <p className="text-gray-600 text-sm mb-4">
+              We're sorry, but we encountered an unexpected problem. Our team has
+              been notified.
             </p>
-            <Button
-              variant="default"
-              onClick={() => reset()}
-              className="mr-2"
-            >
-              Try Again
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => (window.location.href = "/")}
-            >
-              Go Home
-            </Button>
-
-            {process.env.NODE_ENV === "development" && (
-              <div className="mt-4 rounded border border-gray-200 bg-gray-50 p-4 text-left">
-                <p className="mb-2 text-sm font-medium text-gray-500">
-                  Error details:
-                </p>
-                <pre className="max-h-[200px] overflow-auto text-xs text-red-600">
-                  {error.message}
-                  {"\n"}
-                  {error.stack}
-                </pre>
+            {error.message && (
+              <div className="bg-gray-100 p-3 rounded border text-sm font-mono overflow-auto max-h-40">
+                {error.message}
+                {error.digest && (
+                  <div className="mt-2 text-xs text-gray-500">
+                    Error ID: {error.digest}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        </div>
-      </body>
-    </html>
+        </CardContent>
+        <CardFooter className="flex flex-col sm:flex-row gap-2 justify-end bg-gray-50">
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto"
+            onClick={() => window.location.reload()}
+          >
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Reload Page
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto"
+            asChild
+          >
+            <Link href="/">
+              <Home className="mr-2 h-4 w-4" />
+              Go Home
+            </Link>
+          </Button>
+          <Button
+            variant="default"
+            className="w-full sm:w-auto"
+            onClick={() => reset()}
+          >
+            Try Again
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

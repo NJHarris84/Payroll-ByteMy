@@ -1,9 +1,7 @@
 // app/api/cron/generate-batch/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { adminApolloClient } from "@/lib/api/apollo-client";
-import { format, addMonths } from "date-fns";
-import { GENERATE_PAYROLL_DATES } from "@/lib/graphql/mutations/payroll_dates/generatePayrollDates";
+import { addMonths, format } from "date-fns";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +9,7 @@ export async function POST(req: NextRequest) {
     const { userId, getToken } = await auth();
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
     }
     
     // Check user permissions
@@ -19,32 +17,65 @@ export async function POST(req: NextRequest) {
     let userRole = "viewer";
     
     if (token) {
-      const tokenParts = token.split('.');
-      if (tokenParts.length >= 2) {
-        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
-        const hasuraClaims = payload['https://hasura.io/jwt/claims'];
-        userRole = hasuraClaims?.['x-hasura-default-role'] || "viewer";
+      try {
+        const tokenParts = token.split('.');
+        if (tokenParts.length >= 2) {
+          const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+          userRole = payload['https://hasura.io/jwt/claims']['x-hasura-default-role'] || "viewer";
+        }
+      } catch (tokenError) {
+        console.error("Failed to parse token:", tokenError);
+        return NextResponse.json({ 
+          error: "Invalid token format", 
+          details: "Could not parse JWT token",
+          code: "INVALID_TOKEN"
+        }, { status: 401 });
       }
     }
     
     // Only allow certain roles to generate dates
-    const allowedRoles = ['org_admin', 'admin'];
+    const allowedRoles = ['org_admin', 'admin', 'developer'];
     if (!allowedRoles.includes(userRole)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return NextResponse.json({ 
+        error: "Forbidden", 
+        details: "You don't have permission to generate payroll dates",
+        code: "FORBIDDEN"
+      }, { status: 403 });
     }
     
     // Parse request body
-    const { payrollIds, startDate } = await req.json();
+    let requestBody;
+    try {
+      requestBody = await req.json();
+    } catch (parseError) {
+      return NextResponse.json({ 
+        error: "Invalid request body", 
+        details: "Could not parse JSON body",
+        code: "INVALID_JSON"
+      }, { status: 400 });
+    }
+    
+    const { payrollIds, startDate } = requestBody;
     
     // Validate input
     if (!payrollIds || !Array.isArray(payrollIds) || payrollIds.length === 0) {
       return NextResponse.json({ 
-        error: "Invalid input: Provide an array of payroll IDs" 
+        error: "Invalid input", 
+        details: "Provide an array of payroll IDs",
+        code: "INVALID_INPUT" 
       }, { status: 400 });
     }
     
     // Set up date range for generated dates
     const start = startDate ? new Date(startDate) : new Date();
+    if (isNaN(start.getTime())) {
+      return NextResponse.json({ 
+        error: "Invalid startDate", 
+        details: "The provided startDate is not a valid date",
+        code: "INVALID_DATE" 
+      }, { status: 400 });
+    }
+    
     const end = addMonths(start, 12); // Generate 12 months of dates
     
     // Format dates as YYYY-MM-DD
@@ -55,7 +86,7 @@ export async function POST(req: NextRequest) {
       total: payrollIds.length,
       processed: 0,
       failed: 0,
-      errors: [] as { payrollId: string, error: string }[]
+      errors: [] as { payrollId: string, error: string, code?: string }[]
     };
     
     // Process payrolls in batches to avoid timeouts
@@ -78,7 +109,8 @@ export async function POST(req: NextRequest) {
           results.failed++;
           results.errors.push({
             payrollId,
-            error: errors.map((e: any) => e.message).join(', ')
+            error: errors.map((e: any) => e.message).join(', '),
+            code: "GRAPHQL_ERROR"
           });
           continue;
         }
@@ -89,7 +121,8 @@ export async function POST(req: NextRequest) {
           results.failed++;
           results.errors.push({
             payrollId,
-            error: "No dates generated"
+            error: "No dates generated",
+            code: "NO_DATES_GENERATED"
           });
           continue;
         }
@@ -101,7 +134,8 @@ export async function POST(req: NextRequest) {
         results.failed++;
         results.errors.push({
           payrollId,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : "Unknown error",
+          code: error instanceof Error && (error as any).code ? (error as any).code : "PROCESSING_ERROR"
         });
       }
     }
@@ -117,9 +151,13 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error in batch processing:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorCode = error instanceof Error && (error as any).code ? (error as any).code : "SERVER_ERROR";
+    
     return NextResponse.json({ 
       error: "Failed to process payrolls", 
-      details: error instanceof Error ? error.message : "Unknown error" 
+      details: errorMessage,
+      code: errorCode
     }, { status: 500 });
   }
 }

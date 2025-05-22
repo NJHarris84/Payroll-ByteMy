@@ -1,4 +1,8 @@
-# Getting Started
+# Payroll-ByteMy
+
+A comprehensive payroll management system with advanced date calculation and role-based access control.
+
+## Getting Started
 
 First, run the development server:
 
@@ -8,121 +12,223 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-SQL Dump
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-PGPASSWORD="npg_WavFRZ1lEx4U" pg_dump -s -U neondb_owner -h ep-black-sunset-a7wbc0zq-pooler.ap-southeast-2.aws.neon.tech neondb > schema.sql
-PGPASSWORD="npg_WavFRZ1lEx4U" pg_dump -U neondb_owner -d neondb -h ep-black-sunset-a7wbc0zq-pooler.ap-southeast-2.aws.neon.tech -t table1,table2 -f dump.sql
+## Project Overview
 
-Clerk.session.getToken({ template: "hasura" }).then(token => console.log("Hasura Token:", token));
+Payroll-ByteMy is a full-featured payroll management system built with:
+
+- Next.js (App Router) for frontend and API
+- Clerk for authentication
+- Hasura GraphQL for database operations
+- Tailwind CSS and shadcn/ui for styling
+- TypeScript for type safety
+
+## Project Structure
 
 Payroll Cycles and Processing Rules
+This system handles various payroll cycle types with specific date calculation rules:
 
-This document outlines payroll cycles and the rules governing processing dates and business day adjustments.
+### 1. Weekly Payroll
 
-1. Weekly Payroll
+- Frequency: Weekly
+- Date Type: Day of Week (DOW)
+- Date Value: 1 = Sunday, 2 = Monday, ..., 7 = Saturday
+- Business Day Rule: Previous Business Day
 
-Frequency: Weekly
-Timing: Specific day of the week (e.g., Friday)
-Date Type: Day of Week (DOW)
-Date Value: 1 = Sunday, 2 = Monday, ..., 7 = Saturday
-Business Day Rule: Previous Business Day
-2. Fortnightly Payroll
+### 2. Fortnightly Payroll
 
-Frequency: Fortnightly
-Timing: Specific day of the week
-Week Assignment: Week A (first week of January) or Week B (second week of January)
-Date Type: Week A or Week B
-Date Value: 1 = Sunday, 2 = Monday, ..., 7 = Saturday
-Business Day Rule: Previous Business Day
-3. Bi-Monthly Payroll
+- Frequency: Every two weeks
+- Timing: Specific day of the week
+- Week Assignment: Week A (first week of January) or Week B (second week of January)
+- Date Value: 1-7 (Sunday-Saturday)
+- Business Day Rule: Previous Business Day
 
-Frequency: Twice per month
-Date Types:
-Start of Month (SOM): 1st and 15th of the month; Next Business Day rule.
-End of Month (EOM): 30th and 15th of the month; Previous Business Day rule.
-February Exception: For both SOM and EOM, use the 14th instead of the 15th.
-4. Monthly Payroll
+### 3. Bi-Monthly Payroll
 
-Frequency: Monthly
-Date Types:
-Start of Month (SOM): Next Business Day rule.
-End of Month (EOM) or Fixed Date: Previous Business Day rule.
-Date Value: (Only used with Fixed Date) 1 = Sunday, 2 = Monday, ..., 7 = Saturday
-5. Quarterly Payroll
+- Frequency: Twice per month
+- Date Types:
+  - Start of Month (SOM): 1st and 15th with Next Business Day rule
+  - End of Month (EOM): 30th and 15th with Previous Business Day rule
+- February Exception: Use 14th instead of 15th for both SOM and EOM
 
-Frequency: Quarterly (March, June, September, December)
-Rules: Same as Monthly Payroll
-Key Terms
+### 4. Monthly Payroll
 
-DOW (Day of Week): Specific day of the week.
-SOM (Start of Month): First day of the month.
-EOM (End of Month): Last day of the month.
-Fixed Date: Predetermined date in the month.
-Previous Business Day: The business day before the scheduled date.
-Next Business Day: The business day after the scheduled date.
-EFT Processing Rules
+- Frequency: Monthly
+- Date Types:
+  - Start of Month (SOM): Uses Next Business Day rule
+  - End of Month (EOM): Uses Previous Business Day rule
+  - Fixed Date: Uses Previous Business Day rule
+- Fixed Date uses a day of month as Date Value, EOM and SOM don't use it
 
-1. Processing Lead Time
+### 5. Quarterly Payroll
 
-processing_days_before_eft is a value used to determine how many day before the Eft Date processing is done.
-If the processing date falls on a weekend or public holiday, adjust to the Previous Business Day.
-2. EFT Date Adjustment
+- Frequency: Quarterly (March, June, September, December)
+- Same rules as Monthly Payroll
 
-If the EFT date is changed, the payroll processing date must be recalculated to maintain the required lead time.
-Key Terms
+## EFT Processing Rules
 
-EFT (Electronic Funds Transfer): Electronic transfer of employee wages.
-processing_days_before_eft: Time between payroll processing and the EFT date.
+### 1. Processing Lead Time
 
-Let me summarize the key points to ensure I understand correctly:
-Key Principles:
+- `processing_days_before_eft` determines how many days before the EFT date processing occurs
+- If the processing date falls on a weekend/holiday, adjust to the Previous Business Day
 
-Each payroll cycle has specific date calculation rules
-Day of week (DOW) is represented as 1-7 (Sunday-Saturday)
-Business day adjustments vary by cycle type
-Different date types (DOW, SOM, EOM, Fixed Date) have unique handling
+### 2. EFT Date Adjustment
 
-Specific Rules Breakdown:
+- If the EFT date is changed, the payroll processing date must be recalculated
 
-Weekly
+## Key Terms
 
-Always DOW type
-DOW value 0-6
-Always use Previous Business Day rule
+- **DOW (Day of Week)**: Specific day of the week
+- **SOM (Start of Month)**: First day of the month
+- **EOM (End of Month)**: Last day of the month
+- **Fixed Date**: Predetermined date in the month
+- **Previous Business Day**: The business day before the scheduled date
+- **Next Business Day**: The business day after the scheduled date
+- **EFT**: Electronic Funds Transfer for employee wages
+- **processing_days_before_eft**: Time between payroll processing and EFT date
 
-Fortnightly
+## Formatting and Coding Standards
 
-DOW type only
-Supports Week A (first week of Jan) and Week B (second week of Jan)
-DOW value 0-6
-Always use Previous Business Day rule
+### TypeScript/JavaScript
 
-Bi-Monthly
+- Use single quotes for strings
+- Use consistent type imports with `import type { Type } from 'module'`
+- Follow import order: builtin > external > internal > parent/sibling > index
+- Use interface for type definitions
+- Use arrow functions for components and handlers
 
-SOM: 1st and 15th, use Next Business Day
-EOM: 30th and 15th, use Previous Business Day
-February special case: use 14th
-No Date Value needed
+### GraphQL Standards
 
-Monthly
+- All fragments are defined in fragments directory
+- Fragment files follow naming convention: `entityFragment.ts`
+- Fragment constants use pattern: `ENTITY_FRAGMENT`
+- Fragment names in GraphQL follow: `EntityFragment`
+- Always use fragments in queries instead of inline field selection
+- Import fragments from the correct relative path: `../../fragments/fileName`
 
-Supports Fixed Date, EOM, SOM
-SOM: Next Business Day
-EOM and Fixed Date: Previous Business Day
-Fixed Date uses a day of month as Date Value, EOM and SOM dont use it
+### Component Standards
 
-Quarterly
+- Component files follow naming convention: `component-name.tsx`
+- Export components as named exports
+- Use shadcn/ui patterns for UI components
+- Use consistent props naming and ordering
+- Document components with JSDoc or separate markdown files
 
-Same as Monthly
-Only on months 3, 6, 9, 12
+### CSS/Styling
 
-curl -X POST "<http://localhost:3000/api/holidays/sync>" \
-     -H "Authorization: Bearer sk_test_Vmcx7vTwGJWmXtwVc5hWUxKGIF7BiwA2GevfPUNCVv" \
-     -H "x-hasura-admin-secret: KIATiwETsv3yBwN7e73W2kJwA0t5hf6UK94HDkPZrIQAtpLmK8fCPYE9bIc0Sd8B"
-     -H "X-Hasura-Role: admin" \
-     -H "Content-Type: application/json" \
-     -d '{"year": 2025, "countryCode": "AU"}'
+- Use Tailwind CSS utility classes
+- Follow the project's color scheme defined in globals.css
+- Use cn() utility for conditional class names
+- Support both light and dark themes
+
+### File Structure
+
+- Keep related code in the same directory
+- Follow established naming conventions
+- Use index files for exporting multiple components
+- Add relative path comments to the top of files
+
+## Project File Structure
+
+payroll-bytemy/
+├── app/                      # Next.js App Router
+│   ├── api/                  # API routes
+│   │   ├── auth/             # Authentication endpoints
+│   │   ├── holidays/         # Holiday management endpoints
+│   │   └── payroll/          # Payroll processing endpoints
+│   ├── (auth)/               # Authentication pages
+│   ├── (dashboard)/          # Dashboard and main app pages
+│   └── layout.tsx            # Root layout component
+├── components/               # Reusable components
+│   ├── ui/                   # UI components (buttons, inputs, etc.)
+│   ├── forms/                # Form components
+│   ├── payroll/              # Payroll-specific components
+│   ├── client/               # Client-related components
+│   └── index.ts              # Barrel file for component exports
+├── fragments/                # GraphQL fragments
+│   ├── payrollFragment.ts    # Payroll fragments
+│   ├── userFragment.ts       # User fragments
+│   └── clientFragment.ts     # Client fragments
+├── lib/                      # Shared utility functions
+│   ├── utils.ts              # General utilities
+│   ├── date-utils.ts         # Date manipulation utilities
+│   └── graphql/              # GraphQL related utilities
+├── types/                    # TypeScript type definitions
+│   ├── payroll.ts            # Payroll-related types
+│   ├── client.ts             # Client-related types
+│   └── index.ts              # Type export barrel file
+├── styles/                   # Global styles
+│   └── globals.css           # Global CSS with Tailwind directives
+├── hasura/                   # Hasura configuration
+│   ├── metadata/             # Hasura metadata
+│   └── migrations/           # Database migrations
+├── public/                   # Static assets
+├── next.config.js            # Next.js configuration
+├── tailwind.config.js        # Tailwind CSS configuration
+├── tsconfig.json             # TypeScript configuration
+└── package.json              # Dependencies and scripts
+
+## Utility Scripts
+
+- `npm run check-fragments` - Validates correct GraphQL fragment usage
+- `npm run standardize-imports` - Updates import paths to match conventions
+- `npm run add-relative-paths` - Adds file path comments to source files
+
+## API Endpoints
+
+### Holiday Sync Endpoint
+
+```http
+POST /api/holidays/sync
+```
+
+Synchronizes holiday data from external sources. Requires authentication and admin privileges.
+
+## Database Operations
+
+To create a schema dump:
+
+```bash
+hasura metadata export --project hasura/
+```
+
+To dump specific tables:
+
+```bash
+pg_dump -h localhost -p 5432 -U postgres -d payroll -t "public.holidays" > holidays_dump.sql
+```
+
+## Authentication
+
+The system uses Clerk for authentication, which is integrated with Hasura for permissions:
+
+```typescript
+// Example of authentication middleware
+export const middleware = (request: NextRequest) => {
+  const { userId } = getAuth(request);
+  if (!userId && !request.nextUrl.pathname.startsWith('/api/public')) {
+    return redirectToSignIn({ returnBackUrl: request.url });
+  }
+  return NextResponse.next();
+};
+```
+
+## Component Import Patterns
+
+There are multiple ways to import components in this project:
+
+```typescript
+// Import from main barrel file
+import { Button, Card, Alert } from "@/components";
+
+// Or import from specific category
+import { Button, Card } from "@/components/ui";
+import { ClientCard } from "@/components/client";
+```
+
+## Contributing
+
+Please follow the established patterns and code style when contributing to this project. Use the utility scripts to ensure your code matches the project's standards

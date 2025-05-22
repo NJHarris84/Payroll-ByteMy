@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
@@ -40,6 +40,9 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/glob": "^8.1.0",
     "@types/node": "^20.17.24",
     "@types/react": "^18.3.22",
@@ -50,6 +53,8 @@
     "eslint-config-next": "^14.0.1",
     "glob": "^11.0.2",
     "globby": "^14.1.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "msw": "^2.8.4",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",

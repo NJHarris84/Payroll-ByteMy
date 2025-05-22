@@ -137,28 +137,25 @@ export function PayrollDatesView({ payrollId }: PayrollDatesViewProps) {
         return format(parseISO(row.original.processing_date), "MMM d, yyyy");
       },
     },
-// In the PayrollDatesView component, update the "View Note" cell rendering:
-
-// In the columns definition
-{
-  accessorKey: "notes",
-  header: "Notes",
-  cell: ({ row }) => (
-    <div>
-      {row.original.notes ? (
-        <NotesModal 
-          note={{
-            id: row.original.id,
-            content: row.original.notes
-          }}
-          refetchNotes={() => refetch()} // Add a refetch function
-        />
-      ) : (
-        <span className="text-gray-500">-</span>
-      )}
-    </div>
-  ),
-}
+    {
+      accessorKey: "notes",
+      header: "Notes",
+      cell: ({ row }) => (
+        <div>
+          {row.original.notes ? (
+            <NotesModal 
+              note={{
+                id: row.original.id,
+                content: row.original.notes
+              }}
+              refetchNotes={() => refetch()} // Add a refetch function
+            />
+          ) : (
+            <span className="text-gray-500">-</span>
+          )}
+        </div>
+      ),
+    }
   ];
 
   // Prepare data for the table - use an empty array if data isn't loaded yet

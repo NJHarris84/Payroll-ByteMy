@@ -1,44 +1,31 @@
-# Payroll-ByteMy Component Library
+# Components Directory
 
-This directory contains all the UI components used throughout the application. The components are organized into several categories to maintain a clear separation of concerns and improve code reusability.
+This directory contains all reusable components for the Payroll-ByteMy application.
 
-## Component Categories
+## UI Components
 
-### UI Components (`/ui`)
-Basic UI elements based on shadcn/ui patterns, serving as the building blocks for all other components.
+Basic UI components like buttons, inputs, and cards.
 
-### Layout Components (`/layout`)
-Components related to the application layout and navigation structure.
+## Form Components
 
-### Common Components (`/common`)
-Reusable utility components that can be used across different features of the application.
+Components for building and managing forms.
 
-### Payroll Components (`/payroll`)
-Domain-specific components for payroll functionality.
+## Payroll Components
 
-### Client Components (`/client`)
-Domain-specific components for client management.
+Components specific to payroll functionality.
 
-### Dialog Components (`/dialogs`)
-Modal interfaces for user interactions.
+## Client Components
 
-### Provider Components (`/providers`)
-Context providers and wrappers for global state management.
+Components related to client management.
 
-### Form Components (`/forms`)
-Reusable form components and complex form implementations.
+## Layout Components
 
-## Usage Guidelines
+Components for page layout and structure.
 
-### Importing Components
+## Data Display Components
 
-Always import components using the barrel files to maintain consistency:
+Components for displaying data (tables, charts, etc.).
 
-```tsx
-// Import from main barrel file
-import { Button, Card, Alert } from "@/components";
+## Navigation Components
 
-// Or import from specific category
-import { Button, Card } from "@/components/ui";
-import { ClientCard } from "@/components/client";
-```
+Components for navigation (menus, breadcrumbs, etc.).

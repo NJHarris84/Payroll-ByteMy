@@ -2,6 +2,7 @@
 "use client"
 
 import { useState } from "react"
+import { useQuery } from "@apollo/client"
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, addDays } from "date-fns"
 import { ChevronLeft, ChevronRight, CalendarIcon, Download } from "lucide-react"
 
@@ -11,196 +12,206 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { PageLoading } from "@/components/ui/loading-states"
+import { GET_PAYROLLS } from "@/lib/graphql/queries/payrolls/getPayrolls"
+import { GET_HOLIDAYS_BY_YEAR } from "@/lib/graphql/queries/holidays/getHolidaysByYear"
 
-// Sample payroll data
-const payrollEvents = [
-  { id: 1, client: "Acme Inc.", payrollName: "Main Office", date: new Date(2025, 2, 15), type: "Processing" },
-  { id: 2, client: "TechCorp", payrollName: "Engineering", date: new Date(2025, 2, 18), type: "EFT" },
-  { id: 3, client: "Global Foods", payrollName: "Retail Staff", date: new Date(2025, 2, 20), type: "Processing" },
-  { id: 4, client: "Acme Inc.", payrollName: "Sales Team", date: new Date(2025, 2, 22), type: "Processing" },
-  { id: 5, client: "City Services", payrollName: "Administrative", date: new Date(2025, 2, 25), type: "EFT" },
-]
+// Helper to format date for display
+const formatDateForDisplay = (date: Date): string => {
+  return new Intl.DateTimeFormat('en-AU', { 
+    day: 'numeric', 
+    month: 'short'
+  }).format(date)
+}
 
-// Sample holidays
-const holidays = [
-  { date: new Date(2025, 2, 17), name: "St. Patrick's Day" },
-  { date: new Date(2025, 3, 18), name: "Good Friday" },
-  { date: new Date(2025, 3, 21), name: "Easter Monday" },
-]
+// Helper to get month name
+const getMonthName = (date: Date): string => {
+  return new Intl.DateTimeFormat('en-AU', { month: 'long', year: 'numeric' }).format(date)
+}
+
+// Helper to generate calendar days
+const getDaysInMonth = (year: number, month: number): Date[] => {
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  return Array.from({ length: daysInMonth }, (_, i) => new Date(year, month, i + 1))
+}
+
+// Helper to get day of week (0-6)
+const getDayOfWeek = (date: Date): number => date.getDay()
+
+// Interface for event types
+interface CalendarEvent {
+  id: string
+  title: string
+  date: Date
+  type: 'payroll' | 'holiday' | 'leave'
+  color: string
+}
 
 export default function CalendarPage() {
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date(2025, 2, 1)) // March 2025
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
-  const [selectedEventType, setSelectedEventType] = useState<string>("All")
+  const [currentDate, setCurrentDate] = useState(new Date())
+  const currentYear = currentDate.getFullYear()
+  const currentMonth = currentDate.getMonth()
 
-  const previousMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1))
-  }
+  // Fetch payrolls
+  const { loading: loadingPayrolls, error: payrollsError, data: payrollsData } = useQuery(GET_PAYROLLS)
 
-  const nextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1))
-  }
-
-  // Generate days of the month
-  const daysInMonth = getDaysInMonth(currentMonth)
-  const firstDayOfMonth = startOfMonth(currentMonth)
-  const firstDayOfWeek = getDay(firstDayOfMonth) // 0 = Sunday, 1 = Monday, etc.
-
-  const daysArray = Array.from({ length: daysInMonth }, (_, i) => {
-    const date = addDays(firstDayOfMonth, i)
-    return {
-      date,
-      dayOfWeek: format(date, "EEE"), // Mon, Tue, etc.
-      dayOfMonth: format(date, "d"), // 1, 2, etc.
-    }
+  // Fetch holidays for current year
+  const { loading: loadingHolidays, error: holidaysError, data: holidaysData } = useQuery(GET_HOLIDAYS_BY_YEAR, {
+    variables: { year: currentYear }
   })
 
-  const filteredEvents =
-    selectedEventType === "All" ? payrollEvents : payrollEvents.filter((event) => event.type === selectedEventType)
+  // Process events when data is available
+  const events: CalendarEvent[] = []
+  
+  // Add payrolls to events
+  if (payrollsData?.payrolls) {
+    payrollsData.payrolls.forEach((payroll: any) => {
+      if (payroll.payroll_dates) {
+        payroll.payroll_dates.forEach((date: any) => {
+          const payrollDate = new Date(date.date)
+          if (payrollDate.getMonth() === currentMonth && payrollDate.getFullYear() === currentYear) {
+            events.push({
+              id: `payroll-${date.id}`,
+              title: payroll.name,
+              date: payrollDate,
+              type: 'payroll',
+              color: 'bg-blue-500'
+            })
+          }
+        })
+      }
+    })
+  }
+  
+  // Add holidays to events
+  if (holidaysData?.holidays) {
+    holidaysData.holidays.forEach((holiday: any) => {
+      const holidayDate = new Date(holiday.date)
+      if (holidayDate.getMonth() === currentMonth && holidayDate.getFullYear() === currentYear) {
+        events.push({
+          id: `holiday-${holiday.id}`,
+          title: holiday.name,
+          date: holidayDate,
+          type: 'holiday',
+          color: 'bg-green-500'
+        })
+      }
+    })
+  }
 
-  const eventsForSelectedDate = selectedDate
-    ? filteredEvents.filter((event) => event.date.toDateString() === selectedDate.toDateString())
-    : []
+  // Navigate to previous month
+  const goToPreviousMonth = () => {
+    setCurrentDate(new Date(currentYear, currentMonth - 1, 1))
+  }
 
-  const holidayForSelectedDate = selectedDate
-    ? holidays.find((holiday) => holiday.date.toDateString() === selectedDate.toDateString())
-    : undefined
+  // Navigate to next month
+  const goToNextMonth = () => {
+    setCurrentDate(new Date(currentYear, currentMonth + 1, 1))
+  }
+
+  // Get days in current month
+  const daysInMonth = getDaysInMonth(currentYear, currentMonth)
+  
+  // Get first day of month (0-6, where 0 is Sunday)
+  const firstDayOfMonth = getDayOfWeek(new Date(currentYear, currentMonth, 1))
+  
+  // Calculate empty cells for days before the 1st of the month
+  const leadingEmptyCells = Array.from({ length: firstDayOfMonth }, (_, i) => i)
+
+  // Show loading state while data is fetching
+  if (loadingPayrolls || loadingHolidays) {
+    return <PageLoading />
+  }
+
+  // Show error state if there's an error
+  if (payrollsError || holidaysError) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Calendar</h2>
+          <p className="text-muted-foreground">View payroll and holiday schedules</p>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-destructive">
+              Error loading calendar data: {payrollsError?.message || holidaysError?.message}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Payroll Calendar</h2>
-        <p className="text-muted-foreground">View and manage your payroll schedule.</p>
+        <h2 className="text-3xl font-bold tracking-tight">Calendar</h2>
+        <p className="text-muted-foreground">View payroll and holiday schedules</p>
       </div>
 
-      <div className="flex flex-col gap-6 md:flex-row">
-        <Card className="flex-1">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
-            <div>
-              <CardTitle>Payroll Calendar</CardTitle>
-              <CardDescription>{format(currentMonth, "MMMM yyyy")}</CardDescription>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="icon" onClick={previousMonth}>
-                <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Previous month</span>
-              </Button>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <CalendarIcon className="h-4 w-4" />
-                    <span>{format(currentMonth, "MMMM yyyy")}</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={currentMonth}
-                    onSelect={(date) => date && setCurrentMonth(date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <Button variant="outline" size="icon" onClick={nextMonth}>
-                <ChevronRight className="h-4 w-4" />
-                <span className="sr-only">Next month</span>
-              </Button>
-              <Select value={selectedEventType} onValueChange={setSelectedEventType}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Event Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All">All Events</SelectItem>
-                  <SelectItem value="Processing">Processing</SelectItem>
-                  <SelectItem value="EFT">EFT</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" className="gap-2">
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-7 gap-2 text-center">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="text-sm font-medium text-muted-foreground py-2">
-                  {day}
-                </div>
-              ))}
-              {daysArray.map((day, index) => {
-                const dayEvents = filteredEvents.filter(
-                  (event) => event.date.toDateString() === day.date.toDateString(),
-                )
-                const isHoliday = holidays.some((holiday) => holiday.date.toDateString() === day.date.toDateString())
-
-                return (
-                  <Button
-                    key={day.date.toString()}
-                    variant="ghost"
-                    className={`h-12 w-full rounded-md p-0 font-normal relative ${
-                      isHoliday ? "bg-red-100 dark:bg-red-900" : ""
-                    }`}
-                    onClick={() => setSelectedDate(day.date)}
-                  >
-                    <time dateTime={format(day.date, "yyyy-MM-dd")}>{day.dayOfMonth}</time>
-                    {dayEvents.length > 0 && (
-                      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
-                        <div className="flex gap-0.5">
-                          {dayEvents.map((event) => (
-                            <div
-                              key={event.id}
-                              className={`h-1 w-1 rounded-full ${
-                                event.type === "Processing" ? "bg-blue-500" : "bg-green-500"
-                              }`}
-                              title={`${event.client} - ${event.payrollName}`}
-                            />
-                          ))}
-                        </div>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>{getMonthName(currentDate)}</CardTitle>
+            <CardDescription>Payroll schedule and public holidays</CardDescription>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" size="icon" onClick={goToPreviousMonth}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon" onClick={goToNextMonth}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-7 gap-2">
+            {/* Calendar header with day names */}
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+              <div key={day} className="p-2 text-sm font-medium text-center">
+                {day}
+              </div>
+            ))}
+            
+            {/* Empty cells for days before the 1st */}
+            {leadingEmptyCells.map((_, index) => (
+              <div key={`empty-${index}`} className="p-2 border rounded-md bg-muted/20"></div>
+            ))}
+            
+            {/* Calendar days */}
+            {daysInMonth.map((date) => {
+              // Find events for this day
+              const dayEvents = events.filter(event => 
+                event.date.getDate() === date.getDate()
+              )
+              
+              return (
+                <div 
+                  key={date.toISOString()} 
+                  className={`p-2 border rounded-md min-h-[100px] ${
+                    date.getDay() === 0 || date.getDay() === 6 ? 'bg-muted/20' : ''
+                  }`}
+                >
+                  <div className="font-medium text-sm">{formatDateForDisplay(date)}</div>
+                  
+                  {/* Events for this day */}
+                  <div className="mt-1 space-y-1">
+                    {dayEvents.map(event => (
+                      <div 
+                        key={event.id} 
+                        className={`text-xs p-1 rounded ${event.color} text-white truncate`}
+                        title={event.title}
+                      >
+                        {event.title}
                       </div>
-                    )}
-                  </Button>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="md:w-1/3">
-          <CardHeader>
-            <CardTitle>{selectedDate ? format(selectedDate, "MMMM d, yyyy") : "Select a date"}</CardTitle>
-            <CardDescription>
-              {eventsForSelectedDate.length
-                ? `${eventsForSelectedDate.length} event(s) scheduled`
-                : "No events scheduled for this date"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {eventsForSelectedDate.length > 0 ? (
-              <div className="space-y-4">
-                {eventsForSelectedDate.map((event) => (
-                  <div key={event.id} className="rounded-lg border p-3">
-                    <div className="font-medium">
-                      {event.client} - {event.payrollName}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Type: {event.type}</div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : holidayForSelectedDate ? (
-              <div className="flex h-[200px] items-center justify-center">
-                <Badge variant="outline" className="text-red-500">
-                  Holiday: {holidayForSelectedDate.name}
-                </Badge>
-              </div>
-            ) : (
-              <div className="flex h-[200px] items-center justify-center text-muted-foreground">
-                No events scheduled for this date
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                </div>
+              )
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
