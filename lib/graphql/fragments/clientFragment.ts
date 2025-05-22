@@ -1,5 +1,9 @@
 import { gql } from "@apollo/client";
 
+/**
+ * Fragment containing core client fields
+ * Used in client queries and mutations
+ */
 export const CLIENT_FRAGMENT = gql`
   fragment ClientFragment on clients {
     id

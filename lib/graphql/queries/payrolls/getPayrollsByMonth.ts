@@ -8,37 +8,21 @@ export const GET_PAYROLLS_BY_MONTH = gql`
     payrolls(
       where: {
         payroll_dates: {
-          processing_date: { _gte: $startDate, _lte: $endDate }
+          original_eft_date: {
+            _gte: $startDate
+            _lt: $endDate
+          }
         }
       }
     ) {
       ...PayrollFragment
-      userByPrimaryConsultantUserId {
-        id
-        name
-        leaves(where: {
-          _or: [
-            { start_date: { _gte: $startDate, _lte: $endDate } },
-            { end_date: { _gte: $startDate, _lte: $endDate } },
-            { _and: [
-              { start_date: { _lte: $startDate } },
-              { end_date: { _gte: $endDate } }
-            ]}
-          ]
-        }) {
-          id
-          start_date
-          end_date
-          leave_type
-        }
-      }
-      userByBackupConsultantUserId {
-        id
-        name
-      }
       payroll_dates(
-        where: { processing_date: { _gte: $startDate, _lte: $endDate } },
-        order_by: { processing_date: asc }
+        where: {
+          original_eft_date: {
+            _gte: $startDate
+            _lt: $endDate
+          }
+        }
       ) {
         ...PayrollDateFragment
       }

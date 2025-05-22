@@ -13,7 +13,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       // Parse stored json or if none return initialValue
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error(error);
+      console.error(`Error reading localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -34,9 +34,29 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
-      console.error(error);
+      console.error(`Error setting localStorage key "${key}":`, error);
     }
   };
+  
+  // Listen for changes to this localStorage key from other tabs/windows
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === key && event.newValue) {
+        try {
+          setStoredValue(JSON.parse(event.newValue));
+        } catch (error) {
+          console.error(`Error parsing localStorage change for key "${key}":`, error);
+        }
+      }
+    };
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageChange);
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    }
+  }, [key]);
   
   return [storedValue, setValue] as const;
 }

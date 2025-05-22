@@ -1,18 +1,26 @@
-#!/bin/bash
+#!/bin/zsh
 
-echo "Standardizing import paths..."
+echo "🔄 Starting import generalisation using barrel files..."
 
-# Fix auth imports
-find . -type f -name "*.ts" -o -name "*.tsx" | xargs sed -i '' 's|@/lib/auth/auth/roles|@/lib/auth/roles|g'
+# List all index.ts files under lib/
+for index in $(find ./lib -type f -name "index.ts"); do
+  dir=$(dirname "$index")
+  import_base="@${dir#./}"
 
-# Fix utilities imports
-find . -type f -name "*.ts" -o -name "*.tsx" | xargs sed -i '' 's|from "./utils"|from "@/lib/utils"|g'
-find . -type f -name "*.ts" -o -name "*.tsx" | xargs sed -i '' 's|from "./date-utils"|from "@/lib/utils/date-utils"|g'
+  echo "📁 Processing barrel file: $index"
+  echo "   → Import base path: $import_base"
 
-# Fix db imports
-find . -type f -name "*.ts" -o -name "*.tsx" | xargs sed -i '' 's|from "./db"|from "@/lib/db"|g'
+  # For each sibling file (not index.ts)
+  for file in "$dir"/*.ts "$dir"/*.tsx; do
+    [ "$file" = "$index" ] && continue
+    base=$(basename "$file" .ts)
+    base=${base%.tsx}
 
-# Fix schema imports
-find . -type f -name "*.ts" -o -name "*.tsx" | xargs sed -i '' 's|from "@/lib/schema"|from "@/drizzle/schema"|g'
+    echo "   🔧 Replacing imports of: $import_base/$base → $import_base"
 
-echo "Import paths standardized!"
+    # Replace imports of this file with the barrel import
+    find . -type f \( -name "*.ts" -o -name "*.tsx" \) -exec sed -i '' "s|$import_base/$base|$import_base|g" {} +
+  done
+done
+
+echo "✅ Imports have been generalised to use barrel files where possible."

@@ -23,14 +23,14 @@ interface Client {
   name: string;
 }
 
-interface ClientPayrollsTableProps {
+interface ClientPayrollTableProps {
   client: Client;
   payrolls: Payroll[];
   loading?: boolean;
   error?: Error | null;
 }
 
-export function ClientPayrollTable({ client, payrolls, loading = false, error = null }: ClientPayrollsTableProps) {
+export function ClientPayrollTable({ client, payrolls, loading = false, error = null }: ClientPayrollTableProps) {
   // Get cycle type display name
   const getCycleTypeName = (cycleType: number): string => {
     switch (cycleType) {

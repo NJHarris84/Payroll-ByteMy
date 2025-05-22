@@ -1,13 +1,9 @@
 import { useQuery, useMutation } from '@apollo/client';
-import { 
-  GET_STAFF_LIST, 
-  GET_STAFF_BY_ID 
-} from '@/lib/graphql/queries/staff/getStaffList';
-import { 
-  CREATE_STAFF, 
-  UPDATE_STAFF, 
-  DELETE_STAFF 
-} from '@/lib/graphql/mutations/staff/createStaff';
+import { GET_STAFF_LIST } from '@/lib/graphql/queries/staff/getStaffList';
+import { GET_STAFF_BY_ID } from '@/lib/graphql/queries/staff/getStaffById';
+import { CREATE_STAFF } from '@/lib/graphql/mutations/staff/createStaff';
+import { UPDATE_STAFF } from '@/lib/graphql/mutations/staff/updateStaff';
+import { DELETE_STAFF } from '@/lib/graphql/mutations/staff/deleteStaff';
 
 export function useStaffList(options = {}) {
   return useQuery(GET_STAFF_LIST, {

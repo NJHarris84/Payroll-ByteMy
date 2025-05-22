@@ -3,9 +3,9 @@
 import { type Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Inter } from 'next/font/google'  // Use Inter instead of Geist
-import { ThemeProvider } from 'next-themes'
 import './globals.css'
 import { AppProviders } from './providers'
+import ClientThemeProvider from '@/components/providers/client-theme-provider'
 
 // Use Inter as a fallback if you don't have Geist
 const inter = Inter({
@@ -33,9 +33,9 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={`${inter.variable} antialiased`}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ClientThemeProvider>
             <AppProviders>{children}</AppProviders>
-          </ThemeProvider>
+          </ClientThemeProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -1,9 +1,9 @@
 // API Hooks
 export * from './api/useApolloQuery';
-export * from './api/useClient';
+export * from './api/useClient'; // Adding missing client hook
 export * from './api/useClientQueries';
 export * from './api/useLeave';
-export * from './api/usePayroll';
+export * from './api/usePayroll'; // Adding missing payroll hook
 export * from './api/usePayrollQueries';
 export * from './api/usePolledQuery';
 export * from './api/usePolling';

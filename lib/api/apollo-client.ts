@@ -6,34 +6,52 @@ import { RetryLink } from "@apollo/client/link/retry";
 import { auth } from "@clerk/nextjs/server";
 import { useAuth } from "@clerk/nextjs";
 
-// Cache configuration remains the same as before
-const createCache = () => {
-  return new InMemoryCache({
-    typePolicies: {
-      // Your existing cache configuration...
-      payrolls: {
-        keyFields: ["id"],
-        fields: {
-          payroll_dates: {
-            merge(existing = [], incoming) {
-              return incoming; 
-            },
+const defaultCacheConfig = {
+  typePolicies: {
+    Query: {
+      fields: {
+        // Add field policies for queries that need special handling
+        payrolls: {
+          // Only cache for 5 minutes to ensure fresh data
+          maxAge: 300000
+        }
+      }
+    },
+    payrolls: {
+      keyFields: ["id"],
+      fields: {
+        payroll_dates: {
+          merge(existing = [], incoming) {
+            return incoming;
           },
         },
       },
-      clients: {
-        keyFields: ["id"],
-      },
-      staff: {
-        keyFields: ["id"],
-      },
-      holidays: {
-        keyFields: ["date", "country_code"],
-      },
-      users: {
-        keyFields: ["id"],
+    },
+    clients: {
+      keyFields: ["id"],
+      fields: {
+        payrolls: {
+          merge(existing = [], incoming) {
+            return incoming;
+          },
+        },
       },
     },
+    staff: {
+      keyFields: ["id"],
+    },
+    holidays: {
+      keyFields: ["date", "country_code"],
+    }
+  }
+};
+
+// Create optimized cache instance
+const createCache = () => {
+  return new InMemoryCache({
+    ...defaultCacheConfig,
+    resultCaching: true,
+    canonizeResults: true
   });
 };
 
@@ -53,6 +71,7 @@ export const getServerApolloClient = async () => {
     uri: process.env.NEXT_PUBLIC_HASURA_GRAPHQL_URL,
     credentials: "include",
   });
+  console.log("Apollo Client GraphQL endpoint URI:", process.env.NEXT_PUBLIC_HASURA_GRAPHQL_URL);
 
   const serverRetryLink = new RetryLink({
     delay: {
@@ -132,6 +151,7 @@ export function useApolloClient() {
     uri: process.env.NEXT_PUBLIC_HASURA_GRAPHQL_URL,
     credentials: "include",
   });
+  console.log("Apollo Client GraphQL endpoint URI:", process.env.NEXT_PUBLIC_HASURA_GRAPHQL_URL);
 
   const clientRetryLink = new RetryLink({
     delay: {

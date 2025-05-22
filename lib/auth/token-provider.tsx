@@ -4,36 +4,54 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useAuth } from '@clerk/nextjs'
 
 interface TokenContextType {
-  token: string | null
+  token: string | null | undefined // undefined means "still loading"
   refreshToken: () => Promise<string | null>
   isRefreshing: boolean
   lastRefreshed: number | null
+  error: string | null
 }
 
 const TokenContext = createContext<TokenContextType | undefined>(undefined)
 
 // Configure how often a token can be refreshed at minimum
 const TOKEN_REFRESH_COOLDOWN = 30 * 1000 // 30 seconds
+// Maximum attempts to get a token
+const MAX_TOKEN_ATTEMPTS = 3
 
 export function TokenProvider({ children }: { children: ReactNode }) {
-  const { getToken, isSignedIn } = useAuth()
-  const [token, setToken] = useState<string | null>(null)
+  const { getToken, isSignedIn, isLoaded } = useAuth()
+  // Initially undefined (loading state)
+  const [token, setToken] = useState<string | null | undefined>(undefined)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [lastRefreshed, setLastRefreshed] = useState<number | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [tokenAttempts, setTokenAttempts] = useState(0)
 
   const refreshToken = async () => {
-    // Don't refresh too frequently
+    // Don't refresh too frequently or if max attempts reached
     if (isRefreshing) return token
+    if (tokenAttempts >= MAX_TOKEN_ATTEMPTS) {
+      console.warn('Maximum token refresh attempts reached, proceeding without token')
+      setToken(null) // Set to null explicitly to indicate "no token, but not loading"
+      return null
+    }
     
     const now = Date.now()
     if (lastRefreshed && now - lastRefreshed < TOKEN_REFRESH_COOLDOWN) {
       console.log('Token refresh on cooldown')
-      return token
+      return token || null
     }
     
     try {
       setIsRefreshing(true)
-      console.log('Refreshing token...')
+      setError(null)
+      console.log('Refreshing token, attempt:', tokenAttempts + 1)
+      
+      if (!isLoaded) {
+        console.log('Auth not loaded yet, waiting before token refresh')
+        // Don't increment attempts for auth not loaded
+        return token || null
+      }
       
       if (!isSignedIn) {
         console.warn('User is not signed in, cannot refresh token')
@@ -41,19 +59,31 @@ export function TokenProvider({ children }: { children: ReactNode }) {
         return null
       }
       
-      const newToken = await getToken({ template: 'hasura' })
+      // Set a timeout for token fetch
+      const tokenPromise = getToken({ template: 'hasura' })
+      const timeoutPromise = new Promise<null>((resolve) => {
+        setTimeout(() => resolve(null), 5000) // 5 second timeout
+      })
+      
+      // Race between token fetch and timeout
+      const newToken = await Promise.race([tokenPromise, timeoutPromise])
       
       if (!newToken) {
-        console.warn('Received null token from Clerk')
+        console.warn('Failed to get token (timeout or null returned)')
+        setTokenAttempts(prev => prev + 1)
       } else {
         console.log('Token refreshed successfully')
+        setTokenAttempts(0) // Reset attempts on success
       }
       
       setToken(newToken)
       setLastRefreshed(Date.now())
       return newToken
     } catch (error) {
-      console.error('Failed to refresh token:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error refreshing token'
+      console.error('Failed to refresh token:', errorMessage)
+      setError(errorMessage)
+      setTokenAttempts(prev => prev + 1)
       return null
     } finally {
       setIsRefreshing(false)
@@ -62,15 +92,27 @@ export function TokenProvider({ children }: { children: ReactNode }) {
 
   // Initialize the token on mount and when auth state changes
   useEffect(() => {
+    if (!isLoaded) return // Wait for auth to load
+    
+    // Set a timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (token === undefined) {
+        console.warn('Token initialization timed out, proceeding without token')
+        setToken(null)
+      }
+    }, 5000) // 5 second timeout
+    
     if (isSignedIn) {
       refreshToken()
     } else {
-      setToken(null)
+      setToken(null) // Not signed in, so no token
     }
-  }, [isSignedIn]) // Depend on auth state
+    
+    return () => clearTimeout(timeoutId)
+  }, [isSignedIn, isLoaded]) // Depend on auth state and loading
 
   return (
-    <TokenContext.Provider value={{ token, refreshToken, isRefreshing, lastRefreshed }}>
+    <TokenContext.Provider value={{ token, refreshToken, isRefreshing, lastRefreshed, error }}>
       {children}
     </TokenContext.Provider>
   )

@@ -6,22 +6,18 @@ export const GET_PAYROLLS_MISSING_DATES = gql`
   query GetPayrollsMissingDates($startDate: date!, $endDate: date!) {
     payrolls(
       where: {
-        status: { _eq: "Active" }
         _not: {
-          payroll_dates: { processing_date: { _gte: $startDate, _lte: $endDate } }
+          payroll_dates: {
+            original_eft_date: {
+              _gte: $startDate
+              _lte: $endDate
+            }
+          }
         }
+        status: { _eq: "Active" }
       }
     ) {
       ...PayrollFragment
-      payroll_cycle {
-        id
-        name
-        days
-      }
-      payroll_date_type {
-        id
-        name
-      }
     }
   }
   ${PAYROLL_FRAGMENT}

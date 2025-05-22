@@ -1,6 +1,6 @@
 import { useApolloClient } from "@apollo/client";
+import { toast } from "sonner"; // Using Sonner for toast notifications
 import { useCacheInvalidation } from "./useCacheInvalidation";
-import { toast } from "sonner";
 
 export function useDataRefresh() {
   const { invalidateEntity, refetchQuery, refetchQueries } = useCacheInvalidation();
@@ -24,23 +24,25 @@ export function useDataRefresh() {
         await invalidateEntity({ typename, id });
       }
       
-      // Then refetch any queries that need fresh data
+      // Then, refetch any specified queries
       if (queryNames.length > 0) {
-        await refetchQueries(queryNames, false);
+        await refetchQueries(queryNames);
       }
       
-      // Show success message if specified
+      // Show success toast if requested
       if (showToast && message) {
-        toast.success(message);
+        toast.success("Success", {
+          description: message
+        });
       }
-      
-      return true;
     } catch (error) {
       console.error("Error refreshing data:", error);
+      
       if (showToast) {
-        toast.error("Failed to refresh data");
+        toast.error("Error", {
+          description: "Failed to refresh data. Please try again."
+        });
       }
-      return false;
     }
   };
   

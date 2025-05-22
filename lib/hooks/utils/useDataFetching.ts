@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useErrorHandler } from '@/lib/utils/error-handling';
+import { useState, useCallback, useEffect } from 'react';
+import { toast } from 'sonner'; // Using Sonner for toast notifications
 
 interface FetchOptions extends RequestInit {
   skipError?: boolean;
@@ -16,42 +16,47 @@ export function useDataFetching<T>(url: string, options: FetchOptions = {}): Fet
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const { handleError } = useErrorHandler();
   const { skipError, ...fetchOptions } = options;
 
-  const fetchData = async (): Promise<T | null> => {
+  const fetchData = useCallback(async (): Promise<T | null> => {
     try {
       setLoading(true);
       setError(null);
-
+      
       const response = await fetch(url, fetchOptions);
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(
-          errorData?.error || `Request failed with status ${response.status}`
-        );
+        throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
       }
-
+      
       const result = await response.json();
       setData(result);
       return result;
     } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err));
-      setError(error);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(new Error(errorMessage));
       
       if (!skipError) {
-        handleError(error);
+        toast.error("Error fetching data", {
+          description: errorMessage
+        });
       }
+      
       return null;
     } finally {
       setLoading(false);
     }
-  };
+  }, [url, JSON.stringify(fetchOptions), skipError]);
 
+  // Initial fetch
   useEffect(() => {
     fetchData();
-  }, [url]);
+  }, [fetchData]);
 
-  return { data, loading, error, refetch: fetchData };
+  return {
+    data,
+    loading,
+    error,
+    refetch: fetchData
+  };
 }

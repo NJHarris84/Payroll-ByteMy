@@ -1,80 +1,43 @@
 import { gql } from "@apollo/client";
 
+/**
+ * Fragment containing core payroll fields
+ * Used in payroll queries and mutations
+ */
 export const PAYROLL_FRAGMENT = gql`
   fragment PayrollFragment on payrolls {
     id
     name
-    client {
-      id
-      name
-    }
+    client_id
+    payroll_cycle_id
+    payroll_date_type_id
+    specific_pay_day
+    pay_day_of_week
     status
-    notes
-    cycle_id
-    date_type_id
-    date_value
-    processing_days_before_eft
     created_at
     updated_at
   }
 `;
 
-export const PAYROLL_FIELDS_FRAGMENT = gql`
-  fragment PayrollFields on payrolls {
-    id
-    name
-    status
-    notes
-    cycle_id
-    date_type_id
-    date_value
-    processing_days_before_eft
-    updated_at
-  }
-`;
-
+/**
+ * Extended fragment containing payroll fields with related entities
+ * Used in detailed payroll queries
+ */
 export const PAYROLL_DETAIL_FRAGMENT = gql`
   fragment PayrollDetailFragment on payrolls {
-    id
-    name
-    client_id
+    ...PayrollFragment
     client {
       id
       name
     }
-    status
-    notes
-    cycle_id
     payroll_cycle {
       id
       name
     }
-    date_type_id
     payroll_date_type {
       id
       name
     }
-    date_value
-    processing_days_before_eft
-    primary_consultant_user_id
-    userByPrimaryConsultantUserId {
-      id
-      name
-      email
-    }
-    backup_consultant_user_id
-    userByBackupConsultantUserId {
-      id
-      name
-      email
-    }
-    manager_user_id
-    userByManagerUserId {
-      id
-      name
-      email
-    }
-    created_at
-    updated_at
   }
+  ${PAYROLL_FRAGMENT}
 `;

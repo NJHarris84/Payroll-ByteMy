@@ -5,8 +5,8 @@ export const GET_HOLIDAYS_BY_YEAR = gql`
   query GetHolidaysByYear($year: Int!) {
     holidays(
       where: {
-        date: { _gte: $year + "-01-01" }
-        _and: { date: { _lte: $year + "-12-31" } }
+        date: { _gte: { _concat: [$year, "-01-01"] } }
+        _and: { date: { _lte: { _concat: [$year, "-12-31"] } } }
       }
       order_by: { date: asc }
     ) {

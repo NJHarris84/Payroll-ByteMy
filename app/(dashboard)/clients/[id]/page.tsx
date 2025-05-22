@@ -13,14 +13,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { NotesListWithAdd } from "@/components/common/notes-list-with-add";
 import { useSmartPolling } from "@/lib/hooks";
-import { ClientPayrollsTable } from "@/components/client/client-payroll-table";
-import { GET_CLIENTS_BY_ID } from "@/lib/graphql/queries/clients/getClientById";
+import { ClientPayrollTable } from "@/components/client/client-payroll-table";
+import { GET_CLIENT_BY_ID } from "@/lib/graphql/queries/clients/getClientById";
 
 export default function ClientPage() {
   const params = useParams();
   const id = params?.id as string;
 
-  const { loading, error, data, refetch, startPolling, stopPolling } = useQuery(GET_CLIENTS_BY_ID, {
+  const { loading, error, data, refetch, startPolling, stopPolling } = useQuery(GET_CLIENT_BY_ID, {
     variables: { id },
     skip: !id,
     fetchPolicy: "cache-and-network",
@@ -139,7 +139,7 @@ export default function ClientPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ClientPayrollsTable 
+          <ClientPayrollTable 
             payrolls={client.payrolls || []} 
             isLoading={loading} 
           />

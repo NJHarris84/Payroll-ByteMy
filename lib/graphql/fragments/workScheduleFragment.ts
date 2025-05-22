@@ -1,5 +1,9 @@
 import { gql } from '@apollo/client';
 
+/**
+ * Fragment containing work schedule fields
+ * Used in work schedule queries and mutations
+ */
 export const WORK_SCHEDULE_FRAGMENT = gql`
   fragment WorkScheduleFragment on work_schedules {
     id

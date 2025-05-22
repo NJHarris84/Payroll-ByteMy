@@ -1,6 +1,5 @@
 // hooks/useCacheInvalidation.ts
-import { useApolloClient, Reference, DocumentNode } from '@apollo/client';
-import { toast } from 'sonner';
+import { DocumentNode, useApolloClient } from '@apollo/client';
 
 /**
  * Options for invalidating a specific entity
@@ -39,163 +38,65 @@ export function useCacheInvalidation() {
   const client = useApolloClient();
   
   /**
-   * Invalidate a specific entity by forcing a refetch
+   * Invalidate a specific entity in the cache
    */
-  const invalidateEntity = async ({typename, id}: EntityOptions) => {
-    try {
-      // First try to evict the entity directly from the cache
-      const success = client.cache.evict({ 
-        id: client.cache.identify({ __typename: typename, id }) 
-      });
-      
-      // Garbage collect any dangling references
-      client.cache.gc();
-      
-      if (!success) {
-        console.warn(`Failed to evict entity ${typename}:${id} from cache`);
-      }
-      
-      return success;
-    } catch (error) {
-      console.error(`Error invalidating ${typename}:${id}:`, error);
-      return false;
-    }
-  };
-  
-  /**
-   * Refetch a specific query, optionally notifying the user
-   */
-  const refetchQuery = async (
-    { query, variables }: QueryOptions, 
-    notifyUser = false
-  ) => {
-    try {
-      if (notifyUser) {
-        toast.info('Refreshing data...');
-      }
-      
-      const result = await client.refetchQueries({
-        include: [query],
-      });
-      
-      if (notifyUser && result.length > 0) {
-        toast.success('Data refreshed successfully');
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Error refetching query:', error);
-      
-      if (notifyUser) {
-        toast.error('Failed to refresh data');
-      }
-      
-      return false;
-    }
-  };
-  
-  /**
-   * Refetch multiple queries by their names, optionally notifying the user
-   */
-  const refetchQueries = async (
-    queryNames: string[],
-    notifyUser = false
-  ) => {
-    try {
-      if (notifyUser) {
-        toast.info('Refreshing data...');
-      }
-      
-      const result = await client.refetchQueries({
-        include: queryNames,
-      });
-      
-      if (notifyUser && result.length > 0) {
-        toast.success('Data refreshed successfully');
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Error refetching queries:', error);
-      
-      if (notifyUser) {
-        toast.error('Failed to refresh data');
-      }
-      
-      return false;
-    }
-  };
-  
-  /**
-   * Reset the entire cache (use with caution)
-   */
-  const resetCache = async (notifyUser = false) => {
-    try {
-      if (notifyUser) {
-        toast.info('Resetting data...');
-      }
-      
-      await client.resetStore();
-      
-      if (notifyUser) {
-        toast.success('Data reset successfully');
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Error resetting cache:', error);
-      
-      if (notifyUser) {
-        toast.error('Failed to reset data');
-      }
-      
-      return false;
-    }
-  };
-  
-  /**
-   * Force updates for a list of payroll IDs by evicting them from the cache
-   */
-  const refreshPayrolls = async (
-    payrollIds: string[],
-    showToast = false
-  ) => {
-    let success = true;
-    
-    if (showToast) {
-      toast.info('Refreshing payroll data...');
-    }
+  const invalidateEntity = ({ typename, id }: EntityOptions) => {
+    // Convert string ID to number if needed
+    const normalizedId = typeof id === 'string' && !isNaN(Number(id)) ? Number(id) : id;
     
     try {
-      // Evict each payroll from the cache
-      for (const id of payrollIds) {
-        const result = await invalidateEntity({
-          typename: 'payrolls',
-          id
-        });
-        
-        if (!result) success = false;
-      }
+      // This tells Apollo to refetch this entity next time it's requested
+      client.cache.evict({ id: `${typename}:${normalizedId}` });
+      client.cache.gc(); // Garbage collection to clean up unreachable references
       
-      // Refetch payroll queries to get fresh data
-      await refetchQueries([
-        'GET_PAYROLLS',
-        'GET_PAYROLLS_BY_MONTH',
-        'GET_PAYROLLS_MISSING_DATES'
-      ]);
-      
-      if (showToast) {
-        toast.success('Payroll data refreshed');
-      }
-      
-      return success;
+      return true;
     } catch (error) {
-      console.error('Error refreshing payrolls:', error);
+      console.error(`Error invalidating ${typename}:${normalizedId}`, error);
+      return false;
+    }
+  };
+  
+  /**
+   * Refetch a specific query
+   */
+  const refetchQuery = async ({ query, variables }: QueryOptions) => {
+    try {
+      const result = await client.refetchQueries({
+        include: [{ query, variables }]
+      });
       
-      if (showToast) {
-        toast.error('Failed to refresh payroll data');
-      }
+      return result;
+    } catch (error) {
+      console.error('Error refetching query', error);
+      throw error;
+    }
+  };
+  
+  /**
+   * Refetch multiple queries by their names
+   */
+  const refetchQueries = async (queryNames: string[]) => {
+    try {
+      const result = await client.refetchQueries({
+        include: queryNames
+      });
       
+      return result;
+    } catch (error) {
+      console.error('Error refetching queries', error);
+      throw error;
+    }
+  };
+  
+  /**
+   * Invalidate all queries in the cache (use with caution)
+   */
+  const invalidateAllQueries = () => {
+    try {
+      client.resetStore();
+      return true;
+    } catch (error) {
+      console.error('Error invalidating all queries', error);
       return false;
     }
   };
@@ -204,7 +105,6 @@ export function useCacheInvalidation() {
     invalidateEntity,
     refetchQuery,
     refetchQueries,
-    resetCache,
-    refreshPayrolls
+    invalidateAllQueries
   };
 }

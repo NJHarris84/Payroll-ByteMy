@@ -13,6 +13,7 @@ export * from "./layout";
 // Feature Components
 export * from "./client";
 export * from "./payroll";
+export * from "./upcoming-payrolls";
 
 // Dialog Components
 export * from "./dialogs";

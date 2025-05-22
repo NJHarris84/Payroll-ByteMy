@@ -30,7 +30,7 @@ const getMonthName = (date: Date): string => {
 }
 
 // Helper to generate calendar days
-const getDaysInMonth = (year: number, month: number): Date[] => {
+const generateMonthDays = (year: number, month: number): Date[] => {
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   return Array.from({ length: daysInMonth }, (_, i) => new Date(year, month, i + 1))
 }

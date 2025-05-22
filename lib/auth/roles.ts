@@ -63,6 +63,12 @@ export const appRoles: AppRole[] = [
   }
 ];
 
+// Role checker functions
+export const isAdmin = (role: HasuraRole): boolean => role === "admin" || role === "org_admin";
+export const isManager = (role: HasuraRole): boolean => role === "manager";
+export const isConsultant = (role: HasuraRole): boolean => role === "consultant";
+export const isViewer = (role: HasuraRole): boolean => role === "viewer";
+
 // Helper function to check if a role has a specific permission
 export function hasPermission(role: HasuraRole, permission: Permission): boolean {
   return rolePermissions[role]?.includes(permission) || false;

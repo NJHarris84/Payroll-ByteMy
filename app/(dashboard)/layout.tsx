@@ -3,7 +3,7 @@
 
 import type React from "react"
 import { Sidebar } from "@/components/layout/sidebar"
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "sonner"
 import { ClientWrapper } from "@/components/layout/client-wrapper"
 import { DashboardShell } from "@/components/layout/dashboard-shell"
 import { ThemeToggle } from "@/components/layout/theme-toggle"
