@@ -3,7 +3,7 @@
 
 import { useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { useUserRole } from "@/hooks/useUserRole";
+import { useUserRole } from "@/lib/hooks/api/useUserRole";
 import {
   Card,
   CardContent,
@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { GET_PAYROLLS_MISSING_DATES } from "@/lib/graphql/queries/payrolls/getPayrollsMissingDates";
 import { GENERATE_PAYROLL_DATES } from "@/lib/graphql/mutations/payrolls/generatePayrollDates";
-import { useSmartPolling } from "@/hooks/usePolling";
+import { useSmartPolling } from "@/lib/hooks/api/usePolling";
 
 interface PayrollWithDateCount {
   id: string;

@@ -1,14 +1,44 @@
 // API Hooks
 export * from './api/useApolloQuery';
-export * from './api/useClient'; // Adding missing client hook
+
+// Import from useClient with renamed functions to avoid conflicts
+export { 
+  useClientsListBasic,
+  useClientByIdBasic,
+  useCreateClientBasic,
+  useUpdateClientBasic,
+  useDeleteClient
+} from './api/useClient';
+
+// Import all from useClientQueries
 export * from './api/useClientQueries';
+
 export * from './api/useLeave';
-export * from './api/usePayroll'; // Adding missing payroll hook
+
+// Import from usePayroll with renamed functions to avoid conflicts
+export { 
+  usePayrollList,
+  usePayrollSchedule, 
+  useUserPayrolls, 
+  useCreatePayrollBasic,
+  useUpdatePayrollBasic,
+  useUpdatePayrollStatus
+} from './api/usePayroll';
+
+// Import all from usePayrollQueries
 export * from './api/usePayrollQueries';
+
 export * from './api/usePolledQuery';
 export * from './api/usePolling';
 export * from './api/useStaff';
 export * from './api/useUserRole';
+
+// API Hooks Continued
+export * from './api/useUsers';
+export * from './api/useWorkSchedule';
+export * from './api/useStatistics';
+export * from './api/useDashboard';
+export * from './api/useExternalSystems';
 
 // UI Hooks
 export * from './ui/useDisclosure';

@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { usePolledQuery } from '@/lib/hooks/api/usePolledQuery';
+import { usePolledQuery } from "@/lib/hooks/api/usePolledQuery";
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client';
 import { toast } from 'sonner';

@@ -1,0 +1,2647 @@
+{
+  "resource_version": 227,
+  "metadata": {
+    "version": 3,
+    "sources": [
+      {
+        "name": "default",
+        "kind": "postgres",
+        "tables": [
+          {
+            "table": {
+              "name": "accounts",
+              "schema": "public"
+            },
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "adjustment_rules",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "payroll_cycle",
+                "using": {
+                  "foreign_key_constraint_on": "cycle_id"
+                }
+              },
+              {
+                "name": "payroll_date_type",
+                "using": {
+                  "foreign_key_constraint_on": "date_type_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "cycle_id",
+                    "date_type_id",
+                    "rule_description",
+                    "rule_code",
+                    "created_at",
+                    "updated_at"
+                  ]
+                },
+                "comment": "Org admins can insert adjustment rules, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "cycle_id",
+                    "date_type_id",
+                    "rule_code",
+                    "rule_description"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view adjustment rules, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "cycle_id",
+                    "date_type_id",
+                    "rule_code",
+                    "rule_description",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view and aggregate adjustment rules, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "cycle_id",
+                    "date_type_id",
+                    "rule_code",
+                    "rule_description",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org admins have full view access to adjustment rules, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "rule_code",
+                    "rule_description"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view basic adjustment rule information, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "rule_code",
+                    "rule_description",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org admins can update adjustment rules, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org admins can delete adjustment rules, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "app_settings",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "client_external_systems",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "client",
+                "using": {
+                  "foreign_key_constraint_on": "client_id"
+                }
+              },
+              {
+                "name": "external_system",
+                "using": {
+                  "foreign_key_constraint_on": "system_id"
+                }
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "clients",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "client_external_systems",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "client_id",
+                    "table": {
+                      "name": "client_external_systems",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "payrolls",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "client_id",
+                    "table": {
+                      "name": "payrolls",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "name",
+                    "contact_person",
+                    "contact_email",
+                    "contact_phone",
+                    "active"
+                  ]
+                },
+                "comment": "Managers can create clients, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "name",
+                    "contact_person",
+                    "contact_email",
+                    "contact_phone",
+                    "active",
+                    "created_at",
+                    "updated_at"
+                  ]
+                },
+                "comment": "Org admins can create clients with full control, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "contact_person",
+                    "contact_email",
+                    "contact_phone",
+                    "active"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view clients, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "contact_person",
+                    "contact_email",
+                    "contact_phone",
+                    "active",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view and aggregate clients, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "contact_person",
+                    "contact_email",
+                    "contact_phone",
+                    "active",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org admins have full view access to clients, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "active"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can see basic client information, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "contact_email",
+                    "contact_phone"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Consultants can update client contact info, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "contact_person",
+                    "contact_email",
+                    "contact_phone",
+                    "active",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Managers can update clients, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "contact_person",
+                    "contact_email",
+                    "contact_phone",
+                    "active",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org admins can update clients with full control, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org admins can delete clients, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "external_systems",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "client_external_systems",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "system_id",
+                    "table": {
+                      "name": "client_external_systems",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "feature_flags",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "holidays",
+              "schema": "public"
+            },
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "leave",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "user_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "user_id"
+                  ]
+                },
+                "comment": "Consultants can insert leave, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "user_id",
+                    "status"
+                  ]
+                },
+                "comment": "Managers can insert leave, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "status"
+                  ]
+                },
+                "comment": "Org Admins can insert leave, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "user_id"
+                  ]
+                },
+                "comment": "Viewers can insert leave requests, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "status"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view leave, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "status"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view leave, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "status"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view leave, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "start_date",
+                    "end_date",
+                    "leave_type"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view leave information, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Consultants can update leave, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "status"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Managers can update leave, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "status",
+                    "user_id"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org Admins can update leave, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org Admins can delete leave, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "notes",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "entity_type",
+                    "entity_id",
+                    "content",
+                    "is_important",
+                    "user_id"
+                  ]
+                },
+                "comment": "Consultants can insert notes, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "entity_type",
+                    "entity_id",
+                    "content",
+                    "is_important",
+                    "user_id"
+                  ]
+                },
+                "comment": "Managers can insert notes, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important",
+                    "created_at",
+                    "updated_at"
+                  ]
+                },
+                "comment": "Org Admins can insert notes, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "entity_type",
+                    "entity_id",
+                    "content",
+                    "user_id"
+                  ]
+                },
+                "comment": "Viewers can insert basic notes, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "created_at",
+                    "entity_id",
+                    "entity_type",
+                    "id",
+                    "updated_at",
+                    "user_id"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Consultants can view notes, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view notes, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view notes, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important",
+                    "created_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view notes, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "is_important",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Consultants can update notes, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "entity_type",
+                    "is_important",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Managers can update notes, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "entity_type",
+                    "is_important",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org Admins can update notes, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "content"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Viewers can update note content, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can delete notes, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Managers can delete notes, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org Admins can delete notes, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "payroll_cycles",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "adjustment_rules",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "cycle_id",
+                    "table": {
+                      "name": "adjustment_rules",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "payrolls",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "cycle_id",
+                    "table": {
+                      "name": "payrolls",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "payroll_date_types",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "adjustment_rules",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "date_type_id",
+                    "table": {
+                      "name": "adjustment_rules",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "payrolls",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "date_type_id",
+                    "table": {
+                      "name": "payrolls",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "name",
+                    "description",
+                    "created_at",
+                    "updated_at"
+                  ]
+                },
+                "comment": "Org Admins can insert payroll date types, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "description"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view payroll date types, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "description",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view payroll date types, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "description",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view payroll date types, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "description"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view payroll date types, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "description",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org Admins can update payroll date types, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org Admins can delete payroll date types, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "payroll_dates",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "payroll",
+                "using": {
+                  "foreign_key_constraint_on": "payroll_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "payroll_id",
+                    "original_eft_date",
+                    "adjusted_eft_date",
+                    "processing_date",
+                    "notes"
+                  ]
+                },
+                "comment": "Managers can insert payroll dates, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "payroll_id",
+                    "original_eft_date",
+                    "adjusted_eft_date",
+                    "processing_date",
+                    "notes",
+                    "created_at",
+                    "updated_at"
+                  ]
+                },
+                "comment": "Org Admins can insert payroll dates, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "payroll_id",
+                    "original_eft_date",
+                    "adjusted_eft_date",
+                    "processing_date",
+                    "notes"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view payroll dates, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "payroll_id",
+                    "original_eft_date",
+                    "adjusted_eft_date",
+                    "processing_date",
+                    "notes",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view payroll dates, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "payroll_id",
+                    "original_eft_date",
+                    "adjusted_eft_date",
+                    "processing_date",
+                    "notes",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view payroll dates, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "payroll_id",
+                    "adjusted_eft_date",
+                    "processing_date"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view basic payroll date information, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "notes"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Consultants can update payroll date notes, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "original_eft_date",
+                    "adjusted_eft_date",
+                    "processing_date",
+                    "notes",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Managers can update payroll dates, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "original_eft_date",
+                    "adjusted_eft_date",
+                    "processing_date",
+                    "notes",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org Admins can update payroll dates, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org Admins can delete payroll dates, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "payrolls",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "client",
+                "using": {
+                  "foreign_key_constraint_on": "client_id"
+                }
+              },
+              {
+                "name": "payroll_cycle",
+                "using": {
+                  "foreign_key_constraint_on": "cycle_id"
+                }
+              },
+              {
+                "name": "payroll_date_type",
+                "using": {
+                  "foreign_key_constraint_on": "date_type_id"
+                }
+              },
+              {
+                "name": "userByBackupConsultantUserId",
+                "using": {
+                  "foreign_key_constraint_on": "backup_consultant_user_id"
+                }
+              },
+              {
+                "name": "userByManagerUserId",
+                "using": {
+                  "foreign_key_constraint_on": "manager_user_id"
+                }
+              },
+              {
+                "name": "userByPrimaryConsultantUserId",
+                "using": {
+                  "foreign_key_constraint_on": "primary_consultant_user_id"
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "payroll_dates",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "payroll_id",
+                    "table": {
+                      "name": "payroll_dates",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "name",
+                    "client_id",
+                    "cycle_id",
+                    "date_type_id",
+                    "date_value",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id",
+                    "manager_user_id",
+                    "processing_days_before_eft",
+                    "status",
+                    "payroll_system"
+                  ]
+                },
+                "comment": "Managers can insert payrolls, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "name",
+                    "client_id",
+                    "cycle_id",
+                    "date_type_id",
+                    "date_value",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id",
+                    "manager_user_id",
+                    "processing_days_before_eft",
+                    "status",
+                    "payroll_system",
+                    "created_at",
+                    "updated_at"
+                  ]
+                },
+                "comment": "Org Admins can insert payrolls, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "client_id",
+                    "cycle_id",
+                    "date_type_id",
+                    "date_value",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id",
+                    "manager_user_id",
+                    "processing_days_before_eft",
+                    "status",
+                    "payroll_system"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view payrolls, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "client_id",
+                    "cycle_id",
+                    "date_type_id",
+                    "date_value",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id",
+                    "manager_user_id",
+                    "processing_days_before_eft",
+                    "status",
+                    "payroll_system",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view payrolls, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "client_id",
+                    "cycle_id",
+                    "date_type_id",
+                    "date_value",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id",
+                    "manager_user_id",
+                    "processing_days_before_eft",
+                    "status",
+                    "payroll_system",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view payrolls, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "client_id",
+                    "status",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view basic payroll information, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "status"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Consultants can update payroll status, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "client_id",
+                    "cycle_id",
+                    "date_type_id",
+                    "date_value",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id",
+                    "manager_user_id",
+                    "processing_days_before_eft",
+                    "status",
+                    "payroll_system",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Managers can update payrolls, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "client_id",
+                    "cycle_id",
+                    "date_type_id",
+                    "date_value",
+                    "primary_consultant_user_id",
+                    "backup_consultant_user_id",
+                    "manager_user_id",
+                    "processing_days_before_eft",
+                    "status",
+                    "payroll_system",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org Admins can update payrolls, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org Admins can delete payrolls, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "sessions",
+              "schema": "public"
+            },
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "users",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "manager",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "manager_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "users",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "staffByManager",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "id": "manager_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "users",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "leaves",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "user_id",
+                    "table": {
+                      "name": "leave",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "payrollsByBackupConsultantUserId",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "backup_consultant_user_id",
+                    "table": {
+                      "name": "payrolls",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "payrollsByManagerUserId",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "manager_user_id",
+                    "table": {
+                      "name": "payrolls",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "payrollsByPrimaryConsultantUserId",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "primary_consultant_user_id",
+                    "table": {
+                      "name": "payrolls",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "usersManager",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "manager_id",
+                    "table": {
+                      "name": "users",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "work_schedules",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "user_id",
+                    "table": {
+                      "name": "work_schedule",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "name",
+                    "email",
+                    "username",
+                    "role"
+                  ]
+                },
+                "comment": "Managers can create users, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "email",
+                    "image",
+                    "name",
+                    "username"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view users, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "created_at",
+                    "email",
+                    "id",
+                    "image",
+                    "name",
+                    "role",
+                    "updated_at",
+                    "username"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view users, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "created_at",
+                    "email",
+                    "id",
+                    "image",
+                    "name",
+                    "role",
+                    "updated_at",
+                    "username"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view users, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "image",
+                    "name"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view basic user information, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "email",
+                    "image",
+                    "name",
+                    "username"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Consultants can update user information, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "email",
+                    "image",
+                    "name",
+                    "username"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Managers can update user information, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org Admins can delete users, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "verification_token",
+              "schema": "public"
+            },
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          },
+          {
+            "table": {
+              "name": "work_schedule",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "user_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id"
+                  ]
+                },
+                "comment": "Consultants can insert their work schedule, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id"
+                  ]
+                },
+                "comment": "Managers can insert work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "work_day",
+                    "work_hours",
+                    "created_at",
+                    "updated_at"
+                  ]
+                },
+                "comment": "Org Admins can insert work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id"
+                  ]
+                },
+                "comment": "Viewers can insert their work schedule, frontend handles restrictions"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "work_day",
+                    "work_hours"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can view work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "work_day",
+                    "work_hours",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "work_day",
+                    "work_hours",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "work_day",
+                    "work_hours"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Viewers can view work schedules, frontend handles restrictions"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "work_day",
+                    "work_hours"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Consultants can update work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "work_day",
+                    "work_hours"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Managers can update work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Org Admins can update work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "work_day",
+                    "work_hours"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  },
+                  "check": {}
+                },
+                "comment": "Viewers can update their work schedules, frontend handles restrictions"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Consultants can delete work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Managers can delete work schedules, frontend handles restrictions"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {
+                    "_or": [
+                      {
+                        "id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": "Org Admins can delete work schedules, frontend handles restrictions"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "function": {
+              "name": "generate_payroll_dates",
+              "schema": "public"
+            },
+            "configuration": {
+              "custom_name": "GeneratePayrollDates",
+              "custom_root_fields": {
+                "function": "generatePayrollDates"
+              },
+              "exposed_as": "mutation"
+            },
+            "permissions": [
+              {
+                "role": "org_admin"
+              }
+            ]
+          }
+        ],
+        "configuration": {
+          "connection_info": {
+            "database_url": "postgresql://neondb_owner:npg_WavFRZ1lEx4U@ep-black-sunset-a7wbc0zq-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require",
+            "isolation_level": "read-committed",
+            "use_prepared_statements": false
+          }
+        }
+      }
+    ]
+  }
+}

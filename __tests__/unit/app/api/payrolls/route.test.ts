@@ -1,7 +1,7 @@
 import { GET, POST } from '@/app/api/payrolls/route';
 import { NextRequest } from 'next/server';
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/db';
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 
 // Mock auth
 jest.mock('@/lib/auth', () => ({

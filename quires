@@ -1,0 +1,1119 @@
+# Complete GraphQL Operations for All Database Entities
+
+## 1. Accounts
+
+### Fragment
+```typescript
+// lib/graphql/fragments/accountFragment.ts
+import { gql } from '@apollo/client';
+
+export const ACCOUNT_FRAGMENT = gql`
+  fragment AccountFragment on accounts {
+    id
+    userId
+    type
+    provider
+    providerAccountId
+    refresh_token
+    access_token
+    expires_at
+    id_token
+    scope
+    session_state
+    token_type
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/accounts/getAccounts.ts
+import { gql } from '@apollo/client';
+import { ACCOUNT_FRAGMENT } from '../../fragments/accountFragment';
+
+export const GET_ACCOUNTS = gql`
+  query GetAccounts {
+    accounts {
+      ...AccountFragment
+    }
+  }
+  ${ACCOUNT_FRAGMENT}
+`;
+
+export const GET_ACCOUNT_BY_USER_ID = gql`
+  query GetAccountByUserId($userId: uuid!) {
+    accounts(where: { userId: { _eq: $userId } }) {
+      ...AccountFragment
+    }
+  }
+  ${ACCOUNT_FRAGMENT}
+`;
+```
+
+## 2. Adjustment Rules
+
+### Fragment
+```typescript
+// lib/graphql/fragments/adjustmentRuleFragment.ts
+import { gql } from '@apollo/client';
+
+export const ADJUSTMENT_RULE_FRAGMENT = gql`
+  fragment AdjustmentRuleFragment on adjustment_rules {
+    id
+    cycle_id
+    date_type_id
+    rule_description
+    rule_code
+    created_at
+    updated_at
+    payroll_cycle {
+      id
+      name
+      description
+    }
+    payroll_date_type {
+      id
+      name
+      description
+    }
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/adjustmentRules/getAdjustmentRules.ts
+import { gql } from '@apollo/client';
+import { ADJUSTMENT_RULE_FRAGMENT } from '../../fragments/adjustmentRuleFragment';
+
+export const GET_ADJUSTMENT_RULES = gql`
+  query GetAdjustmentRules {
+    adjustment_rules(order_by: { created_at: desc }) {
+      ...AdjustmentRuleFragment
+    }
+  }
+  ${ADJUSTMENT_RULE_FRAGMENT}
+`;
+
+export const GET_ADJUSTMENT_RULE_BY_CYCLE_AND_TYPE = gql`
+  query GetAdjustmentRuleByCycleAndType($cycleId: uuid!, $dateTypeId: uuid!) {
+    adjustment_rules(
+      where: {
+        cycle_id: { _eq: $cycleId }
+        date_type_id: { _eq: $dateTypeId }
+      }
+    ) {
+      ...AdjustmentRuleFragment
+    }
+  }
+  ${ADJUSTMENT_RULE_FRAGMENT}
+`;
+```
+
+### Mutations
+```typescript
+// lib/graphql/mutations/adjustmentRules/createAdjustmentRule.ts
+import { gql } from '@apollo/client';
+import { ADJUSTMENT_RULE_FRAGMENT } from '../../fragments/adjustmentRuleFragment';
+
+export const CREATE_ADJUSTMENT_RULE = gql`
+  mutation CreateAdjustmentRule($input: adjustment_rules_insert_input!) {
+    insert_adjustment_rules_one(object: $input) {
+      ...AdjustmentRuleFragment
+    }
+  }
+  ${ADJUSTMENT_RULE_FRAGMENT}
+`;
+
+// lib/graphql/mutations/adjustmentRules/updateAdjustmentRule.ts
+export const UPDATE_ADJUSTMENT_RULE = gql`
+  mutation UpdateAdjustmentRule($id: uuid!, $input: adjustment_rules_set_input!) {
+    update_adjustment_rules_by_pk(pk_columns: { id: $id }, _set: $input) {
+      ...AdjustmentRuleFragment
+    }
+  }
+  ${ADJUSTMENT_RULE_FRAGMENT}
+`;
+
+// lib/graphql/mutations/adjustmentRules/deleteAdjustmentRule.ts
+export const DELETE_ADJUSTMENT_RULE = gql`
+  mutation DeleteAdjustmentRule($id: uuid!) {
+    delete_adjustment_rules_by_pk(id: $id) {
+      ...AdjustmentRuleFragment
+    }
+  }
+  ${ADJUSTMENT_RULE_FRAGMENT}
+`;
+```
+
+## 3. App Settings
+
+### Fragment
+```typescript
+// lib/graphql/fragments/appSettingsFragment.ts
+import { gql } from '@apollo/client';
+
+export const APP_SETTINGS_FRAGMENT = gql`
+  fragment AppSettingsFragment on app_settings {
+    id
+    key
+    value
+    description
+    created_at
+    updated_at
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/appSettings/getAppSettings.ts
+import { gql } from '@apollo/client';
+import { APP_SETTINGS_FRAGMENT } from '../../fragments/appSettingsFragment';
+
+export const GET_APP_SETTINGS = gql`
+  query GetAppSettings {
+    app_settings {
+      ...AppSettingsFragment
+    }
+  }
+  ${APP_SETTINGS_FRAGMENT}
+`;
+
+export const GET_APP_SETTING_BY_KEY = gql`
+  query GetAppSettingByKey($key: String!) {
+    app_settings(where: { key: { _eq: $key } }) {
+      ...AppSettingsFragment
+    }
+  }
+  ${APP_SETTINGS_FRAGMENT}
+`;
+```
+
+## 4. Client External Systems
+
+### Fragment
+```typescript
+// lib/graphql/fragments/clientExternalSystemFragment.ts
+import { gql } from '@apollo/client';
+
+export const CLIENT_EXTERNAL_SYSTEM_FRAGMENT = gql`
+  fragment ClientExternalSystemFragment on client_external_systems {
+    id
+    client_id
+    system_id
+    system_client_id
+    created_at
+    updated_at
+    client {
+      id
+      name
+    }
+    external_system {
+      id
+      name
+      url
+      description
+      icon
+    }
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/clientExternalSystems/getClientExternalSystems.ts
+import { gql } from '@apollo/client';
+import { CLIENT_EXTERNAL_SYSTEM_FRAGMENT } from '../../fragments/clientExternalSystemFragment';
+
+export const GET_CLIENT_EXTERNAL_SYSTEMS = gql`
+  query GetClientExternalSystems($clientId: uuid!) {
+    client_external_systems(where: { client_id: { _eq: $clientId } }) {
+      ...ClientExternalSystemFragment
+    }
+  }
+  ${CLIENT_EXTERNAL_SYSTEM_FRAGMENT}
+`;
+```
+
+### Mutations
+```typescript
+// lib/graphql/mutations/clientExternalSystems/createClientExternalSystem.ts
+import { gql } from '@apollo/client';
+import { CLIENT_EXTERNAL_SYSTEM_FRAGMENT } from '../../fragments/clientExternalSystemFragment';
+
+export const CREATE_CLIENT_EXTERNAL_SYSTEM = gql`
+  mutation CreateClientExternalSystem($input: client_external_systems_insert_input!) {
+    insert_client_external_systems_one(object: $input) {
+      ...ClientExternalSystemFragment
+    }
+  }
+  ${CLIENT_EXTERNAL_SYSTEM_FRAGMENT}
+`;
+
+// lib/graphql/mutations/clientExternalSystems/deleteClientExternalSystem.ts
+export const DELETE_CLIENT_EXTERNAL_SYSTEM = gql`
+  mutation DeleteClientExternalSystem($id: uuid!) {
+    delete_client_external_systems_by_pk(id: $id) {
+      ...ClientExternalSystemFragment
+    }
+  }
+  ${CLIENT_EXTERNAL_SYSTEM_FRAGMENT}
+`;
+```
+
+## 5. External Systems
+
+### Fragment
+```typescript
+// lib/graphql/fragments/externalSystemFragment.ts
+import { gql } from '@apollo/client';
+
+export const EXTERNAL_SYSTEM_FRAGMENT = gql`
+  fragment ExternalSystemFragment on external_systems {
+    id
+    name
+    url
+    description
+    icon
+    created_at
+    updated_at
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/externalSystems/getExternalSystems.ts
+import { gql } from '@apollo/client';
+import { EXTERNAL_SYSTEM_FRAGMENT } from '../../fragments/externalSystemFragment';
+
+export const GET_EXTERNAL_SYSTEMS = gql`
+  query GetExternalSystems {
+    external_systems(order_by: { name: asc }) {
+      ...ExternalSystemFragment
+      client_external_systems {
+        id
+        client_id
+        system_client_id
+      }
+    }
+  }
+  ${EXTERNAL_SYSTEM_FRAGMENT}
+`;
+```
+
+## 6. Feature Flags
+
+### Fragment
+```typescript
+// lib/graphql/fragments/featureFlagFragment.ts
+import { gql } from '@apollo/client';
+
+export const FEATURE_FLAG_FRAGMENT = gql`
+  fragment FeatureFlagFragment on feature_flags {
+    id
+    name
+    enabled
+    description
+    created_at
+    updated_at
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/featureFlags/getFeatureFlags.ts
+import { gql } from '@apollo/client';
+import { FEATURE_FLAG_FRAGMENT } from '../../fragments/featureFlagFragment';
+
+export const GET_FEATURE_FLAGS = gql`
+  query GetFeatureFlags {
+    feature_flags {
+      ...FeatureFlagFragment
+    }
+  }
+  ${FEATURE_FLAG_FRAGMENT}
+`;
+
+export const GET_FEATURE_FLAG_BY_NAME = gql`
+  query GetFeatureFlagByName($name: String!) {
+    feature_flags(where: { name: { _eq: $name } }) {
+      ...FeatureFlagFragment
+    }
+  }
+  ${FEATURE_FLAG_FRAGMENT}
+`;
+```
+
+## 7. Holidays (Update existing)
+
+### Updated Fragment
+```typescript
+// lib/graphql/fragments/holidayFragment.ts
+import { gql } from '@apollo/client';
+
+export const HOLIDAY_FRAGMENT = gql`
+  fragment HolidayFragment on holidays {
+    id
+    date
+    local_name
+    name
+    country_code
+    region
+    is_fixed
+    is_global
+    launch_year
+    types
+    created_at
+    updated_at
+  }
+`;
+```
+
+### Additional Queries
+```typescript
+// lib/graphql/queries/holidays/getHolidaysByCountry.ts
+export const GET_HOLIDAYS_BY_COUNTRY = gql`
+  query GetHolidaysByCountry($countryCode: bpchar!, $startDate: date!, $endDate: date!) {
+    holidays(
+      where: {
+        country_code: { _eq: $countryCode }
+        date: { _gte: $startDate, _lte: $endDate }
+      }
+      order_by: { date: asc }
+    ) {
+      ...HolidayFragment
+    }
+  }
+  ${HOLIDAY_FRAGMENT}
+`;
+```
+
+## 8. Leave (Update existing)
+
+### Updated Fragment
+```typescript
+// lib/graphql/fragments/leaveFragment.ts
+import { gql } from '@apollo/client';
+
+export const LEAVE_FRAGMENT = gql`
+  fragment LeaveFragment on leave {
+    id
+    user_id
+    start_date
+    end_date
+    leave_type
+    status
+    reason
+    user {
+      id
+      name
+      email
+    }
+  }
+`;
+```
+
+### Additional Mutations
+```typescript
+// lib/graphql/mutations/leave/deleteLeave.ts
+export const DELETE_LEAVE = gql`
+  mutation DeleteLeave($id: uuid!) {
+    delete_leave_by_pk(id: $id) {
+      ...LeaveFragment
+    }
+  }
+  ${LEAVE_FRAGMENT}
+`;
+```
+
+## 9. Notes (Update existing)
+
+### Updated Fragment
+```typescript
+// lib/graphql/fragments/noteFragment.ts
+import { gql } from '@apollo/client';
+
+export const NOTE_FRAGMENT = gql`
+  fragment NoteFragment on notes {
+    id
+    entity_type
+    entity_id
+    user_id
+    content
+    is_important
+    created_at
+    updated_at
+    user {
+      id
+      name
+      email
+    }
+  }
+`;
+```
+
+### Additional Mutations
+```typescript
+// lib/graphql/mutations/notes/deleteNote.ts
+export const DELETE_NOTE = gql`
+  mutation DeleteNote($id: uuid!) {
+    delete_notes_by_pk(id: $id) {
+      ...NoteFragment
+    }
+  }
+  ${NOTE_FRAGMENT}
+`;
+```
+
+## 10. Payroll Cycles
+
+### Fragment
+```typescript
+// lib/graphql/fragments/payrollCycleFragment.ts
+import { gql } from '@apollo/client';
+
+export const PAYROLL_CYCLE_FRAGMENT = gql`
+  fragment PayrollCycleFragment on payroll_cycles {
+    id
+    name
+    description
+    created_at
+    updated_at
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/payrollCycles/getPayrollCycles.ts
+import { gql } from '@apollo/client';
+import { PAYROLL_CYCLE_FRAGMENT } from '../../fragments/payrollCycleFragment';
+
+export const GET_PAYROLL_CYCLES = gql`
+  query GetPayrollCycles {
+    payroll_cycles(order_by: { name: asc }) {
+      ...PayrollCycleFragment
+      adjustment_rules {
+        id
+        date_type_id
+        rule_code
+        rule_description
+      }
+      payrolls_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+  ${PAYROLL_CYCLE_FRAGMENT}
+`;
+```
+
+## 11. Payroll Date Types
+
+### Fragment
+```typescript
+// lib/graphql/fragments/payrollDateTypeFragment.ts
+import { gql } from '@apollo/client';
+
+export const PAYROLL_DATE_TYPE_FRAGMENT = gql`
+  fragment PayrollDateTypeFragment on payroll_date_types {
+    id
+    name
+    description
+    created_at
+    updated_at
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/payrollDateTypes/getPayrollDateTypes.ts
+import { gql } from '@apollo/client';
+import { PAYROLL_DATE_TYPE_FRAGMENT } from '../../fragments/payrollDateTypeFragment';
+
+export const GET_PAYROLL_DATE_TYPES = gql`
+  query GetPayrollDateTypes {
+    payroll_date_types(order_by: { name: asc }) {
+      ...PayrollDateTypeFragment
+      adjustment_rules {
+        id
+        cycle_id
+        rule_code
+        rule_description
+      }
+      payrolls_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+  ${PAYROLL_DATE_TYPE_FRAGMENT}
+`;
+```
+
+### Mutations
+```typescript
+// lib/graphql/mutations/payrollDateTypes/createPayrollDateType.ts
+export const CREATE_PAYROLL_DATE_TYPE = gql`
+  mutation CreatePayrollDateType($input: payroll_date_types_insert_input!) {
+    insert_payroll_date_types_one(object: $input) {
+      ...PayrollDateTypeFragment
+    }
+  }
+  ${PAYROLL_DATE_TYPE_FRAGMENT}
+`;
+
+// lib/graphql/mutations/payrollDateTypes/updatePayrollDateType.ts
+export const UPDATE_PAYROLL_DATE_TYPE = gql`
+  mutation UpdatePayrollDateType($id: uuid!, $input: payroll_date_types_set_input!) {
+    update_payroll_date_types_by_pk(pk_columns: { id: $id }, _set: $input) {
+      ...PayrollDateTypeFragment
+    }
+  }
+  ${PAYROLL_DATE_TYPE_FRAGMENT}
+`;
+
+// lib/graphql/mutations/payrollDateTypes/deletePayrollDateType.ts
+export const DELETE_PAYROLL_DATE_TYPE = gql`
+  mutation DeletePayrollDateType($id: uuid!) {
+    delete_payroll_date_types_by_pk(id: $id) {
+      ...PayrollDateTypeFragment
+    }
+  }
+  ${PAYROLL_DATE_TYPE_FRAGMENT}
+`;
+```
+
+## 12. Payrolls (Update existing)
+
+### Updated Fragment
+```typescript
+// lib/graphql/fragments/payrollFragment.ts
+import { gql } from '@apollo/client';
+
+export const PAYROLL_FRAGMENT = gql`
+  fragment PayrollFragment on payrolls {
+    id
+    name
+    client_id
+    cycle_id
+    date_type_id
+    date_value
+    primary_consultant_user_id
+    backup_consultant_user_id
+    manager_user_id
+    processing_days_before_eft
+    status
+    payroll_system
+    processing_time
+    employee_count
+    created_at
+    updated_at
+  }
+`;
+
+export const PAYROLL_DETAIL_FRAGMENT = gql`
+  fragment PayrollDetailFragment on payrolls {
+    ...PayrollFragment
+    client {
+      id
+      name
+      contact_person
+      contact_email
+      contact_phone
+      active
+    }
+    payroll_cycle {
+      id
+      name
+      description
+    }
+    payroll_date_type {
+      id
+      name
+      description
+    }
+    userByPrimaryConsultantUserId {
+      id
+      name
+      email
+      role
+    }
+    userByBackupConsultantUserId {
+      id
+      name
+      email
+      role
+    }
+    userByManagerUserId {
+      id
+      name
+      email
+      role
+    }
+  }
+  ${PAYROLL_FRAGMENT}
+`;
+```
+
+### Additional Queries
+```typescript
+// lib/graphql/queries/payrolls/getPayrollsByStatus.ts
+export const GET_PAYROLLS_BY_STATUS = gql`
+  query GetPayrollsByStatus($status: payroll_status!) {
+    payrolls(where: { status: { _eq: $status } }, order_by: { name: asc }) {
+      ...PayrollDetailFragment
+      payroll_dates_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+  ${PAYROLL_DETAIL_FRAGMENT}
+`;
+
+// lib/graphql/queries/payrolls/getPayrollsByConsultant.ts
+export const GET_PAYROLLS_BY_CONSULTANT = gql`
+  query GetPayrollsByConsultant($userId: uuid!) {
+    payrolls(
+      where: {
+        _or: [
+          { primary_consultant_user_id: { _eq: $userId } }
+          { backup_consultant_user_id: { _eq: $userId } }
+        ]
+      }
+      order_by: { name: asc }
+    ) {
+      ...PayrollDetailFragment
+    }
+  }
+  ${PAYROLL_DETAIL_FRAGMENT}
+`;
+
+// lib/graphql/queries/payrolls/getPayrollsByManager.ts
+export const GET_PAYROLLS_BY_MANAGER = gql`
+  query GetPayrollsByManager($userId: uuid!) {
+    payrolls(
+      where: { manager_user_id: { _eq: $userId } }
+      order_by: { name: asc }
+    ) {
+      ...PayrollDetailFragment
+    }
+  }
+  ${PAYROLL_DETAIL_FRAGMENT}
+`;
+```
+
+### Function Mutation
+```typescript
+// lib/graphql/mutations/payrolls/generatePayrollDatesFunction.ts
+export const GENERATE_PAYROLL_DATES_FUNCTION = gql`
+  mutation GeneratePayrollDatesFunction(
+    $payrollId: uuid!
+    $startDate: date
+    $endDate: date
+    $maxDates: Int
+  ) {
+    generatePayrollDates(
+      args: {
+        p_payroll_id: $payrollId
+        p_start_date: $startDate
+        p_end_date: $endDate
+        p_max_dates: $maxDates
+      }
+    ) {
+      id
+      payroll_id
+      original_eft_date
+      adjusted_eft_date
+      processing_date
+      notes
+      created_at
+      updated_at
+    }
+  }
+`;
+```
+
+## 13. Sessions
+
+### Fragment
+```typescript
+// lib/graphql/fragments/sessionFragment.ts
+import { gql } from '@apollo/client';
+
+export const SESSION_FRAGMENT = gql`
+  fragment SessionFragment on sessions {
+    id
+    userId
+    expires
+    sessionToken
+  }
+`;
+```
+
+### Queries
+```typescript
+// lib/graphql/queries/sessions/getSessions.ts
+import { gql } from '@apollo/client';
+import { SESSION_FRAGMENT } from '../../fragments/sessionFragment';
+
+export const GET_USER_SESSIONS = gql`
+  query GetUserSessions($userId: Int!) {
+    sessions(where: { userId: { _eq: $userId } }) {
+      ...SessionFragment
+    }
+  }
+  ${SESSION_FRAGMENT}
+`;
+```
+
+## 14. Users (Update existing staff fragments)
+
+### Additional Queries
+```typescript
+// lib/graphql/queries/users/getUserByClerkId.ts
+export const GET_USER_BY_CLERK_ID = gql`
+  query GetUserByClerkId($clerkUserId: String!) {
+    users(where: { clerk_user_id: { _eq: $clerkUserId } }) {
+      ...StaffFragment
+      leaves {
+        id
+        start_date
+        end_date
+        leave_type
+        status
+      }
+      work_schedules {
+        id
+        work_day
+        work_hours
+      }
+    }
+  }
+  ${STAFF_FRAGMENT}
+`;
+
+// lib/graphql/queries/users/getUsersByManager.ts
+export const GET_USERS_BY_MANAGER = gql`
+  query GetUsersByManager($managerId: uuid!) {
+    users(where: { manager_id: { _eq: $managerId } }) {
+      ...StaffFragment
+      leaves_aggregate(where: { status: { _eq: "Pending" } }) {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+  ${STAFF_FRAGMENT}
+`;
+```
+
+## 15. Verification Token
+
+### Fragment
+```typescript
+// lib/graphql/fragments/verificationTokenFragment.ts
+import { gql } from '@apollo/client';
+
+export const VERIFICATION_TOKEN_FRAGMENT = gql`
+  fragment VerificationTokenFragment on verification_token {
+    identifier
+    expires
+    token
+  }
+`;
+```
+
+## 16. Work Schedule (Update existing)
+
+### Updated Fragment
+```typescript
+// lib/graphql/fragments/workScheduleFragment.ts
+import { gql } from '@apollo/client';
+
+export const WORK_SCHEDULE_FRAGMENT = gql`
+  fragment WorkScheduleFragment on work_schedule {
+    id
+    user_id
+    work_day
+    work_hours
+    created_at
+    updated_at
+    user {
+      id
+      name
+      email
+    }
+  }
+`;
+```
+
+### Additional Mutations
+```typescript
+// lib/graphql/mutations/workSchedule/updateWorkSchedule.ts
+export const UPDATE_WORK_SCHEDULE = gql`
+  mutation UpdateWorkSchedule($id: uuid!, $input: work_schedule_set_input!) {
+    update_work_schedule_by_pk(pk_columns: { id: $id }, _set: $input) {
+      ...WorkScheduleFragment
+    }
+  }
+  ${WORK_SCHEDULE_FRAGMENT}
+`;
+
+// lib/graphql/mutations/workSchedule/deleteWorkSchedule.ts
+export const DELETE_WORK_SCHEDULE = gql`
+  mutation DeleteWorkSchedule($id: uuid!) {
+    delete_work_schedule_by_pk(id: $id) {
+      ...WorkScheduleFragment
+    }
+  }
+  ${WORK_SCHEDULE_FRAGMENT}
+`;
+
+// lib/graphql/mutations/workSchedule/upsertWorkSchedule.ts
+export const UPSERT_WORK_SCHEDULE = gql`
+  mutation UpsertWorkSchedule($input: work_schedule_insert_input!) {
+    insert_work_schedule_one(
+      object: $input
+      on_conflict: {
+        constraint: unique_user_work_day
+        update_columns: [work_hours, updated_at]
+      }
+    ) {
+      ...WorkScheduleFragment
+    }
+  }
+  ${WORK_SCHEDULE_FRAGMENT}
+`;
+```
+
+## 17. Aggregate Queries
+
+### Payroll Statistics
+```typescript
+// lib/graphql/queries/statistics/getPayrollStatistics.ts
+export const GET_PAYROLL_STATISTICS = gql`
+  query GetPayrollStatistics {
+    payrolls_aggregate {
+      aggregate {
+        count
+      }
+      nodes {
+        status
+      }
+    }
+    active_payrolls: payrolls_aggregate(where: { status: { _eq: "Active" } }) {
+      aggregate {
+        count
+      }
+    }
+    implementation_payrolls: payrolls_aggregate(where: { status: { _eq: "Implementation" } }) {
+      aggregate {
+        count
+      }
+    }
+    inactive_payrolls: payrolls_aggregate(where: { status: { _eq: "Inactive" } }) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+```
+
+### Client Statistics
+```typescript
+// lib/graphql/queries/statistics/getClientStatistics.ts
+export const GET_CLIENT_STATISTICS = gql`
+  query GetClientStatistics {
+    clients_aggregate {
+      aggregate {
+        count
+      }
+    }
+    active_clients: clients_aggregate(where: { active: { _eq: true } }) {
+      aggregate {
+        count
+      }
+    }
+    clients_with_payrolls: clients_aggregate(where: { payrolls: {} }) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+```
+
+### Leave Statistics
+```typescript
+// lib/graphql/queries/statistics/getLeaveStatistics.ts
+export const GET_LEAVE_STATISTICS = gql`
+  query GetLeaveStatistics($startDate: date!, $endDate: date!) {
+    leave_aggregate(
+      where: {
+        start_date: { _gte: $startDate }
+        end_date: { _lte: $endDate }
+      }
+    ) {
+      aggregate {
+        count
+      }
+      nodes {
+        leave_type
+        status
+      }
+    }
+  }
+`;
+```
+
+## 18. Complex Queries
+
+### Dashboard Query
+```typescript
+// lib/graphql/queries/dashboard/getDashboardData.ts
+export const GET_DASHBOARD_DATA = gql`
+  query GetDashboardData($userId: uuid!, $startDate: date!, $endDate: date!) {
+    # User's payrolls
+    user_payrolls: payrolls(
+      where: {
+        _or: [
+          { primary_consultant_user_id: { _eq: $userId } }
+          { backup_consultant_user_id: { _eq: $userId } }
+          { manager_user_id: { _eq: $userId } }
+        ]
+      }
+    ) {
+      id
+      name
+      status
+      client {
+        id
+        name
+      }
+      payroll_dates(
+        where: {
+          processing_date: { _gte: $startDate, _lte: $endDate }
+        }
+        order_by: { processing_date: asc }
+        limit: 5
+      ) {
+        id
+        processing_date
+        adjusted_eft_date
+      }
+    }
+    
+    # Upcoming holidays
+    upcoming_holidays: holidays(
+      where: {
+        date: { _gte: $startDate, _lte: $endDate }
+        country_code: { _eq: "AU" }
+      }
+      order_by: { date: asc }
+      limit: 5
+    ) {
+      id
+      date
+      name
+      is_global
+    }
+    
+    # Leave requests
+    pending_leave: leave_aggregate(
+      where: {
+        status: { _eq: "Pending" }
+        start_date: { _gte: $startDate }
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+    
+    # Statistics
+    total_clients: clients_aggregate(where: { active: { _eq: true } }) {
+      aggregate {
+        count
+      }
+    }
+    
+    total_payrolls: payrolls_aggregate(where: { status: { _eq: "Active" } }) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+```
+
+## Update Index Files
+
+### Update lib/graphql/fragments/index.ts
+```typescript
+// Add new exports
+export * from './accountFragment';
+export * from './adjustmentRuleFragment';
+export * from './appSettingsFragment';
+export * from './clientExternalSystemFragment';
+export * from './externalSystemFragment';
+export * from './featureFlagFragment';
+export * from './payrollCycleFragment';
+export * from './payrollDateTypeFragment';
+export * from './sessionFragment';
+export * from './verificationTokenFragment';
+```
+
+### Update lib/graphql/queries/index.ts
+```typescript
+// Add new exports
+export * from './accounts/getAccounts';
+export * from './adjustmentRules/getAdjustmentRules';
+export * from './appSettings/getAppSettings';
+export * from './clientExternalSystems/getClientExternalSystems';
+export * from './externalSystems/getExternalSystems';
+export * from './featureFlags/getFeatureFlags';
+export * from './payrollCycles/getPayrollCycles';
+export * from './payrollDateTypes/getPayrollDateTypes';
+export * from './sessions/getSessions';
+export * from './statistics/getPayrollStatistics';
+export * from './statistics/getClientStatistics';
+export * from './statistics/getLeaveStatistics';
+export * from './dashboard/getDashboardData';
+export * from './users/getUserByClerkId';
+export * from './users/getUsersByManager';
+export * from './payrolls/getPayrollsByStatus';
+export * from './payrolls/getPayrollsByConsultant';
+export * from './payrolls/getPayrollsByManager';
+export * from './holidays/getHolidaysByCountry';
+```
+
+### Update lib/graphql/mutations/index.ts
+```typescript
+// Add new exports
+export * from './adjustmentRules/createAdjustmentRule';
+export * from './adjustmentRules/updateAdjustmentRule';
+export * from './adjustmentRules/deleteAdjustmentRule';
+export * from './clientExternalSystems/createClientExternalSystem';
+export * from './clientExternalSystems/deleteClientExternalSystem';
+export * from './leave/deleteLeave';
+export * from './notes/deleteNote';
+export * from './payrollDateTypes/createPayrollDateType';
+export * from './payrollDateTypes/updatePayrollDateType';
+export * from './payrollDateTypes/deletePayrollDateType';
+export * from './payrolls/generatePayrollDatesFunction';
+export * from './workSchedule/updateWorkSchedule';
+export * from './workSchedule/deleteWorkSchedule';
+export * from './workSchedule/upsertWorkSchedule';
+```

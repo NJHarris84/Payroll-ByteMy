@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { apolloClient } from '@/lib/api/apollo-client'; // Import your Apollo client
+import { apolloClient } from "@/lib/api/apollo-client"; // Import your Apollo client
 
 interface UseSmartPollingOptions {
   interval?: number;

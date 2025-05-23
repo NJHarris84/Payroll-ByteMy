@@ -5,7 +5,7 @@ import {
   getDateByDayOfWeek,
   getStartOfMonthDate,
   getEndOfMonthDate
-} from '@/lib/utils/date-utils';
+} from "@/lib/utils/date-utils";
 
 // Mock holidays for testing
 const mockHolidays = [

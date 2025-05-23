@@ -1,5 +1,5 @@
-import { fetchHolidays, syncHolidaysToDatabase } from '@/lib/services/holiday-sync-service';
-import { prisma } from '@/lib/db';
+import { fetchHolidays, syncHolidaysToDatabase } from "@/lib/services/holiday-sync-service";
+import { prisma } from "@/lib/db";
 
 // Mock the prisma client
 jest.mock('@/lib/db', () => ({

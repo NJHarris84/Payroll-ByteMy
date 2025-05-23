@@ -1,7 +1,6 @@
 import { Payroll, PayrollStatus } from '@/types/interface';
 import { useQuery, useMutation } from '@apollo/client';
 import { 
-  GET_PAYROLLS_WITH_CLIENTS, 
   GET_PAYROLL_SCHEDULE,
   GET_USER_PAYROLLS,
   INSERT_PAYROLL,
@@ -35,11 +34,13 @@ export function useUserPayrolls(options = {}) {
   });
 }
 
-export function useCreatePayroll() {
+// Renamed to avoid conflicts with usePayrollQueries
+export function useCreatePayrollBasic() {
   return useMutation(INSERT_PAYROLL);
 }
 
-export function useUpdatePayroll() {
+// Renamed to avoid conflicts with usePayrollQueries
+export function useUpdatePayrollBasic() {
   return useMutation(UPDATE_PAYROLL);
 }
 

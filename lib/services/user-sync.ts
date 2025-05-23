@@ -1,7 +1,7 @@
 // lib/user-sync.ts
 import { clerkClient } from "@clerk/express";
 import { gql } from "@apollo/client";
-import { adminApolloClient } from '@/lib/api/apollo-client';
+import { adminApolloClient } from "@/lib/api/apollo-client";
 import { STAFF_FRAGMENT } from '../graphql/fragments/staffFragment';
 
 // Query to find a user by Clerk ID

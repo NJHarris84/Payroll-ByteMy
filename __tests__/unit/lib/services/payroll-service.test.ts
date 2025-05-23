@@ -1,4 +1,4 @@
-import { calculateNetPay, calculateTax, generatePayrollDates } from '@/lib/services/payroll-service';
+import { calculateNetPay, calculateTax, generatePayrollDates } from "@/lib/services/payroll-service";
 import { PayrollDateType, PayrollCycle } from '@/types/interface';
 import { addDays, format } from 'date-fns';
 

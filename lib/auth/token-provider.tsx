@@ -20,7 +20,6 @@ const MAX_TOKEN_ATTEMPTS = 3
 
 export function TokenProvider({ children }: { children: ReactNode }) {
   const { getToken, isSignedIn, isLoaded } = useAuth()
-  // Initially undefined (loading state)
   const [token, setToken] = useState<string | null | undefined>(undefined)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [lastRefreshed, setLastRefreshed] = useState<number | null>(null)
@@ -32,14 +31,14 @@ export function TokenProvider({ children }: { children: ReactNode }) {
     if (isRefreshing) return token
     if (tokenAttempts >= MAX_TOKEN_ATTEMPTS) {
       console.warn('Maximum token refresh attempts reached, proceeding without token')
-      setToken(null) // Set to null explicitly to indicate "no token, but not loading"
+      setToken(null)
       return null
     }
     
     const now = Date.now()
     if (lastRefreshed && now - lastRefreshed < TOKEN_REFRESH_COOLDOWN) {
-      console.log('Token refresh on cooldown')
-      return token || null
+      // Return existing token if within cooldown period
+      return token
     }
     
     try {
@@ -49,7 +48,6 @@ export function TokenProvider({ children }: { children: ReactNode }) {
       
       if (!isLoaded) {
         console.log('Auth not loaded yet, waiting before token refresh')
-        // Don't increment attempts for auth not loaded
         return token || null
       }
       
@@ -71,14 +69,17 @@ export function TokenProvider({ children }: { children: ReactNode }) {
       if (!newToken) {
         console.warn('Failed to get token (timeout or null returned)')
         setTokenAttempts(prev => prev + 1)
-      } else {
-        console.log('Token refreshed successfully')
-        setTokenAttempts(0) // Reset attempts on success
+        setToken(null)
+        return null
       }
-      
-      setToken(newToken)
+
+      // Store token without Bearer prefix
+      const tokenValue = newToken.startsWith('Bearer ') ? newToken.slice(7) : newToken
+      console.log('Token refreshed successfully')
+      setTokenAttempts(0) // Reset attempts on success
+      setToken(tokenValue)
       setLastRefreshed(Date.now())
-      return newToken
+      return tokenValue
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error refreshing token'
       console.error('Failed to refresh token:', errorMessage)
@@ -130,8 +131,11 @@ export function isTokenExpiringSoon(token: string | null): boolean {
   if (!token) return true
   
   try {
+    // Remove Bearer prefix if present
+    const tokenWithoutBearer = token.startsWith('Bearer ') ? token.slice(7) : token
+    
     // JWT tokens are in format: header.payload.signature
-    const parts = token.split('.')
+    const parts = tokenWithoutBearer.split('.')
     if (parts.length !== 3) {
       console.warn('Token does not appear to be a valid JWT - wrong number of parts')
       return true

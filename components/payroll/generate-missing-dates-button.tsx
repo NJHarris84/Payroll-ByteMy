@@ -4,10 +4,10 @@ import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { format, addMonths } from 'date-fns';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
-import { GET_PAYROLLS_MISSING_DATES } from '@/lib/graphql/queries/payrolls/getPayrollsMissingDates';
-import { GENERATE_PAYROLL_DATES } from '@/lib/graphql/mutations/payrolls/generatePayrollDates';
+import { GET_PAYROLLS_MISSING_DATES } from "@/lib/graphql/queries";
+import { GENERATE_PAYROLL_DATES } from "@/lib/graphql/mutations";
 
 interface GenerateMissingDatesButtonProps {
   payrollIds: string[];

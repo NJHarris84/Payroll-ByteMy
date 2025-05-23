@@ -9,8 +9,8 @@ export const PAYROLL_FRAGMENT = gql`
     id
     name
     client_id
-    payroll_cycle_id
-    payroll_date_type_id
+    cycle_id
+    date_type_id
     specific_pay_day
     pay_day_of_week
     status

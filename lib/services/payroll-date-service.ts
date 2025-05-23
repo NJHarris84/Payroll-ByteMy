@@ -1,9 +1,9 @@
 // lib/payroll-date-service.ts
-import { db } from '@/lib/db"
+import { db } from "@/lib/db";
 import { adjustment_rules, holidays, payrolls, payroll_dates } from "@/drizzle/schema"
 import { eq, and, gte, lte, or } from "drizzle-orm"
 import { addMonths } from "date-fns"
-import { calculatePayrollDates } from '@/lib/utils/date-utils';
+import { calculatePayrollDates } from "@/lib/utils/date-utils";
 
 /**
  * Ensures payroll dates are calculated and stored for the given period

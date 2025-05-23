@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useApolloQuery } from '@/lib/hooks/api/useApolloQuery';
+import { useApolloQuery } from "@/lib/hooks/api/useApolloQuery";
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client';
 import { toast } from 'sonner';

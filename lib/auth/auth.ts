@@ -1,7 +1,7 @@
 // lib/auth.ts
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
-import { HasuraRole, Permission, hasPermission } from '@/lib/auth/roles';
+import { HasuraRole, Permission, hasPermission } from "@/lib/auth/roles";
 
 // Check if a user has a specific Hasura role (server-side)
 export async function verifyHasuraRole(allowedRoles: HasuraRole[]): Promise<boolean> {

@@ -1,5 +1,5 @@
 // types/globals.d.ts
-import { HasuraRole } from '@/lib/auth/roles';
+import { HasuraRole } from "@/lib/auth/roles";
 
 declare module '@clerk/nextjs/server' {
   interface AuthObject {

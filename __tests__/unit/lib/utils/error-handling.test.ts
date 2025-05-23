@@ -4,7 +4,7 @@ import {
   ErrorType, 
   getUserFriendlyErrorMessage, 
   handleApiError 
-} from '@/lib/utils/error-handling';
+} from "@/lib/utils/error-handling";
 import { toast } from 'sonner';
 
 // Mock toast

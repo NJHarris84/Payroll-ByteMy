@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { useRouter } from 'next/navigation';
-import { GET_PAYROLLS } from '@/lib/graphql/queries/payrolls/getPayrolls';
-import { CREATE_PAYROLL } from '@/lib/graphql/mutations/payrolls/createPayroll';
-import { GET_CLIENTS_LIST } from '@/lib/graphql/queries/clients/getClientsList';
+import { GET_PAYROLLS } from "@/lib/graphql/queries/payrolls/getPayrolls";
+import { CREATE_PAYROLL } from "@/lib/graphql/mutations/payrolls/createPayroll";
+import { GET_CLIENTS_LIST } from "@/lib/graphql/queries/clients/getClientsList";
 import PayrollPage from '@/app/(dashboard)/payrolls/page';
 import { toast } from 'sonner';
 

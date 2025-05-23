@@ -6,9 +6,10 @@ import { ApolloProvider, ApolloClient, HttpLink, from, InMemoryCache, Normalized
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 import { Observable } from '@apollo/client'
-import { TokenProvider, useToken, isTokenExpiringSoon } from '@/lib/auth/token-provider'
-import { TokenRefreshHandler } from '@/lib/auth/token-refresh-handler'
+import { TokenProvider, useToken, isTokenExpiringSoon } from "@/lib/auth/token-provider"
+import { TokenRefreshHandler } from "@/lib/auth/token-refresh-handler"
 import { useAuth } from '@clerk/nextjs'
+import { RetryLink } from '@apollo/client/link/retry';
 
 // Define ErrorHandler type to fix TypeScript errors
 type ErrorHandler = ReturnType<typeof onError>;
@@ -45,6 +46,17 @@ function ApolloClientProvider({ children }: { children: ReactNode }) {
       
       // Auth middleware that checks token before each operation
       const authMiddleware = setContext(async (_, { headers }) => {
+        // Format authorization header helper function
+        const formatAuthHeader = (tokenStr: string | null) => {
+          if (!tokenStr) return ''
+          // Normalize token by removing any existing Bearer prefix
+          const cleanToken = tokenStr.startsWith('Bearer ') ? tokenStr.slice(7) : tokenStr
+          const header = `Bearer ${cleanToken}`
+          // Log header for debugging (redact token)
+          console.debug('Authorization header:', 'Bearer [redacted]')
+          return header
+        }
+
         // If token exists and is expiring soon, try to refresh it
         if (!isRefreshing && token && isTokenExpiringSoon(token)) {
           try {
@@ -54,7 +66,7 @@ function ApolloClientProvider({ children }: { children: ReactNode }) {
             return {
               headers: {
                 ...headers,
-                authorization: newToken ? `Bearer ${newToken}` : '',
+                authorization: formatAuthHeader(newToken),
               },
             }
           } catch (e) {
@@ -66,7 +78,7 @@ function ApolloClientProvider({ children }: { children: ReactNode }) {
         return {
           headers: {
             ...headers,
-            authorization: token ? `Bearer ${token}` : '',
+            authorization: formatAuthHeader(token),
           },
         }
       })
@@ -78,65 +90,56 @@ function ApolloClientProvider({ children }: { children: ReactNode }) {
           graphQLErrors.forEach(({ message, locations, path, extensions }) => {
             console.error(
               `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-              extensions
+              {
+                extensions,
+                operationName: operation.operationName,
+                variables: operation.variables,
+                context: operation.getContext()
+              }
             )
           })
         }
         
-        // Handle authentication errors
-        const hasAuthError = graphQLErrors?.some(err => 
-          err.extensions?.code === 'invalid-jwt' || 
-          err.message.toLowerCase().includes('jwt') || 
-          err.message.toLowerCase().includes('token')
-        )
-        
-        if (hasAuthError) {
-          console.log('Token error detected in GraphQL response')
-          
-          return new Observable(observer => {
-            // If already refreshing, wait before retrying
-            if (isRefreshing) {
-              setTimeout(() => {
-                forward(operation).subscribe({
-                  next: observer.next.bind(observer),
-                  error: observer.error.bind(observer),
-                  complete: observer.complete.bind(observer),
-                })
-              }, 1000)
-              return
-            }
-            
-            // Refresh token and retry
-            refreshToken()
-              .then(newToken => {
-                // Update the authorization header with new token
-                const oldHeaders = operation.getContext().headers || {}
-                operation.setContext({
-                  headers: {
-                    ...oldHeaders,
-                    authorization: newToken ? `Bearer ${newToken}` : '',
-                  },
-                })
-                
-                // Retry the request
-                forward(operation).subscribe({
-                  next: observer.next.bind(observer),
-                  error: observer.error.bind(observer),
-                  complete: observer.complete.bind(observer),
-                })
-              })
-              .catch(error => {
-                console.error('Failed to refresh token in error handler:', error)
-                observer.error(error)
-              })
-          })
-        }
-
         if (networkError) {
-          console.error(`[Network error]: ${networkError}`)
+          console.error(`[Network error]: ${networkError}`, {
+            operationName: operation.operationName,
+            headers: operation.getContext().headers,
+            uri: operation.getContext().uri
+          })
+          
+          // Log specific CORS-related errors
+          if ('statusCode' in networkError && networkError.statusCode === 0) {
+            console.error('Possible CORS or network connectivity issue detected')
+            console.debug('Request details:', {
+              uri: process.env.NEXT_PUBLIC_HASURA_GRAPHQL_URL,
+              headers: operation.getContext().headers
+            })
+          }
         }
-        
-        return undefined
+      })
+
+      // Retry link for handling network issues
+      const retryLink = new RetryLink({
+        delay: {
+          initial: 300,
+          max: 3000,
+          jitter: true
+        },
+        attempts: {
+          max: 3,
+          retryIf: (error, _operation) => {
+            // Retry on network errors and specific GraphQL errors
+            if (error?.message?.includes('Failed to fetch') || error?.statusCode === 0) {
+              console.debug('Retrying due to network/CORS error:', error)
+              return true
+            }
+            if (error?.message?.includes('JWT')) {
+              console.debug('Retrying due to JWT/auth error:', error)
+              return true
+            }
+            return false
+          }
+        }
       })
 
       // Create HTTP link with proper error handling
@@ -147,11 +150,15 @@ function ApolloClientProvider({ children }: { children: ReactNode }) {
           mode: 'cors',
           credentials: 'include',
         },
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
       })
 
       // Create Apollo Client with enhanced configuration
       const apolloClient = new ApolloClient({
-        link: from([errorLink, authMiddleware, httpLink]),
+        link: from([errorLink, retryLink, authMiddleware, httpLink]),
         cache: new InMemoryCache({
           typePolicies: {
             Query: {

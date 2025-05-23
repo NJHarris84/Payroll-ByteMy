@@ -1,0 +1,898 @@
+# Complete Custom Hooks for All Database Entities
+
+## 1. Accounts Hooks
+
+```typescript
+// lib/hooks/api/useAccounts.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { 
+  GET_ACCOUNTS,
+  GET_ACCOUNT_BY_USER_ID
+} from '@/lib/graphql/queries/accounts/getAccounts';
+
+export function useAccounts(options = {}) {
+  return useQuery(GET_ACCOUNTS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useAccountByUserId(userId: string, options = {}) {
+  return useQuery(GET_ACCOUNT_BY_USER_ID, {
+    variables: { userId },
+    skip: !userId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+```
+
+## 2. Adjustment Rules Hooks
+
+```typescript
+// lib/hooks/api/useAdjustmentRules.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { 
+  GET_ADJUSTMENT_RULES,
+  GET_ADJUSTMENT_RULE_BY_CYCLE_AND_TYPE
+} from '@/lib/graphql/queries/adjustmentRules/getAdjustmentRules';
+import {
+  CREATE_ADJUSTMENT_RULE,
+  UPDATE_ADJUSTMENT_RULE,
+  DELETE_ADJUSTMENT_RULE
+} from '@/lib/graphql/mutations';
+
+export function useAdjustmentRules(options = {}) {
+  return useQuery(GET_ADJUSTMENT_RULES, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useAdjustmentRuleByCycleAndType(cycleId: string, dateTypeId: string, options = {}) {
+  return useQuery(GET_ADJUSTMENT_RULE_BY_CYCLE_AND_TYPE, {
+    variables: { cycleId, dateTypeId },
+    skip: !cycleId || !dateTypeId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useCreateAdjustmentRule() {
+  return useMutation(CREATE_ADJUSTMENT_RULE, {
+    refetchQueries: [{ query: GET_ADJUSTMENT_RULES }]
+  });
+}
+
+export function useUpdateAdjustmentRule() {
+  return useMutation(UPDATE_ADJUSTMENT_RULE);
+}
+
+export function useDeleteAdjustmentRule() {
+  return useMutation(DELETE_ADJUSTMENT_RULE, {
+    refetchQueries: [{ query: GET_ADJUSTMENT_RULES }]
+  });
+}
+```
+
+## 3. App Settings Hooks
+
+```typescript
+// lib/hooks/api/useAppSettings.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { 
+  GET_APP_SETTINGS,
+  GET_APP_SETTING_BY_KEY
+} from '@/lib/graphql/queries/appSettings/getAppSettings';
+
+export function useAppSettings(options = {}) {
+  return useQuery(GET_APP_SETTINGS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useAppSettingByKey(key: string, options = {}) {
+  return useQuery(GET_APP_SETTING_BY_KEY, {
+    variables: { key },
+    skip: !key,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-first',
+    ...options
+  });
+}
+
+// Helper hook to get a specific setting value
+export function useAppSettingValue(key: string, defaultValue?: any) {
+  const { data, loading, error } = useAppSettingByKey(key);
+  
+  const value = data?.app_settings?.[0]?.value;
+  
+  return {
+    value: value ? JSON.parse(value) : defaultValue,
+    loading,
+    error
+  };
+}
+```
+
+## 4. Client External Systems Hooks
+
+```typescript
+// lib/hooks/api/useClientExternalSystems.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_CLIENT_EXTERNAL_SYSTEMS } from '@/lib/graphql/queries/clientExternalSystems/getClientExternalSystems';
+import {
+  CREATE_CLIENT_EXTERNAL_SYSTEM,
+  DELETE_CLIENT_EXTERNAL_SYSTEM
+} from '@/lib/graphql/mutations';
+
+export function useClientExternalSystems(clientId: string, options = {}) {
+  return useQuery(GET_CLIENT_EXTERNAL_SYSTEMS, {
+    variables: { clientId },
+    skip: !clientId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useCreateClientExternalSystem() {
+  return useMutation(CREATE_CLIENT_EXTERNAL_SYSTEM, {
+    update(cache, { data }) {
+      // Update cache after creation
+      if (data?.insert_client_external_systems_one) {
+        const clientId = data.insert_client_external_systems_one.client_id;
+        const existing = cache.readQuery({
+          query: GET_CLIENT_EXTERNAL_SYSTEMS,
+          variables: { clientId }
+        });
+        
+        if (existing) {
+          cache.writeQuery({
+            query: GET_CLIENT_EXTERNAL_SYSTEMS,
+            variables: { clientId },
+            data: {
+              client_external_systems: [
+                ...existing.client_external_systems,
+                data.insert_client_external_systems_one
+              ]
+            }
+          });
+        }
+      }
+    }
+  });
+}
+
+export function useDeleteClientExternalSystem() {
+  return useMutation(DELETE_CLIENT_EXTERNAL_SYSTEM);
+}
+```
+
+## 5. External Systems Hooks
+
+```typescript
+// lib/hooks/api/useExternalSystems.ts
+import { useQuery } from '@apollo/client';
+import { GET_EXTERNAL_SYSTEMS } from '@/lib/graphql/queries/externalSystems/getExternalSystems';
+
+export function useExternalSystems(options = {}) {
+  return useQuery(GET_EXTERNAL_SYSTEMS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+```
+
+## 6. Feature Flags Hooks
+
+```typescript
+// lib/hooks/api/useFeatureFlags.ts
+import { useQuery } from '@apollo/client';
+import { 
+  GET_FEATURE_FLAGS,
+  GET_FEATURE_FLAG_BY_NAME
+} from '@/lib/graphql/queries/featureFlags/getFeatureFlags';
+
+export function useFeatureFlags(options = {}) {
+  return useQuery(GET_FEATURE_FLAGS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useFeatureFlag(name: string, options = {}) {
+  const { data, loading, error } = useQuery(GET_FEATURE_FLAG_BY_NAME, {
+    variables: { name },
+    skip: !name,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-first',
+    ...options
+  });
+  
+  return {
+    enabled: data?.feature_flags?.[0]?.enabled ?? false,
+    loading,
+    error
+  };
+}
+
+// Helper hook for feature flag checking
+export function useIsFeatureEnabled(flagName: string): boolean {
+  const { enabled } = useFeatureFlag(flagName);
+  return enabled;
+}
+```
+
+## 7. Holidays Hooks (Extended)
+
+```typescript
+// lib/hooks/api/useHolidays.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { 
+  GET_HOLIDAYS,
+  GET_HOLIDAYS_BY_YEAR,
+  GET_HOLIDAYS_BY_COUNTRY
+} from '@/lib/graphql/queries';
+import { SYNC_HOLIDAYS } from '@/lib/graphql/mutations';
+
+export function useHolidays(options = {}) {
+  return useQuery(GET_HOLIDAYS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useHolidaysByYear(year: number, options = {}) {
+  return useQuery(GET_HOLIDAYS_BY_YEAR, {
+    variables: { year },
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useHolidaysByCountry(countryCode: string, startDate: string, endDate: string, options = {}) {
+  return useQuery(GET_HOLIDAYS_BY_COUNTRY, {
+    variables: { countryCode, startDate, endDate },
+    skip: !countryCode || !startDate || !endDate,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useSyncHolidays() {
+  return useMutation(SYNC_HOLIDAYS);
+}
+
+// Helper hook to get holidays for current year in Australia
+export function useAustralianHolidays() {
+  const currentYear = new Date().getFullYear();
+  const startDate = `${currentYear}-01-01`;
+  const endDate = `${currentYear}-12-31`;
+  
+  return useHolidaysByCountry('AU', startDate, endDate);
+}
+```
+
+## 8. Leave Hooks (Extended)
+
+```typescript
+// lib/hooks/api/useLeave.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_LEAVE } from '@/lib/graphql/queries/leave/getLeave';
+import { 
+  CREATE_LEAVE,
+  UPDATE_LEAVE,
+  DELETE_LEAVE
+} from '@/lib/graphql/mutations';
+
+export function useLeave(staffId?: string, startDate?: string, endDate?: string, options = {}) {
+  return useQuery(GET_LEAVE, {
+    variables: { staffId, startDate, endDate },
+    skip: !staffId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useCreateLeave() {
+  return useMutation(CREATE_LEAVE, {
+    refetchQueries: ['GetLeave']
+  });
+}
+
+export function useUpdateLeave() {
+  return useMutation(UPDATE_LEAVE);
+}
+
+export function useDeleteLeave() {
+  return useMutation(DELETE_LEAVE, {
+    refetchQueries: ['GetLeave']
+  });
+}
+
+// Helper hook for pending leave count
+export function usePendingLeaveCount(userId?: string) {
+  const { data } = useLeave(userId);
+  
+  const pendingCount = data?.leaves?.filter(
+    (leave: any) => leave.status === 'Pending'
+  ).length || 0;
+  
+  return pendingCount;
+}
+```
+
+## 9. Notes Hooks (Extended)
+
+```typescript
+// lib/hooks/api/useNotes.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_NOTES } from '@/lib/graphql/queries/notes/getNotes';
+import {
+  ADD_NOTE,
+  UPDATE_NOTE,
+  DELETE_NOTE
+} from '@/lib/graphql/mutations';
+
+export function useNotes(entityId: string, entityType: string, options = {}) {
+  return useQuery(GET_NOTES, {
+    variables: { entityId, entityType },
+    skip: !entityId || !entityType,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useAddNote() {
+  return useMutation(ADD_NOTE, {
+    update(cache, { data }) {
+      if (data?.insert_notes_one) {
+        const note = data.insert_notes_one;
+        const existing = cache.readQuery({
+          query: GET_NOTES,
+          variables: { 
+            entityId: note.entity_id, 
+            entityType: note.entity_type 
+          }
+        });
+        
+        if (existing) {
+          cache.writeQuery({
+            query: GET_NOTES,
+            variables: { 
+              entityId: note.entity_id, 
+              entityType: note.entity_type 
+            },
+            data: {
+              notes: [note, ...existing.notes]
+            }
+          });
+        }
+      }
+    }
+  });
+}
+
+export function useUpdateNote() {
+  return useMutation(UPDATE_NOTE);
+}
+
+export function useDeleteNote() {
+  return useMutation(DELETE_NOTE, {
+    update(cache, { data }) {
+      if (data?.delete_notes_by_pk) {
+        cache.evict({ 
+          id: cache.identify(data.delete_notes_by_pk)
+        });
+      }
+    }
+  });
+}
+```
+
+## 10. Payroll Cycles Hooks
+
+```typescript
+// lib/hooks/api/usePayrollCycles.ts
+import { useQuery } from '@apollo/client';
+import { GET_PAYROLL_CYCLES } from '@/lib/graphql/queries/payrollCycles/getPayrollCycles';
+
+export function usePayrollCycles(options = {}) {
+  return useQuery(GET_PAYROLL_CYCLES, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+// Helper hook to get cycle options for dropdowns
+export function usePayrollCycleOptions() {
+  const { data, loading } = usePayrollCycles();
+  
+  const options = data?.payroll_cycles?.map((cycle: any) => ({
+    value: cycle.id,
+    label: cycle.name,
+    description: cycle.description
+  })) || [];
+  
+  return { options, loading };
+}
+```
+
+## 11. Payroll Date Types Hooks
+
+```typescript
+// lib/hooks/api/usePayrollDateTypes.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_PAYROLL_DATE_TYPES } from '@/lib/graphql/queries/payrollDateTypes/getPayrollDateTypes';
+import {
+  CREATE_PAYROLL_DATE_TYPE,
+  UPDATE_PAYROLL_DATE_TYPE,
+  DELETE_PAYROLL_DATE_TYPE
+} from '@/lib/graphql/mutations';
+
+export function usePayrollDateTypes(options = {}) {
+  return useQuery(GET_PAYROLL_DATE_TYPES, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useCreatePayrollDateType() {
+  return useMutation(CREATE_PAYROLL_DATE_TYPE, {
+    refetchQueries: [{ query: GET_PAYROLL_DATE_TYPES }]
+  });
+}
+
+export function useUpdatePayrollDateType() {
+  return useMutation(UPDATE_PAYROLL_DATE_TYPE);
+}
+
+export function useDeletePayrollDateType() {
+  return useMutation(DELETE_PAYROLL_DATE_TYPE, {
+    refetchQueries: [{ query: GET_PAYROLL_DATE_TYPES }]
+  });
+}
+
+// Helper hook to get date type options for dropdowns
+export function usePayrollDateTypeOptions() {
+  const { data, loading } = usePayrollDateTypes();
+  
+  const options = data?.payroll_date_types?.map((type: any) => ({
+    value: type.id,
+    label: type.name,
+    description: type.description
+  })) || [];
+  
+  return { options, loading };
+}
+```
+
+## 12. Payrolls Hooks (Extended)
+
+```typescript
+// lib/hooks/api/usePayrollQueries.ts
+import { useQuery, useMutation } from '@apollo/client';
+import {
+  GET_PAYROLLS,
+  GET_PAYROLL_BY_ID,
+  GET_PAYROLLS_BY_STATUS,
+  GET_PAYROLLS_BY_CONSULTANT,
+  GET_PAYROLLS_BY_MANAGER,
+  GET_PAYROLLS_BY_MONTH,
+  GET_PAYROLLS_MISSING_DATES
+} from '@/lib/graphql/queries';
+import {
+  CREATE_PAYROLL,
+  UPDATE_PAYROLL,
+  DELETE_PAYROLL,
+  UPDATE_PAYROLL_STATUS,
+  GENERATE_PAYROLL_DATES_FUNCTION
+} from '@/lib/graphql/mutations';
+
+// Existing hooks...
+
+export function usePayrollsByStatus(status: 'Active' | 'Implementation' | 'Inactive', options = {}) {
+  return useQuery(GET_PAYROLLS_BY_STATUS, {
+    variables: { status },
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function usePayrollsByConsultant(userId: string, options = {}) {
+  return useQuery(GET_PAYROLLS_BY_CONSULTANT, {
+    variables: { userId },
+    skip: !userId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function usePayrollsByManager(userId: string, options = {}) {
+  return useQuery(GET_PAYROLLS_BY_MANAGER, {
+    variables: { userId },
+    skip: !userId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function usePayrollsByMonth(startDate: string, endDate: string, options = {}) {
+  return useQuery(GET_PAYROLLS_BY_MONTH, {
+    variables: { startDate, endDate },
+    skip: !startDate || !endDate,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function usePayrollsMissingDates(startDate: string, endDate: string, options = {}) {
+  return useQuery(GET_PAYROLLS_MISSING_DATES, {
+    variables: { startDate, endDate },
+    skip: !startDate || !endDate,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useGeneratePayrollDates() {
+  return useMutation(GENERATE_PAYROLL_DATES_FUNCTION);
+}
+
+// Helper hook to generate dates for a payroll
+export function useGeneratePayrollDatesForPayroll(payrollId: string) {
+  const [generateDates, { loading, error }] = useGeneratePayrollDates();
+  
+  const generate = async (startDate?: string, endDate?: string, maxDates?: number) => {
+    const result = await generateDates({
+      variables: {
+        payrollId,
+        startDate,
+        endDate,
+        maxDates: maxDates || 52
+      }
+    });
+    
+    return result.data?.generatePayrollDates;
+  };
+  
+  return { generate, loading, error };
+}
+```
+
+## 13. Sessions Hooks
+
+```typescript
+// lib/hooks/api/useSessions.ts
+import { useQuery } from '@apollo/client';
+import { GET_USER_SESSIONS } from '@/lib/graphql/queries/sessions/getSessions';
+
+export function useUserSessions(userId: number, options = {}) {
+  return useQuery(GET_USER_SESSIONS, {
+    variables: { userId },
+    skip: !userId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'network-only', // Always get fresh session data
+    ...options
+  });
+}
+```
+
+## 14. Users Hooks (Extended)
+
+```typescript
+// lib/hooks/api/useUsers.ts
+import { useQuery, useMutation } from '@apollo/client';
+import {
+  GET_USER_BY_CLERK_ID,
+  GET_USERS_BY_MANAGER
+} from '@/lib/graphql/queries';
+
+export function useUserByClerkId(clerkUserId: string, options = {}) {
+  return useQuery(GET_USER_BY_CLERK_ID, {
+    variables: { clerkUserId },
+    skip: !clerkUserId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useUsersByManager(managerId: string, options = {}) {
+  return useQuery(GET_USERS_BY_MANAGER, {
+    variables: { managerId },
+    skip: !managerId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+// Helper hook to get current user data from Clerk ID
+export function useCurrentUserData() {
+  const { user } = useUser(); // From Clerk
+  const { data, loading, error } = useUserByClerkId(user?.id || '');
+  
+  return {
+    userData: data?.users?.[0],
+    loading,
+    error
+  };
+}
+```
+
+## 15. Work Schedule Hooks (Extended)
+
+```typescript
+// lib/hooks/api/useWorkSchedule.ts
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_USER_WORK_SCHEDULE } from '@/lib/graphql/queries/work_schedule/getUserWorkSchedule';
+import {
+  CREATE_WORK_SCHEDULE,
+  UPDATE_WORK_SCHEDULE,
+  DELETE_WORK_SCHEDULE,
+  UPSERT_WORK_SCHEDULE
+} from '@/lib/graphql/mutations';
+
+export function useUserWorkSchedule(userId: string, options = {}) {
+  return useQuery(GET_USER_WORK_SCHEDULE, {
+    variables: { userId },
+    skip: !userId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useCreateWorkSchedule() {
+  return useMutation(CREATE_WORK_SCHEDULE);
+}
+
+export function useUpdateWorkSchedule() {
+  return useMutation(UPDATE_WORK_SCHEDULE);
+}
+
+export function useDeleteWorkSchedule() {
+  return useMutation(DELETE_WORK_SCHEDULE);
+}
+
+export function useUpsertWorkSchedule() {
+  return useMutation(UPSERT_WORK_SCHEDULE);
+}
+
+// Helper hook to manage work schedule for a user
+export function useManageWorkSchedule(userId: string) {
+  const { data, loading, refetch } = useUserWorkSchedule(userId);
+  const [upsertSchedule] = useUpsertWorkSchedule();
+  
+  const updateSchedule = async (workDay: string, workHours: number) => {
+    await upsertSchedule({
+      variables: {
+        input: {
+          user_id: userId,
+          work_day: workDay,
+          work_hours: workHours
+        }
+      }
+    });
+    
+    await refetch();
+  };
+  
+  const schedule = data?.work_schedules || [];
+  
+  return {
+    schedule,
+    loading,
+    updateSchedule
+  };
+}
+```
+
+## 16. Statistics Hooks
+
+```typescript
+// lib/hooks/api/useStatistics.ts
+import { useQuery } from '@apollo/client';
+import {
+  GET_PAYROLL_STATISTICS,
+  GET_CLIENT_STATISTICS,
+  GET_LEAVE_STATISTICS
+} from '@/lib/graphql/queries';
+
+export function usePayrollStatistics(options = {}) {
+  return useQuery(GET_PAYROLL_STATISTICS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useClientStatistics(options = {}) {
+  return useQuery(GET_CLIENT_STATISTICS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+export function useLeaveStatistics(startDate: string, endDate: string, options = {}) {
+  return useQuery(GET_LEAVE_STATISTICS, {
+    variables: { startDate, endDate },
+    skip: !startDate || !endDate,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    ...options
+  });
+}
+
+// Combined statistics hook
+export function useOverallStatistics() {
+  const { data: payrollStats, loading: payrollLoading } = usePayrollStatistics();
+  const { data: clientStats, loading: clientLoading } = useClientStatistics();
+  
+  const currentYear = new Date().getFullYear();
+  const startDate = `${currentYear}-01-01`;
+  const endDate = `${currentYear}-12-31`;
+  const { data: leaveStats, loading: leaveLoading } = useLeaveStatistics(startDate, endDate);
+  
+  return {
+    statistics: {
+      payrolls: {
+        total: payrollStats?.payrolls_aggregate?.aggregate?.count || 0,
+        active: payrollStats?.active_payrolls?.aggregate?.count || 0,
+        implementation: payrollStats?.implementation_payrolls?.aggregate?.count || 0,
+        inactive: payrollStats?.inactive_payrolls?.aggregate?.count || 0
+      },
+      clients: {
+        total: clientStats?.clients_aggregate?.aggregate?.count || 0,
+        active: clientStats?.active_clients?.aggregate?.count || 0,
+        withPayrolls: clientStats?.clients_with_payrolls?.aggregate?.count || 0
+      },
+      leave: {
+        total: leaveStats?.leave_aggregate?.aggregate?.count || 0
+      }
+    },
+    loading: payrollLoading || clientLoading || leaveLoading
+  };
+}
+```
+
+## 17. Dashboard Hook
+
+```typescript
+// lib/hooks/api/useDashboard.ts
+import { useQuery } from '@apollo/client';
+import { GET_DASHBOARD_DATA } from '@/lib/graphql/queries/dashboard/getDashboardData';
+import { addMonths, startOfMonth, endOfMonth } from 'date-fns';
+
+export function useDashboardData(userId: string, options = {}) {
+  const startDate = startOfMonth(new Date()).toISOString().split('T')[0];
+  const endDate = endOfMonth(addMonths(new Date(), 2)).toISOString().split('T')[0];
+  
+  return useQuery(GET_DASHBOARD_DATA, {
+    variables: { userId, startDate, endDate },
+    skip: !userId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 60000, // Refresh every minute
+    ...options
+  });
+}
+
+// Helper hook with formatted data
+export function useDashboard() {
+  const { user } = useUser(); // From Clerk
+  const { data: userData } = useCurrentUserData();
+  const userId = userData?.id;
+  
+  const { data, loading, error, refetch } = useDashboardData(userId || '');
+  
+  return {
+    payrolls: data?.user_payrolls || [],
+    upcomingHolidays: data?.upcoming_holidays || [],
+    pendingLeaveCount: data?.pending_leave?.aggregate?.count || 0,
+    statistics: {
+      totalClients: data?.total_clients?.aggregate?.count || 0,
+      totalPayrolls: data?.total_payrolls?.aggregate?.count || 0
+    },
+    loading: loading || !userId,
+    error,
+    refetch
+  };
+}
+```
+
+## Update Index File
+
+```typescript
+// lib/hooks/api/index.ts
+// Add all new exports
+export * from './useAccounts';
+export * from './useAdjustmentRules';
+export * from './useAppSettings';
+export * from './useClientExternalSystems';
+export * from './useExternalSystems';
+export * from './useFeatureFlags';
+export * from './useHolidays';
+export * from './useLeave';
+export * from './useNotes';
+export * from './usePayrollCycles';
+export * from './usePayrollDateTypes';
+export * from './usePayrollQueries';
+export * from './useSessions';
+export * from './useUsers';
+export * from './useWorkSchedule';
+export * from './useStatistics';
+export * from './useDashboard';
+```
+
+## Usage Examples
+
+### 1. Feature Flag Usage
+```typescript
+function MyComponent() {
+  const { enabled: isNewFeatureEnabled } = useFeatureFlag('new-feature');
+  
+  if (!isNewFeatureEnabled) {
+    return <OldFeature />;
+  }
+  
+  return <NewFeature />;
+}
+```
+
+### 2. Dashboard Usage
+```typescript
+function Dashboard() {
+  const { payrolls, upcomingHolidays, statistics, loading } = useDashboard();
+  
+  if (loading) return <LoadingSpinner />;
+  
+  return (
+    <div>
+      <h2>Active Payrolls: {statistics.totalPayrolls}</h2>
+      <h2>Total Clients: {statistics.totalClients}</h2>
+      {/* Rest of dashboard */}
+    </div>
+  );
+}
+```
+
+### 3. Work Schedule Management
+```typescript
+function WorkScheduleForm({ userId }: { userId: string }) {
+  const { schedule, loading, updateSchedule } = useManageWorkSchedule(userId);
+  
+  const handleUpdate = async (day: string, hours: number) => {
+    await updateSchedule(day, hours);
+  };
+  
+  return (
+    <div>
+      {/* Form UI */}
+    </div>
+  );
+}
+```

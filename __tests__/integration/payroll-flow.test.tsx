@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_PAYROLL_BY_ID } from '@/lib/graphql/queries/payrolls/getPayrollById';
-import { UPDATE_PAYROLL_DATE } from '@/lib/graphql/mutations/payroll_dates/updatePayrollDate';
+import { GET_PAYROLL_BY_ID } from "@/lib/graphql/queries/payrolls/getPayrollById";
+import { UPDATE_PAYROLL_DATE } from "@/lib/graphql/mutations/payroll_dates/updatePayrollDate";
 import PayrollPage from '@/app/(dashboard)/payrolls/[id]/page';
 import { useParams } from 'next/navigation';
 

@@ -15,7 +15,8 @@ import {
   DELETE_CLIENT 
 } from '@/lib/graphql/mutations/clients/deleteClient';
 
-export function useClientsList(options = {}) {
+// Renamed to avoid conflicts with useClientQueries
+export function useClientsListBasic(options = {}) {
   return useQuery(GET_CLIENTS_LIST, {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'cache-and-network',
@@ -23,7 +24,8 @@ export function useClientsList(options = {}) {
   });
 }
 
-export function useClientById(id: string, options = {}) {
+// Renamed to avoid conflicts with useClientQueries
+export function useClientByIdBasic(id: string, options = {}) {
   return useQuery(GET_CLIENT_BY_ID, {
     variables: { id },
     notifyOnNetworkStatusChange: true,
@@ -32,11 +34,13 @@ export function useClientById(id: string, options = {}) {
   });
 }
 
-export function useCreateClient() {
+// Renamed to avoid conflicts with useClientQueries
+export function useCreateClientBasic() {
   return useMutation(CREATE_CLIENT);
 }
 
-export function useUpdateClient() {
+// Renamed to avoid conflicts with useClientQueries
+export function useUpdateClientBasic() {
   return useMutation(UPDATE_CLIENT);
 }
 
