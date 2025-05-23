@@ -122,33 +122,29 @@ const createCache = () => {
 
 // Enhanced error handling with user feedback
 const createErrorLink = (isServer = false) => {
-  return onError(({ graphQLErrors, networkError }) => {
+  return onError(({ graphQLErrors, networkError, forward, operation }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message, extensions }) => {
-        // Log all errors
-        console.error(
-          `[GraphQL error]: Message: ${message}`, 
-          extensions ? `Extensions: ${JSON.stringify(extensions)}` : ''
-        );
+        console.error(`[GraphQL error]: Message: ${message}`, extensions);
         
         // Handle authentication errors
-        if (extensions?.code === 'invalid-jwt') {
+        if (extensions?.code === 'invalid-jwt' || 
+            extensions?.code === 'unauthenticated' ||
+            message.includes('JWTExpired')) {
+          
+          // Clear token cache
           tokenManager.clearCache();
-          if (!isServer) {
-            // Show a user-friendly message before redirecting
-            toast.error("Your session has expired. Redirecting to login...");
-            setTimeout(() => {
-              window.location.href = '/sign-in';
-            }, 2000);
+          
+          // Only redirect on client side and if not already on sign-in page
+          if (!isServer && typeof window !== 'undefined') {
+            const currentPath = window.location.pathname;
+            if (!currentPath.includes('/sign-in')) {
+              toast.error("Your session has expired. Please sign in again.");
+              setTimeout(() => {
+                window.location.href = '/sign-in';
+              }, 1000);
+            }
           }
-        } else if (extensions?.code === 'permission-denied') {
-          // Show permission denied message
-          if (!isServer) {
-            toast.error("You don't have permission to perform this action");
-          }
-        } else if (!isServer) {
-          // General error for user (only on client)
-          toast.error("An error occurred while processing your request");
         }
       });
     }
@@ -342,4 +338,5 @@ export const adminApolloClient = new ApolloClient({
 });
 
 // Default export for easy imports
+export const createApolloClient = getClientApolloClient;
 export default getClientApolloClient();

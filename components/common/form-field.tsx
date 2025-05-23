@@ -4,7 +4,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils/utils";
+import { cn } from '@/lib/utils';
 
 interface FormFieldProps {
   name: string;

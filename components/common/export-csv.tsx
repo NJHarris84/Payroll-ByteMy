@@ -1,7 +1,7 @@
 // components/export-csv.tsx
 
 import { useQuery } from "@apollo/client";
-import { GET_PAYROLL_DATES } from "@/lib/graphql/queries/payrolls/getPayrollDates";
+import { GET_PAYROLL_DATES } from '@/lib/graphql/queries/payrolls';
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 

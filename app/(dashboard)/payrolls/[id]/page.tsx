@@ -3,7 +3,7 @@
 
 import { useParams, notFound } from "next/navigation";
 import { useQuery } from "@apollo/client";
-import { GET_PAYROLL_BY_ID } from "@/lib/graphql/queries/payrolls/getPayrollById";
+import { GET_PAYROLL_BY_ID } from '@/lib/graphql/queries/payrolls';
 import { PayrollDatesView } from "@/components/payroll/payroll-dates-view";
 import { ClientCard } from "@/components/client/client-card";
 import { PayrollDetailsCard } from "@/components/payroll/payroll-details-card";
@@ -17,7 +17,7 @@ import { Pencil, RefreshCw } from "lucide-react";
 import { RefreshButton } from "@/components/common/refresh-button";
 import { NotesListWithAdd } from "@/components/common/notes-list-with-add";
 import { useEffect, useState } from "react";
-import { handleApiError } from "@/lib/utils/error-handling";
+import { handleApiError } from '@/lib/utils';
 import { ErrorBoundary } from "@/components/common/error-boundary";
 import { Card, CardContent } from "@/components/ui/card";
 

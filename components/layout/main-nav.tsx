@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, Users, Calculator, CalendarDays, UserCog, Settings, DollarSign } from "lucide-react"
 
-import { cn } from "@/lib/utils/utils"
+import { cn } from '@/lib/utils'
 import { Button } from "@/components/ui/button"
 
 export function MainNav() {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ChevronRight, Circle, Clock, ExternalLink } from "lucide-react";
-import { formatDate } from "@/lib/utils/utils";
+import { formatDate } from '@/lib/utils';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

@@ -1,7 +1,7 @@
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Webhook } from "svix";
-import { adminApolloClient } from "@/lib/api/apollo-client";
+import { adminApolloClient } from '@/lib/api';
 import { gql } from "@apollo/client";
 
 // Only allow POST requests

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { AddNote } from "@/components/common/add-note";
 import { Note } from "@/types/interface";
-import { GET_NOTES } from "@/lib/graphql/queries/notes/getNotes";
+import { GET_NOTES } from '@/lib/graphql/queries/notes';
 import { Button } from "@/components/ui/button";
 import { ErrorDisplay } from "@/components/common/error-display";
 

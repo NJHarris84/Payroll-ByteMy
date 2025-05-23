@@ -1,6 +1,6 @@
 // components/export-pdf.tsx
 import { useQuery } from "@apollo/client";
-import { GET_PAYROLL_DATES } from "@/lib/graphql/queries/payrolls/getPayrollDates";
+import { GET_PAYROLL_DATES } from '@/lib/graphql/queries/payrolls';
 import { jsPDF } from "jspdf";
 import {autoTable} from "jspdf-autotable";
 import { format, parseISO } from "date-fns";

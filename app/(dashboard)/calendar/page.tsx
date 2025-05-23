@@ -13,8 +13,8 @@ import { Calendar } from "@/components/ui/calendar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { PageLoading } from "@/components/ui/loading-states"
-import { GET_PAYROLLS } from "@/lib/graphql/queries/payrolls/getPayrolls"
-import { GET_HOLIDAYS_BY_YEAR } from "@/lib/graphql/queries/holidays/getHolidaysByYear"
+import { GET_PAYROLLS } from '@/lib/graphql/queries/payrolls'
+import { GET_HOLIDAYS_BY_YEAR } from '@/lib/graphql/queries/holidays'
 
 // Helper to format date for display
 const formatDateForDisplay = (date: Date): string => {

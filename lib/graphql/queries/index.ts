@@ -12,6 +12,9 @@ export * from './clients/getClientById';
 export * from './clients/getClientsList';
 export * from './clientExternalSystems/getClientExternalSystems';
 
+// Dashboard queries
+export * from './dashboard/getDashboardData';
+
 // External system queries
 export * from './externalSystems/getExternalSystems';
 
@@ -31,19 +34,10 @@ export * from './notes/getNotes';
 
 // Payroll queries
 export * from './payrolls/getPayrollById';
-export * from './payrolls/getPayrollDates';
-export * from './payrolls/getPayrollList';
-export * from './payrolls/getPayrolls';
-export * from './payrolls/getPayrollsByMonth';
-export * from './payrolls/getPayrollsByStatus';
-export * from './payrolls/getPayrollsByConsultant';
-export * from './payrolls/getPayrollsByManager';
+export * from './payrolls/getPayrollsList';
 export * from './payrolls/getPayrollsMissingDates';
 export * from './payrollCycles/getPayrollCycles';
 export * from './payrollDateTypes/getPayrollDateTypes';
-
-// Session queries
-export * from './sessions/getSessions';
 
 // Staff queries
 export * from './staff/getStaffById';
@@ -51,11 +45,6 @@ export * from './staff/getStaffList';
 
 // Statistics queries
 export * from './statistics/getStatistics';
-export * from './dashboard/getDashboardData';
-
-// User queries
-export * from './users/getUserByClerkId';
-export * from './users/getUsersByManager';
 
 // Work schedule queries
 export * from './work_schedule/getUserWorkSchedule';

@@ -5,12 +5,15 @@ import { SignIn } from "@clerk/nextjs";
 
 export default function Page() {
   return (
-    <SignIn 
-      path="/sign-in"
-      routing="path"
-      signUpUrl="/sign-up"
-      redirectUrl="/dashboard"
-      afterSignInUrl="/dashboard"
-    />
+    <div className="flex min-h-screen items-center justify-center bg-muted">
+      <SignIn 
+        appearance={{
+          elements: {
+            rootBox: "mx-auto",
+            card: "shadow-lg"
+          }
+        }}
+      />
+    </div>
   );
 }

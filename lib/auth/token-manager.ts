@@ -1,4 +1,5 @@
-import { getAuth } from '@clerk/nextjs';
+// lib/auth/token-manager.ts
+import { auth } from '@clerk/nextjs/server';
 import { getHasuraClaims } from '@/lib/utils/jwt-utils';
 import type { HasuraRole } from '@/types/interface';
 
@@ -6,7 +7,7 @@ class TokenManager {
   private static instance: TokenManager;
   private cache = new Map<string, { token: string; expiresAt: number }>();
   private refreshPromise: Map<string, Promise<string | null>> = new Map();
-  private readonly expirationBuffer: number = 5 * 60 * 1000; // 5 minutes by default
+  private readonly expirationBuffer: number = 5 * 60 * 1000; // 5 minutes
 
   private constructor(expirationBufferMinutes?: number) {
     if (expirationBufferMinutes) {
@@ -24,17 +25,32 @@ class TokenManager {
   async getToken(isServer: boolean = false): Promise<string | null> {
     const cacheKey = isServer ? 'server' : 'client';
     
-    // If a refresh is already in progress, wait for it to complete
-    if (this.refreshPromise.has(cacheKey)) {
-      return this.refreshPromise.get(cacheKey)!;
-    }
-
-    // Check cache with configurable buffer
+    // Check cache
     const cached = this.cache.get(cacheKey);
     if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
       return cached.token;
     }
 
+    // For client-side, make an API call
+    if (!isServer && typeof window !== 'undefined') {
+      try {
+        const response = await fetch('/api/auth/token');
+        if (response.ok) {
+          const { token } = await response.json();
+          if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const expiresAt = (payload.exp || 0) * 1000;
+            this.cache.set(cacheKey, { token, expiresAt });
+            return token;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch token from API:', error);
+      }
+      return null;
+    }
+
+    // For server-side, use Clerk auth directly
     return this.refreshToken(cacheKey);
   }
 
@@ -45,10 +61,10 @@ class TokenManager {
 
     const refreshPromiseInstance = (async () => {
       try {
-        const auth = getAuth();
-        if (!auth) return null;
+        const { getToken } = await auth();
+        if (!getToken) return null;
 
-        const token = await auth.getToken({ template: 'hasura' });
+        const token = await getToken({ template: 'hasura' });
         if (token) {
           const payload = JSON.parse(atob(token.split('.')[1]));
           const expiresAt = (payload.exp || 0) * 1000;

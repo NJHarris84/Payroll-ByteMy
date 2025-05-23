@@ -1,5 +1,5 @@
 // components/ui/skeleton.tsx
-import { cn } from "@/lib/utils/utils"
+import { cn } from '@/lib/utils'
 
 function Skeleton({
   className,

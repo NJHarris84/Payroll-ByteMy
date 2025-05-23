@@ -1,0 +1,464 @@
+=== PROVIDERS.TSX (app/providers.tsx) ===
+// app/providers.tsx
+"use client"
+
+import { ApolloProvider } from "@apollo/client"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/toaster"
+import { getClientApolloClient } from "@/lib/api/apollo-client" // Import directly
+
+export function AppProviders({ children }: { children: React.ReactNode }) {
+  const client = getClientApolloClient()
+
+  return (
+    <ApolloProvider client={client}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        {children}
+        <Toaster />
+      </ThemeProvider>
+    </ApolloProvider>
+  )
+}
+
+=== THEME PROVIDER (components/providers/theme-provider.tsx) ===
+"use client";
+
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { type ReactNode } from "react";
+
+interface ThemeProviderProps {
+  children: ReactNode;
+  defaultTheme?: "dark" | "light" | "system";
+  storageKey?: string;
+}
+
+export function ThemeProvider({
+  children,
+  defaultTheme = "system",
+  storageKey = "theme",
+  ...props
+}: ThemeProviderProps) {
+  return (
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme={defaultTheme}
+      enableSystem
+      storageKey={storageKey}
+      {...props}
+    >
+      {children}
+    </NextThemesProvider>
+  );
+}
+
+// Default export for simpler imports
+export default function ClientThemeProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return <ThemeProvider>{children}</ThemeProvider>;
+}
+
+=== PROVIDERS INDEX (components/providers/index.ts) ===
+export * from "./root-providers"
+export * from "./theme-provider"
+
+=== AUTH LAYOUT (app/(auth)/layout.tsx) ===
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-muted">
+      {children}
+    </div>
+  );
+}
+
+=== SIGN-IN PAGE (app/(auth)/sign-in/[[...sign-in]]/page.tsx) ===
+// app/(auth)/sign-in/[[...sign-in]]/page.tsx
+"use client";
+
+import { SignIn } from "@clerk/nextjs";
+
+export default function Page() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-muted">
+      <SignIn 
+        appearance={{
+          elements: {
+            rootBox: "mx-auto",
+            card: "shadow-lg"
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+=== AUTH LOGIC (lib/auth/auth.ts) ===
+// lib/auth.ts
+import { auth } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { HasuraRole, Permission, hasPermission } from "@/lib/auth/roles";
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
+
+// Check if a user has a specific Hasura role (server-side)
+export async function verifyHasuraRole(allowedRoles: HasuraRole[]): Promise<boolean> {
+  const { userId, getToken } = auth();
+  
+  if (!userId) {
+    return false;
+  }
+  
+  try {
+    const token = await getToken({ template: 'hasura' });
+    if (!token) return false;
+    
+    const userRole = getUserRole(token);
+    
+    return allowedRoles.includes(userRole);
+  } catch (error) {
+    console.error('Error verifying Hasura role:', error);
+    return false;
+  }
+}
+
+// Check if a user has a specific permission (server-side)
+export async function verifyPermission(requiredPermission: Permission): Promise<boolean> {
+  const { userId, getToken } = auth();
+  
+  if (!userId) {
+    return false;
+  }
+  
+  try {
+    const token = await getToken({ template: 'hasura' });
+    if (!token) return false;
+    
+    const userRole = getUserRole(token);
+    
+    return hasPermission(userRole, requiredPermission);
+  } catch (error) {
+    console.error('Error verifying permission:', error);
+    return false;
+  }
+}
+
+// API route middleware for role-based access control
+export function withRoleCheck(allowedRoles: HasuraRole[]) {
+  return async function middleware(
+    req: NextRequest
+  ): Promise<NextResponse | void> {
+    const hasRole = await verifyHasuraRole(allowedRoles);
+    
+    if (!hasRole) {
+      return NextResponse.json(
+        { error: "Not authorized" },
+        { status: 403 }
+      );
+    }
+    
+    return NextResponse.next();
+  };
+}
+
+// API route middleware for permission-based access control
+export function withPermissionCheck(requiredPermission: Permission) {
+  return async function middleware(
+    req: NextRequest
+  ): Promise<NextResponse | void> {
+    const hasRequiredPermission = await verifyPermission(requiredPermission);
+    
+    if (!hasRequiredPermission) {
+      return NextResponse.json(
+        { error: "Not authorized" },
+        { status: 403 }
+      );
+    }
+    
+    return NextResponse.next();
+  };
+}
+
+export function getUserRole(token: string): HasuraRole {
+  const hasuraClaims = getHasuraClaims(token);
+  return hasuraClaims['x-hasura-default-role'] as HasuraRole;
+}
+
+=== MIDDLEWARE (middleware.ts) ===
+// middleware.ts
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
+
+// Define public routes that don't require authentication
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sso-callback(.*)',
+  '/api/webhooks(.*)',
+  '/api/auth(.*)',
+]);
+
+// Define role-based routes
+const roleBasedRoutes = {
+  '/clients/new': ['manager', 'org_admin', 'admin'],
+  '/payrolls/new': ['manager', 'org_admin', 'admin'],
+  '/staff': ['manager', 'org_admin', 'admin'],
+  '/settings': ['org_admin', 'admin'],
+  '/developer': ['admin'],
+} as const;
+
+export default clerkMiddleware(async (auth, request) => {
+  const { pathname } = request.nextUrl;
+  
+  // Skip public routes
+  if (isPublicRoute(request)) {
+    return NextResponse.next();
+  }
+
+  // Get auth state
+  const authState = await auth();
+  
+  // Check if user is authenticated
+  if (!authState.userId) {
+    // For API routes, return 401
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    // For other routes, redirect to sign-in
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
+
+  try {
+    // Get the Hasura token
+    const token = await authState.getToken({ template: 'hasura' });
+    
+    if (!token) {
+      console.error('No Hasura token available');
+      return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+
+    // Parse the token to get user role
+    let userRole = 'viewer'; // default role
+    try {
+      // Use Buffer.from for Node.js compatibility
+      const payload = JSON.parse(
+        Buffer.from(token.split('.')[1], 'base64').toString()
+      );
+      const hasuraClaims = payload['https://hasura.io/jwt/claims'];
+      userRole = hasuraClaims?.['x-hasura-default-role'] || 'viewer';
+    } catch (e) {
+      console.error('Failed to parse JWT:', e);
+    }
+
+    // Check role-based access
+    for (const [route, allowedRoles] of Object.entries(roleBasedRoutes)) {
+      if (pathname.startsWith(route) && !allowedRoles.includes(userRole as any)) {
+        if (pathname.startsWith('/api/')) {
+          return NextResponse.json(
+            { error: 'Forbidden: Insufficient permissions' },
+            { status: 403 }
+          );
+        }
+        // Redirect to dashboard with a message
+        return NextResponse.redirect(new URL('/dashboard?error=unauthorized', request.url));
+      }
+    }
+
+    // Add headers for downstream use
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-user-id', authState.userId);
+    requestHeaders.set('x-user-role', userRole);
+    requestHeaders.set('authorization', `Bearer ${token}`);
+
+    return NextResponse.next({
+      request: { headers: requestHeaders }
+    });
+
+  } catch (error) {
+    console.error('Middleware error:', error);
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
+});
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (public directory)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+};
+
+=== TOKEN MANAGER (lib/auth/token-manager.ts) ===
+// lib/auth/token-manager.ts
+import { auth } from '@clerk/nextjs/server';
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
+
+class TokenManager {
+  private static instance: TokenManager;
+  private cache = new Map<string, { token: string; expiresAt: number }>();
+  private refreshPromise: Map<string, Promise<string | null>> = new Map();
+  private readonly expirationBuffer: number = 5 * 60 * 1000; // 5 minutes
+
+  private constructor(expirationBufferMinutes?: number) {
+    if (expirationBufferMinutes) {
+      this.expirationBuffer = expirationBufferMinutes * 60 * 1000;
+    }
+  }
+
+  static getInstance(expirationBufferMinutes?: number): TokenManager {
+    if (!TokenManager.instance) {
+      TokenManager.instance = new TokenManager(expirationBufferMinutes);
+    }
+    return TokenManager.instance;
+  }
+
+  async getToken(isServer: boolean = false): Promise<string | null> {
+    const cacheKey = isServer ? 'server' : 'client';
+    
+    // Check cache
+    const cached = this.cache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
+      return cached.token;
+    }
+
+    // For client-side, make an API call
+    if (!isServer && typeof window !== 'undefined') {
+      try {
+        const response = await fetch('/api/auth/token');
+        if (response.ok) {
+          const { token } = await response.json();
+          if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const expiresAt = (payload.exp || 0) * 1000;
+            this.cache.set(cacheKey, { token, expiresAt });
+            return token;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch token from API:', error);
+      }
+      return null;
+    }
+
+    // For server-side, use Clerk auth directly
+    return this.refreshToken(cacheKey);
+  }
+
+  private async refreshToken(cacheKey: string): Promise<string | null> {
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
+    }
+
+    const refreshPromiseInstance = (async () => {
+      try {
+        const { getToken } = await auth();
+        if (!getToken) return null;
+
+        const token = await getToken({ template: 'hasura' });
+        if (token) {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const expiresAt = (payload.exp || 0) * 1000;
+          this.cache.set(cacheKey, { token, expiresAt });
+          return token;
+        }
+        return null;
+      } catch (error) {
+        console.error('Token refresh failed:', error);
+        this.cache.delete(cacheKey);
+        return null;
+      } finally {
+        this.refreshPromise.delete(cacheKey);
+      }
+    })();
+
+    this.refreshPromise.set(cacheKey, refreshPromiseInstance);
+    return refreshPromiseInstance;
+  }
+
+  clearCache(): void {
+    this.cache.clear();
+    this.refreshPromise.clear();
+  }
+
+  isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000;
+      return exp > Date.now() + 60 * 1000; // 1-minute buffer
+    } catch {
+      return false;
+    }
+  }
+
+  getUserRoleFromToken(token: string): HasuraRole | null {
+    try {
+      const claims = getHasuraClaims(token);
+      return claims['x-hasura-default-role'] as HasuraRole;
+    } catch {
+      return null;
+    }
+  }
+}
+
+export const tokenManager = TokenManager.getInstance();
+
+=== API AUTH ROUTE (app/api/auth/token/route.ts) ===
+// app/api/auth/token/route.ts
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+
+export async function GET() {
+  const { getToken } = await auth();
+  const token = await getToken({ template: "hasura" });
+  
+  if (!token) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+  
+  return NextResponse.json({ token });
+}
+
+=== ENV VARIABLES (names only) ===
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
+AUTH_GITHUB_ID
+AUTH_GITHUB_SECRET
+AUTH_SECRET
+DATABASE_URL
+DATABASE_URL_UNPOOLED
+PGDATABASE
+PGHOST
+PGHOST_UNPOOLED
+PGPASSWORD
+PGUSER
+POSTGRES_DATABASE
+POSTGRES_HOST
+POSTGRES_PASSWORD
+POSTGRES_PRISMA_URL
+POSTGRES_URL
+POSTGRES_URL_NON_POOLING
+POSTGRES_URL_NO_SSL
+POSTGRES_USER
+NEXT_PUBLIC_HASURA_GRAPHQL_URL
+NEXT_PUBLIC_HASURA_ADMIN_SECRET
+AUTH_GOOGLE_ID
+AUTH_GOOGLE_SECRET
+JWT_SECRET
+NEXTAUTH_URL
+NEXTAUTH_SECRET

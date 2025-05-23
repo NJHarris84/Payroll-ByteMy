@@ -1,8 +1,8 @@
 // app/api/payroll-dates/[payrollId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { adminApolloClient } from "@/lib/api/apollo-client";
-import { GENERATE_PAYROLL_DATES } from "@/lib/graphql/mutations/payroll_dates/generatePayrollDates";
-import { GET_PAYROLL_DATES } from "@/lib/graphql/queries/payrolls/getPayrollDates"; // Use the existing file
+import { adminApolloClient } from '@/lib/api';
+import { GENERATE_PAYROLL_DATES } from '@/lib/graphql/mutations/payrolls';
+import { GET_PAYROLL_DATES } from '@/lib/graphql/queries/payrolls'; // Use the existing file
 import { auth } from "@clerk/nextjs/server";
 
 export async function GET(

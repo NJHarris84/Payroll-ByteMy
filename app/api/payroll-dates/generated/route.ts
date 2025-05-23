@@ -1,7 +1,7 @@
 // app/api/payroll-dates/generated/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { getServerApolloClient } from "@/lib/api/apollo-client";
+import { getServerApolloClient } from '@/lib/api';
 import { gql } from "@apollo/client";
 import { addMonths, format } from "date-fns";
 

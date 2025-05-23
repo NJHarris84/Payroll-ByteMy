@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { generatePayrollSchedule } from "@/lib/services/payroll-service"; // Corrected import path
+import { generatePayrollSchedule } from '@/lib/utils'; // Corrected import path
 
 export async function GET(req: NextRequest) {
   try {

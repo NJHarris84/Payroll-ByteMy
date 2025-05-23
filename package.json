@@ -12,7 +12,9 @@
     "check-fragments": "pnpm exec ts-node --project scripts/tsconfig.json scripts/check-fragments.ts",
     "check-fragments:node": "node scripts/check-fragments.js",
     "check-fragments:sh": "./scripts/check-fragments.sh",
-    "generate": "graphql-codegen --config codegen.yml"
+    "generate": "graphql-codegen --config codegen.yml",
+    "analyze:exports": "pnpm exec ts-node --project scripts/tsconfig.json scripts/list-exports.ts",
+    "analysis": "pnpm exec ts-node --project scripts/tsconfig.json scripts/analysis.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.13.4",

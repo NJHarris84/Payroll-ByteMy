@@ -1,117 +1,107 @@
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
-import { getHasuraClaims } from '@/lib/utils/jwt-utils';
-import type { HasuraRole } from '@/types/interface';
 
-// Define protected routes that require authentication
-export const config = {
-  matcher: [
-    '/dashboard/:path*',
-    '/api/:path*',
-    '/((?!api/webhooks|api/auth|sso-callback).*)',
-  ],
-}
-
-// Check if a route should be excluded from authentication
-function isExcludedRoute(pathname: string): boolean {
-  return pathname.startsWith('/api/webhooks') || 
-         pathname.startsWith('/api/auth') ||
-         pathname.startsWith('/sso-callback');
-}
-
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)'
+// Define public routes that don't require authentication
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sso-callback(.*)',
+  '/api/webhooks(.*)',
+  '/api/auth(.*)',
 ]);
 
-// Check if route needs protection
-function needsProtection(pathname: string): boolean {
-  if (isExcludedRoute(pathname)) return false;
-  return pathname.startsWith('/dashboard') || pathname.startsWith('/api/');
-}
-
-// Route-role mapping for role-based access control
-const ROUTE_PERMISSIONS = {
-  '/dashboard': ['viewer', 'consultant', 'manager', 'org_admin', 'admin'],
+// Define role-based routes
+const roleBasedRoutes = {
   '/clients/new': ['manager', 'org_admin', 'admin'],
-  '/clients/[^/]+/edit': ['manager', 'org_admin', 'admin'],
   '/payrolls/new': ['manager', 'org_admin', 'admin'],
-  '/payrolls/[^/]+/edit': ['manager', 'org_admin', 'admin'],
   '/staff': ['manager', 'org_admin', 'admin'],
   '/settings': ['org_admin', 'admin'],
   '/developer': ['admin'],
-  '/api/cron': ['org_admin', 'admin'],
-  '/api/user': ['manager', 'org_admin', 'admin'],
-} as const
-
-function getRequiredRoles(pathname: string): string[] | null {
-  for (const [route, roles] of Object.entries(ROUTE_PERMISSIONS)) {
-    const pattern = route.replace(/\[.*?\]/g, '[^/]+') // Convert [id] to regex pattern
-    if (new RegExp(`^${pattern}(/.*)?$`).test(pathname)) {
-      return roles as string[]
-    }
-  }
-  return null
-}
+} as const;
 
 export default clerkMiddleware(async (auth, request) => {
-  const { pathname } = request.nextUrl
+  const { pathname } = request.nextUrl;
+  
+  // Skip public routes
+  if (isPublicRoute(request)) {
+    return NextResponse.next();
+  }
 
-  // Apply protection to protected routes
-  if (needsProtection(pathname)) {
-    await auth.protect()
+  // Get auth state
+  const authState = await auth();
+  
+  // Check if user is authenticated
+  if (!authState.userId) {
+    // For API routes, return 401
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    // For other routes, redirect to sign-in
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
 
-    // Get user info and token
-    const { userId, sessionClaims, getToken } = auth()
+  try {
+    // Get the Hasura token
+    const token = await authState.getToken({ template: 'hasura' });
     
-    if (!userId) {
-      return NextResponse.redirect(new URL('/sign-in', request.url))
+    if (!token) {
+      console.error('No Hasura token available');
+      return NextResponse.redirect(new URL('/sign-in', request.url));
     }
 
+    // Parse the token to get user role
+    let userRole = 'viewer'; // default role
     try {
-      // Get Hasura token
-      const token = await getToken({ template: 'hasura' })
-      
-      if (!token) {
-        console.error('Failed to get Hasura token')
-        return NextResponse.redirect(new URL('/sign-in', request.url))
-      }
+      // Use Buffer.from for Node.js compatibility
+      const payload = JSON.parse(
+        Buffer.from(token.split('.')[1], 'base64').toString()
+      );
+      const hasuraClaims = payload['https://hasura.io/jwt/claims'];
+      userRole = hasuraClaims?.['x-hasura-default-role'] || 'viewer';
+    } catch (e) {
+      console.error('Failed to parse JWT:', e);
+    }
 
-      // Extract role from token or session claims
-      let userRole: string = 'viewer' // default role
-      
-      // Try to get role from JWT token first
-      const payload = JSON.parse(atob(token.split('.')[1]))
-      const hasuraClaims = payload['https://hasura.io/jwt/claims']
-      userRole = (hasuraClaims['x-hasura-default-role'] as HasuraRole) || 'viewer';
-      
-      // Check route permissions
-      const requiredRoles = getRequiredRoles(pathname)
-      if (requiredRoles && !requiredRoles.includes(userRole)) {
+    // Check role-based access
+    for (const [route, allowedRoles] of Object.entries(roleBasedRoutes)) {
+      if (pathname.startsWith(route) && !allowedRoles.includes(userRole as any)) {
         if (pathname.startsWith('/api/')) {
           return NextResponse.json(
             { error: 'Forbidden: Insufficient permissions' },
             { status: 403 }
-          )
+          );
         }
-        return NextResponse.redirect(new URL('/dashboard', request.url))
+        // Redirect to dashboard with a message
+        return NextResponse.redirect(new URL('/dashboard?error=unauthorized', request.url));
       }
-
-      // Add auth headers for downstream services
-      const requestHeaders = new Headers(request.headers)
-      requestHeaders.set('x-user-id', userId)
-      requestHeaders.set('x-user-role', userRole)
-      requestHeaders.set('authorization', `Bearer ${token}`)
-
-      return NextResponse.next({
-        request: { headers: requestHeaders }
-      })
-
-    } catch (error) {
-      console.error('Middleware auth error:', error)
-      return NextResponse.redirect(new URL('/sign-in', request.url))
     }
-  }
 
-  return NextResponse.next()
-})
+    // Add headers for downstream use
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-user-id', authState.userId);
+    requestHeaders.set('x-user-role', userRole);
+    requestHeaders.set('authorization', `Bearer ${token}`);
+
+    return NextResponse.next({
+      request: { headers: requestHeaders }
+    });
+
+  } catch (error) {
+    console.error('Middleware error:', error);
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
+});
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (public directory)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+};

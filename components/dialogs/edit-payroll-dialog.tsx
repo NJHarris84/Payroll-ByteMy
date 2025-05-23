@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UPDATE_PAYROLL } from "@/lib/graphql/mutations/payrolls/updatePayroll";
-import { CYCLE_TYPES } from "@/lib/services/payroll-service";
+import { UPDATE_PAYROLL } from '@/lib/graphql/mutations/payrolls';
+import { CYCLE_TYPES } from '@/lib/services';
 
 // Define the interface for the component props
 interface EditPayrollDialogProps {

@@ -6,8 +6,8 @@ import { useMutation, gql } from '@apollo/client';
 import { format, addMonths } from 'date-fns';
 import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
-import { GET_PAYROLLS_MISSING_DATES } from "@/lib/graphql/queries";
-import { GENERATE_PAYROLL_DATES } from "@/lib/graphql/mutations";
+import { GET_PAYROLLS_MISSING_DATES } from '@/lib/graphql/queries/payrolls';
+import { GENERATE_PAYROLL_DATES } from '@/lib/graphql/mutations/payrolls';
 
 interface GenerateMissingDatesButtonProps {
   payrollIds: string[];

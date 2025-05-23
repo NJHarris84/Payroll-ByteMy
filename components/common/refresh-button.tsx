@@ -4,8 +4,8 @@
 import { useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils/utils";
-import { useCacheInvalidation } from "@/hooks/useCacheInvalidation";
+import { cn } from '@/lib/utils';
+import { useCacheInvalidation } from '@/lib/hooks/utils';
 
 interface RefreshButtonProps {
   /**

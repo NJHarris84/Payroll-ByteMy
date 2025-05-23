@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
-import { syncAllUsers, syncUserById } from "@/lib/services/user-sync";
+import { syncAllUsers, syncUserById } from '@/lib/services';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Only allow POST requests

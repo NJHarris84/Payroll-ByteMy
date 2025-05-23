@@ -1,8 +1,8 @@
 // app/api/update-user-role/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { getServerApolloClient } from "@/lib/api/apollo-client";
-import { UPDATE_STAFF } from "@/lib/graphql/mutations/staff/updateStaff";
+import { getServerApolloClient } from '@/lib/api';
+import { UPDATE_STAFF } from '@/lib/graphql/mutations/staff';
 
 export async function POST(req: NextRequest) {
   try {

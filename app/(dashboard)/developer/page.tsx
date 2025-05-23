@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { useUserRole } from "@/lib/hooks/api/useUserRole"
+import { useUserRole } from '@/lib/hooks/api'
 
 const features = [
 	{ id: "tax-calculator", name: "Tax Calculator", description: "Enable the Australian tax calculator feature" },

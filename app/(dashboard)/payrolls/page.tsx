@@ -7,7 +7,7 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PayrollsMissingDates } from "@/components/payroll/payrolls-missing-dates";
 import { toast } from "sonner";
-import { useUserRole } from "@/lib/hooks";
+import { useUserRole } from '@/lib/hooks/api';
 import { PayrollListCard } from "@/components/payroll/payroll-list-card";
 
 export default function PayrollsPage() {
