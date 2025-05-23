@@ -5,8 +5,7 @@ import { LEAVE_FRAGMENT } from '../../fragments/leaveFragment';
 
 export const GET_DASHBOARD_DATA = gql`
   query GetDashboardData($userId: uuid!, $startDate: date!, $endDate: date!) {
-    # User's payrolls
-    user_payrolls: payrolls(
+    payrolls(
       where: {
         _or: [
           { primary_consultant_user_id: { _eq: $userId } }
@@ -15,13 +14,7 @@ export const GET_DASHBOARD_DATA = gql`
         ]
       }
     ) {
-      id
-      name
-      status
-      client {
-        id
-        name
-      }
+      ...PayrollFragment
       payroll_dates(
         where: {
           processing_date: { _gte: $startDate, _lte: $endDate }
@@ -34,9 +27,7 @@ export const GET_DASHBOARD_DATA = gql`
         adjusted_eft_date
       }
     }
-    
-    # Upcoming holidays
-    upcoming_holidays: holidays(
+    holidays(
       where: {
         date: { _gte: $startDate, _lte: $endDate }
         country_code: { _eq: "AU" }
@@ -46,31 +37,19 @@ export const GET_DASHBOARD_DATA = gql`
     ) {
       ...HolidayFragment
     }
-    
-    # Leave requests
-    pending_leave: leave_aggregate(
+    leave(
       where: {
-        status: { _eq: "Pending" }
+        user_id: { _eq: $userId }
         start_date: { _gte: $startDate }
+        end_date: { _lte: $endDate }
       }
+      order_by: { start_date: asc }
+      limit: 5
     ) {
-      aggregate {
-        count
-      }
-    }
-    
-    # Statistics
-    total_clients: clients_aggregate(where: { active: { _eq: true } }) {
-      aggregate {
-        count
-      }
-    }
-    
-    total_payrolls: payrolls_aggregate(where: { status: { _eq: "Active" } }) {
-      aggregate {
-        count
-      }
+      ...LeaveFragment
     }
   }
+  ${PAYROLL_FRAGMENT}
   ${HOLIDAY_FRAGMENT}
+  ${LEAVE_FRAGMENT}
 `;

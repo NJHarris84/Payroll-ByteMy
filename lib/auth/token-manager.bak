@@ -1,6 +1,6 @@
 // lib/auth/token-manager.ts
 import { auth } from '@clerk/nextjs/server'
-import { getAuth } from '@clerk/nextjs/client'
+import { getAuth } from '@clerk/nextjs'
 import { getHasuraClaims } from '@/lib/utils/jwt-utils';
 import type { HasuraRole } from '@/types/interface';
 

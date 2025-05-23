@@ -3,13 +3,19 @@ import { gql } from '@apollo/client';
 import { PAYROLL_DATE_FRAGMENT } from '../../fragments/payrollDateFragment';
 
 export const GENERATE_PAYROLL_DATES = gql`
-  mutation GeneratePayrollDates($payrollId: uuid!, $startDate: date!, $endDate: date!) {
-    generatePayrollDates(payrollId: $payrollId, startDate: $startDate, endDate: $endDate) {
-      payroll_dates {
+  mutation GeneratePayrollDates($payroll_id: uuid!, $original_eft_date: date!, $adjusted_eft_date: date!, $processing_date: date, $notes: String) {
+    insert_payroll_dates(objects: [
+      { 
+        payroll_id: $payroll_id, 
+        original_eft_date: $original_eft_date,
+        adjusted_eft_date: $adjusted_eft_date,
+        processing_date: $processing_date,
+        notes: $notes
+      }
+    ]) {
+      returning {
         ...PayrollDateFragment
       }
-      success
-      message
     }
   }
   ${PAYROLL_DATE_FRAGMENT}

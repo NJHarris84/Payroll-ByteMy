@@ -9,12 +9,3 @@ export const GET_APP_SETTINGS = gql`
   }
   ${APP_SETTINGS_FRAGMENT}
 `;
-
-export const GET_APP_SETTING_BY_KEY = gql`
-  query GetAppSettingByKey($key: String!) {
-    app_settings(where: { key: { _eq: $key } }) {
-      ...AppSettingsFragment
-    }
-  }
-  ${APP_SETTINGS_FRAGMENT}
-`;

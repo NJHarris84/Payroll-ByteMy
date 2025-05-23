@@ -1,0 +1,24 @@
+overwrite: true
+schema: "./schema.json"
+documents:
+  - "lib/graphql/**/*.ts"
+generates:
+  lib/graphql/generated/types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      avoidOptionals: true
+      skipTypename: false
+      withHooks: true
+      withHOC: false
+      withComponent: false
+      enumsAsTypes: true
+  lib/graphql/generated/apollo-helpers.ts:
+    plugins:
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      withHOC: false
+      withComponent: false
+      skipTypename: false

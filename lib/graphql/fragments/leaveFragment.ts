@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
  * Used in leave queries and mutations
  */
 export const LEAVE_FRAGMENT = gql`
-  fragment LeaveFragment on leaves {
+  fragment LeaveFragment on leave {
     id
     user_id
     start_date
@@ -13,7 +13,5 @@ export const LEAVE_FRAGMENT = gql`
     leave_type
     reason
     status
-    created_at
-    updated_at
   }
 `;

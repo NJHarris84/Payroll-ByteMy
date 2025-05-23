@@ -8,10 +8,11 @@ import { gql } from '@apollo/client';
 export const NOTE_FRAGMENT = gql`
   fragment NoteFragment on notes {
     id
-    entity_id
     entity_type
+    entity_id
+    user_id
     content
-    created_by
+    is_important
     created_at
     updated_at
   }

@@ -1,12 +1,13 @@
-import { getAuth } from '@clerk/nextjs';
+// lib/auth/token-manager.server.ts
+import { auth } from '@clerk/nextjs/server';
 import { getHasuraClaims } from '@/lib/utils/jwt-utils';
 import type { HasuraRole } from '@/types/interface';
 
-class TokenManager {
-  private static instance: TokenManager;
+class TokenManagerServer {
+  private static instance: TokenManagerServer;
   private cache = new Map<string, { token: string; expiresAt: number }>();
   private refreshPromise: Map<string, Promise<string | null>> = new Map();
-  private readonly expirationBuffer: number = 5 * 60 * 1000; // 5 minutes by default
+  private readonly expirationBuffer: number = 5 * 60 * 1000;
 
   private constructor(expirationBufferMinutes?: number) {
     if (expirationBufferMinutes) {
@@ -14,41 +15,33 @@ class TokenManager {
     }
   }
 
-  static getInstance(expirationBufferMinutes?: number): TokenManager {
-    if (!TokenManager.instance) {
-      TokenManager.instance = new TokenManager(expirationBufferMinutes);
+  static getInstance(expirationBufferMinutes?: number): TokenManagerServer {
+    if (!TokenManagerServer.instance) {
+      TokenManagerServer.instance = new TokenManagerServer(expirationBufferMinutes);
     }
-    return TokenManager.instance;
+    return TokenManagerServer.instance;
   }
 
-  async getToken(isServer: boolean = false): Promise<string | null> {
-    const cacheKey = isServer ? 'server' : 'client';
-    
-    // If a refresh is already in progress, wait for it to complete
+  async getToken(): Promise<string | null> {
+    const cacheKey = 'server';
     if (this.refreshPromise.has(cacheKey)) {
       return this.refreshPromise.get(cacheKey)!;
     }
-
-    // Check cache with configurable buffer
     const cached = this.cache.get(cacheKey);
     if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
       return cached.token;
     }
-
     return this.refreshToken(cacheKey);
   }
 
-  private async refreshToken(cacheKey: string): Promise<string | null> {
+  async refreshToken(cacheKey: string): Promise<string | null> {
     if (this.refreshPromise.has(cacheKey)) {
       return this.refreshPromise.get(cacheKey)!;
     }
-
     const refreshPromiseInstance = (async () => {
       try {
-        const auth = getAuth();
-        if (!auth) return null;
-
-        const token = await auth.getToken({ template: 'hasura' });
+        const authObj = await auth();
+        const token = await authObj.getToken({ template: 'hasura' });
         if (token) {
           const payload = JSON.parse(atob(token.split('.')[1]));
           const expiresAt = (payload.exp || 0) * 1000;
@@ -57,14 +50,13 @@ class TokenManager {
         }
         return null;
       } catch (error) {
-        console.error('Token refresh failed:', error);
+        console.error('Token refresh failed (server):', error);
         this.cache.delete(cacheKey);
         return null;
       } finally {
         this.refreshPromise.delete(cacheKey);
       }
     })();
-
     this.refreshPromise.set(cacheKey, refreshPromiseInstance);
     return refreshPromiseInstance;
   }
@@ -78,7 +70,7 @@ class TokenManager {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp * 1000;
-      return exp > Date.now() + 60 * 1000; // 1-minute buffer
+      return exp > Date.now() + 60 * 1000;
     } catch {
       return false;
     }
@@ -94,4 +86,4 @@ class TokenManager {
   }
 }
 
-export const tokenManager = TokenManager.getInstance();
+export const tokenManagerServer = TokenManagerServer.getInstance();

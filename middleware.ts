@@ -5,10 +5,30 @@ import { getHasuraClaims } from '@/lib/utils/jwt-utils';
 import type { HasuraRole } from '@/types/interface';
 
 // Define protected routes that require authentication
+export const config = {
+  matcher: [
+    '/dashboard/:path*',
+    '/api/:path*',
+    '/((?!api/webhooks|api/auth|sso-callback).*)',
+  ],
+}
+
+// Check if a route should be excluded from authentication
+function isExcludedRoute(pathname: string): boolean {
+  return pathname.startsWith('/api/webhooks') || 
+         pathname.startsWith('/api/auth') ||
+         pathname.startsWith('/sso-callback');
+}
+
 const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/api/(?!webhooks|auth)(.*)' // Protect all API routes except webhooks and auth
-])
+  '/dashboard(.*)'
+]);
+
+// Check if route needs protection
+function needsProtection(pathname: string): boolean {
+  if (isExcludedRoute(pathname)) return false;
+  return pathname.startsWith('/dashboard') || pathname.startsWith('/api/');
+}
 
 // Route-role mapping for role-based access control
 const ROUTE_PERMISSIONS = {
@@ -38,7 +58,7 @@ export default clerkMiddleware(async (auth, request) => {
   const { pathname } = request.nextUrl
 
   // Apply protection to protected routes
-  if (isProtectedRoute(request)) {
+  if (needsProtection(pathname)) {
     await auth.protect()
 
     // Get user info and token
@@ -95,12 +115,3 @@ export default clerkMiddleware(async (auth, request) => {
 
   return NextResponse.next()
 })
-
-export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
-}

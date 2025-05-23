@@ -4,7 +4,7 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { RetryLink } from "@apollo/client/link/retry";
 import { tokenManager } from "@/lib/auth/token-manager";
-import { toast } from "react-hot-toast"; // Make sure to install this package
+import { toast } from "sonner"; // Changed from react-hot-toast to sonner
 
 // Comprehensive cache configuration
 const defaultCacheConfig = {

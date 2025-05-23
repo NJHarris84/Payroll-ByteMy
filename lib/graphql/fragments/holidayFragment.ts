@@ -7,9 +7,15 @@ import { gql } from '@apollo/client';
 export const HOLIDAY_FRAGMENT = gql`
   fragment HolidayFragment on holidays {
     id
-    name
     date
+    local_name
+    name
+    country_code
     region
+    is_fixed
+    is_global
+    launch_year
+    types
     created_at
     updated_at
   }

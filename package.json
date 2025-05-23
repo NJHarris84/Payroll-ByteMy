@@ -11,11 +11,13 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "check-fragments": "pnpm exec ts-node --project scripts/tsconfig.json scripts/check-fragments.ts",
     "check-fragments:node": "node scripts/check-fragments.js",
-    "check-fragments:sh": "./scripts/check-fragments.sh"
+    "check-fragments:sh": "./scripts/check-fragments.sh",
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "^3.13.4",
     "@clerk/nextjs": "^6.19.5",
+    "@clerk/themes": "^2.2.46",
     "@hookform/resolvers": "^3.10.0",
     "@neondatabase/serverless": "^1.0.0",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -32,7 +34,6 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.43.1",
-    "graphql": "^16.10.0",
     "lucide-react": "^0.290.0",
     "next": "^14.0.1",
     "next-themes": "^0.2.1",
@@ -49,6 +50,10 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.6",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-operations": "^4.6.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -62,6 +67,7 @@
     "eslint-config-next": "^14.0.1",
     "glob": "^11.0.2",
     "globby": "^14.1.0",
+    "graphql": "^16.10.0",
     "jest-environment-jsdom": "^29.7.0",
     "msw": "^2.8.4",
     "postcss": "^8.5.3",

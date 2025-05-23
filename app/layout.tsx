@@ -2,12 +2,11 @@
 
 import { type Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
-import { Inter } from 'next/font/google'  // Use Inter instead of Geist
+import { Inter } from 'next/font/google'
 import './globals.css'
 import { AppProviders } from './providers'
 import ClientThemeProvider from "@/components/providers/client-theme-provider"
 
-// Use Inter as a fallback if you don't have Geist
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
@@ -30,14 +29,21 @@ export default function RootLayout({
           colorPrimary: '#3b82f6'
         }
       }}
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      afterSignInUrl="/dashboard"
+      afterSignUpUrl="/onboarding"
     >
-      <html lang="en">
-        <body className={`${inter.variable} antialiased`}>
+      <html lang="en" suppressHydrationWarning>
+        <body className={inter.className}>
           <ClientThemeProvider>
-            <AppProviders>{children}</AppProviders>
+            <AppProviders>
+              {children}
+            </AppProviders>
           </ClientThemeProvider>
         </body>
       </html>
     </ClerkProvider>
-  )
+  );
 }

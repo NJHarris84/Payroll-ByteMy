@@ -2,16 +2,13 @@ import { gql } from "@apollo/client";
 import { LEAVE_FRAGMENT } from "../../fragments/leaveFragment";
 
 export const GET_LEAVE = gql`
-  query GetLeave($staffId: uuid!, $startDate: date, $endDate: date) {
-    leaves(
+  query GetLeave($userId: uuid, $startDate: date, $endDate: date) {
+    leave(
       where: {
-        user_id: { _eq: $staffId }
-        _and: [
-          { start_date: { _gte: $startDate } }
-          { end_date: { _lte: $endDate } }
-        ]
+        user_id: { _eq: $userId }
+        start_date: { _gte: $startDate }
+        end_date: { _lte: $endDate }
       }
-      order_by: { start_date: desc }
     ) {
       ...LeaveFragment
     }
