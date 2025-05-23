@@ -28,3 +28,8 @@ export * from './staff/deleteStaff';
 
 // Work schedule mutations
 export * from './work_schedule/createWorkSchedule';
+
+// Adjustment rule mutations
+export * from './adjustmentRules/createAdjustmentRule';
+export * from './adjustmentRules/updateAdjustmentRule';
+export * from './adjustmentRules/deleteAdjustmentRule';

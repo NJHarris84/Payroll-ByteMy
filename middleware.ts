@@ -1,6 +1,8 @@
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
 
 // Define protected routes that require authentication
 const isProtectedRoute = createRouteMatcher([
@@ -58,16 +60,11 @@ export default clerkMiddleware(async (auth, request) => {
       // Extract role from token or session claims
       let userRole: string = 'viewer' // default role
       
-      try {
-        // Try to get role from JWT token first
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        const hasuraClaims = payload['https://hasura.io/jwt/claims']
-        userRole = hasuraClaims?.['x-hasura-default-role'] || 'viewer'
-      } catch {
-        // Fallback to session claims
-        userRole = (sessionClaims?.publicMetadata?.role as string) || 'viewer'
-      }
-
+      // Try to get role from JWT token first
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const hasuraClaims = payload['https://hasura.io/jwt/claims']
+      userRole = (hasuraClaims['x-hasura-default-role'] as HasuraRole) || 'viewer';
+      
       // Check route permissions
       const requiredRoles = getRequiredRoles(pathname)
       if (requiredRoles && !requiredRoles.includes(userRole)) {

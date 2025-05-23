@@ -11,9 +11,14 @@ export const PAYROLL_FRAGMENT = gql`
     client_id
     cycle_id
     date_type_id
-    specific_pay_day
-    pay_day_of_week
+    date_value
+    primary_consultant_user_id
+    backup_consultant_user_id
+    manager_user_id
+    processing_days_before_eft
+    payroll_system
     status
+    go_live_date
     created_at
     updated_at
   }

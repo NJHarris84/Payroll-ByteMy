@@ -1,14 +1,24 @@
 // lib/auth/token-manager.ts
 import { auth } from '@clerk/nextjs/server'
 import { getAuth } from '@clerk/nextjs/client'
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
 
 class TokenManager {
   private static instance: TokenManager
   private cache = new Map<string, { token: string; expiresAt: number }>()
+  private refreshPromise: Map<string, Promise<string | null>> = new Map()
+  private readonly expirationBuffer: number = 5 * 60 * 1000 // 5 minutes by default
   
-  static getInstance(): TokenManager {
+  private constructor(expirationBufferMinutes?: number) {
+    if (expirationBufferMinutes) {
+      this.expirationBuffer = expirationBufferMinutes * 60 * 1000;
+    }
+  }
+  
+  static getInstance(expirationBufferMinutes?: number): TokenManager {
     if (!TokenManager.instance) {
-      TokenManager.instance = new TokenManager()
+      TokenManager.instance = new TokenManager(expirationBufferMinutes)
     }
     return TokenManager.instance
   }
@@ -16,35 +26,59 @@ class TokenManager {
   async getToken(isServer: boolean = false): Promise<string | null> {
     const cacheKey = isServer ? 'server' : 'client'
     
-    // Check cache with 5-minute buffer
+    // If a refresh is already in progress, wait for it to complete
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
+    }
+    
+    // Check cache with configurable buffer
     const cached = this.cache.get(cacheKey)
-    if (cached && cached.expiresAt > Date.now() + 5 * 60 * 1000) {
+    if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
       return cached.token
     }
     
-    try {
-      const authObj = isServer ? await auth() : getAuth()
-      const token = await authObj.getToken({ template: 'hasura' })
-      
-      if (token) {
-        // Cache token with expiration
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        const expiresAt = (payload.exp || 0) * 1000
-        
-        this.cache.set(cacheKey, { token, expiresAt })
-        return token
-      }
-      
-      return null
-    } catch (error) {
-      console.error('Token fetch failed:', error)
-      this.cache.delete(cacheKey) // Clear bad cache
-      return null
+    // Need to refresh token
+    return this.refreshToken(cacheKey, isServer);
+  }
+  
+  async refreshToken(cacheKey: string, isServer: boolean): Promise<string | null> {
+    // Prevent multiple simultaneous refresh attempts for the same key
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
     }
+    
+    const refreshPromiseInstance = (async () => {
+      try {
+        const authObj = isServer ? await auth() : getAuth()
+        const token = await authObj.getToken({ template: 'hasura' })
+        
+        if (token) {
+          // Cache token with expiration
+          const payload = JSON.parse(atob(token.split('.')[1]))
+          const expiresAt = (payload.exp || 0) * 1000
+          
+          this.cache.set(cacheKey, { token, expiresAt })
+          return token
+        }
+        
+        return null
+      } catch (error) {
+        console.error('Token refresh failed:', error)
+        this.cache.delete(cacheKey) // Clear bad cache
+        return null
+      } finally {
+        this.refreshPromise.delete(cacheKey);
+      }
+    })();
+    
+    this.refreshPromise.set(cacheKey, refreshPromiseInstance);
+    return refreshPromiseInstance;
   }
   
   clearCache(): void {
     this.cache.clear()
+    // Also clear any pending refresh promises
+    this.refreshPromise.clear()
   }
   
   isTokenValid(token: string): boolean {
@@ -56,6 +90,21 @@ class TokenManager {
       return false
     }
   }
+  
+  // Get user role from token without making a network request
+  getUserRoleFromToken(token: string): HasuraRole | null {
+    try {
+      const claims = getHasuraClaims(token);
+      return claims['x-hasura-default-role'] as HasuraRole;
+    } catch {
+      return null;
+    }
+  }
 }
 
 export const tokenManager = TokenManager.getInstance()
+
+export function processToken(token: string) {
+  const hasuraClaims = getHasuraClaims(token);
+  setUserRole(hasuraClaims['x-hasura-default-role'] as HasuraRole);
+}

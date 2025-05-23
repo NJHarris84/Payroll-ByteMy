@@ -1,17 +1,17 @@
 // lib/user-sync.ts
-import { clerkClient } from "@clerk/express";
+import { clerkClient } from "@clerk/nextjs/server";
+import { adminApolloClient } from "../api/apollo-client";
 import { gql } from "@apollo/client";
-import { adminApolloClient } from "@/lib/api/apollo-client";
-import { STAFF_FRAGMENT } from '../graphql/fragments/staffFragment';
 
 // Query to find a user by Clerk ID
 const GET_USER_BY_CLERK_ID = gql`
   query GetUserByClerkId($clerkId: String!) {
     users(where: { clerk_id: { _eq: $clerkId } }) {
-      ...StaffFragment
+      id
+      clerk_id
+      role
     }
   }
-  ${STAFF_FRAGMENT}
 `;
 
 // Create or update user mutation
@@ -98,4 +98,87 @@ export async function deleteUserFromDatabase(clerkId: string) {
     console.error("Error deleting user from database:", error);
     throw error;
   }
+}
+
+// Sync all users from Clerk to database
+export async function syncAllUsers() {
+  try {
+    // Get all users from Clerk
+    const users = await clerkClient.users.getUserList({
+      limit: 100 // Adjust as needed
+    });
+    
+    // Sync each user
+    for (const user of users) {
+      await syncUser(user);
+    }
+    
+    console.log(`Successfully synced ${users.length} users`);
+    return { success: true, count: users.length };
+  } catch (error) {
+    console.error("Error syncing all users:", error);
+    throw error;
+  }
+}
+
+// Sync a specific user
+export async function syncUserById(userId: string) {
+  try {
+    const user = await clerkClient.users.getUser(userId);
+    await syncUser(user);
+    return { success: true };
+  } catch (error) {
+    console.error(`Error syncing user ${userId}:`, error);
+    throw error;
+  }
+}
+
+// Helper function to sync a user
+async function syncUser(userData: any) {
+  // Extract relevant user data
+  const user = {
+    id: userData.id,
+    name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim(),
+    email: getPrimaryEmail(userData),
+    created_at: new Date(userData.createdAt).toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  
+  const UPSERT_USER = gql`
+    mutation UpsertUserSync($user: neon_auth_users_sync_insert_input!) {
+      insert_neon_auth_users_sync_one(
+        object: $user,
+        on_conflict: {
+          constraint: users_sync_id_key,
+          update_columns: [name, email, updated_at]
+        }
+      ) {
+        id
+      }
+    }
+  `;
+  
+  await adminApolloClient.mutate({
+    mutation: UPSERT_USER,
+    variables: {
+      user
+    }
+  });
+  
+  console.log(`User ${user.id} synced successfully`);
+}
+
+// Helper to get primary email
+function getPrimaryEmail(userData: any): string | null {
+  if (!userData.emailAddresses || userData.emailAddresses.length === 0) {
+    return null;
+  }
+  
+  const primaryEmail = userData.emailAddresses.find(
+    (email: any) => email.id === userData.primaryEmailAddressId
+  );
+  
+  return primaryEmail 
+    ? primaryEmail.emailAddress 
+    : userData.emailAddresses[0].emailAddress;
 }

@@ -1,10 +1,12 @@
 // hooks/useAuth.ts
-import { useAuth as useClerkAuth } from '@clerk/nextjs'
+import { useAuth as useClerkAuth, useUser } from '@clerk/nextjs'
 import { useEffect, useState } from 'react'
 import { tokenManager } from '@/lib/auth/token-manager'
+import { syncUserById } from '@/lib/services/user-sync'
 
 export function useAuth() {
   const { isLoaded, isSignedIn, user } = useClerkAuth()
+  const { user: userData } = useUser()
   const [userRole, setUserRole] = useState<string | null>(null)
   const [isLoadingRole, setIsLoadingRole] = useState(true)
   
@@ -31,6 +33,27 @@ export function useAuth() {
     
     loadRole()
   }, [isLoaded, isSignedIn])
+  
+  useEffect(() => {
+    // When a user signs in, ensure their data is synced
+    if (isSignedIn && user) {
+      // Optional: Only sync if this is a new session
+      // This prevents unnecessary syncs on every page load
+      const lastSyncTime = localStorage.getItem(`lastSync-${user.id}`)
+      const now = Date.now()
+      const syncInterval = 24 * 60 * 60 * 1000 // 24 hours
+      
+      if (!lastSyncTime || now - parseInt(lastSyncTime) > syncInterval) {
+        syncUserById(user.id)
+          .then(() => {
+            localStorage.setItem(`lastSync-${user.id}`, now.toString())
+          })
+          .catch(error => {
+            console.error('Error syncing user on login:', error)
+          })
+      }
+    }
+  }, [isSignedIn, user])
   
   return {
     isLoaded,

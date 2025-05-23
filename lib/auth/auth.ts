@@ -2,6 +2,8 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { HasuraRole, Permission, hasPermission } from "@/lib/auth/roles";
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
 
 // Check if a user has a specific Hasura role (server-side)
 export async function verifyHasuraRole(allowedRoles: HasuraRole[]): Promise<boolean> {
@@ -15,16 +17,7 @@ export async function verifyHasuraRole(allowedRoles: HasuraRole[]): Promise<bool
     const token = await getToken({ template: 'hasura' });
     if (!token) return false;
     
-    // Decode the JWT to get the claims
-    const parts = token.split('.');
-    if (parts.length !== 3) return false;
-    
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-    const hasuraClaims = payload['https://hasura.io/jwt/claims'];
-    
-    if (!hasuraClaims) return false;
-    
-    const userRole = hasuraClaims['x-hasura-default-role'] as HasuraRole;
+    const userRole = getUserRole(token);
     
     return allowedRoles.includes(userRole);
   } catch (error) {
@@ -45,16 +38,7 @@ export async function verifyPermission(requiredPermission: Permission): Promise<
     const token = await getToken({ template: 'hasura' });
     if (!token) return false;
     
-    // Decode the JWT to get the claims
-    const parts = token.split('.');
-    if (parts.length !== 3) return false;
-    
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-    const hasuraClaims = payload['https://hasura.io/jwt/claims'];
-    
-    if (!hasuraClaims) return false;
-    
-    const userRole = hasuraClaims['x-hasura-default-role'] as HasuraRole;
+    const userRole = getUserRole(token);
     
     return hasPermission(userRole, requiredPermission);
   } catch (error) {
@@ -97,4 +81,9 @@ export function withPermissionCheck(requiredPermission: Permission) {
     
     return NextResponse.next();
   };
+}
+
+export function getUserRole(token: string): HasuraRole {
+  const hasuraClaims = getHasuraClaims(token);
+  return hasuraClaims['x-hasura-default-role'] as HasuraRole;
 }

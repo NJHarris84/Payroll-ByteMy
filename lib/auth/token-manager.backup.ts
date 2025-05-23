@@ -1,0 +1,68 @@
+// lib/auth/token-manager.ts
+import { auth } from '@clerk/nextjs/server'
+import { getAuth } from '@clerk/nextjs/client'
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
+
+class TokenManager {
+  private static instance: TokenManager
+  private cache = new Map<string, { token: string; expiresAt: number }>()
+  
+  static getInstance(): TokenManager {
+    if (!TokenManager.instance) {
+      TokenManager.instance = new TokenManager()
+    }
+    return TokenManager.instance
+  }
+  
+  async getToken(isServer: boolean = false): Promise<string | null> {
+    const cacheKey = isServer ? 'server' : 'client'
+    
+    // Check cache with 5-minute buffer
+    const cached = this.cache.get(cacheKey)
+    if (cached && cached.expiresAt > Date.now() + 5 * 60 * 1000) {
+      return cached.token
+    }
+    
+    try {
+      const authObj = isServer ? await auth() : getAuth()
+      const token = await authObj.getToken({ template: 'hasura' })
+      
+      if (token) {
+        // Cache token with expiration
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        const expiresAt = (payload.exp || 0) * 1000
+        
+        this.cache.set(cacheKey, { token, expiresAt })
+        return token
+      }
+      
+      return null
+    } catch (error) {
+      console.error('Token fetch failed:', error)
+      this.cache.delete(cacheKey) // Clear bad cache
+      return null
+    }
+  }
+  
+  clearCache(): void {
+    this.cache.clear()
+  }
+  
+  isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const exp = payload.exp * 1000
+      return exp > Date.now() + 60 * 1000 // 1-minute buffer
+    } catch {
+      return false
+    }
+  }
+}
+
+export const tokenManager = TokenManager.getInstance()
+
+export function processToken(token: string) {
+  const hasuraClaims = getHasuraClaims(token);
+  setUserRole(hasuraClaims['x-hasura-default-role'] as HasuraRole);
+}

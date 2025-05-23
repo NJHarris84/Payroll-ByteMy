@@ -1,4 +1,4 @@
-// lib/api/apollo-client-enhanced.ts
+// lib/api/apollo-client.ts - ORIGINAL VERSION BACKUP
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink, NormalizedCacheObject } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";

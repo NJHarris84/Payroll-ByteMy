@@ -1,5 +1,5 @@
 {
-  "resource_version": 257,
+  "resource_version": 262,
   "metadata": {
     "version": 3,
     "sources": [
@@ -116,7 +116,11 @@
               {
                 "role": "viewer",
                 "permission": {
-                  "columns": ["id", "rule_code", "rule_description"],
+                  "columns": [
+                    "id",
+                    "rule_code",
+                    "rule_description"
+                  ],
                   "filter": {}
                 },
                 "comment": "Viewers can view basic adjustment rule information"
@@ -126,7 +130,11 @@
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["rule_code", "rule_description", "updated_at"],
+                  "columns": [
+                    "rule_code",
+                    "rule_description",
+                    "updated_at"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -153,17 +161,12 @@
             },
             "select_permissions": [
               {
-                "role": "viewer",
-                "permission": {
-                  "columns": ["id", "permissions"],
-                  "filter": {}
-                },
-                "comment": "All roles can view app settings"
-              },
-              {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["id", "permissions"],
+                  "columns": [
+                    "id",
+                    "permissions"
+                  ],
                   "filter": {}
                 },
                 "comment": "All roles can view app settings"
@@ -171,7 +174,10 @@
               {
                 "role": "manager",
                 "permission": {
-                  "columns": ["id", "permissions"],
+                  "columns": [
+                    "id",
+                    "permissions"
+                  ],
                   "filter": {}
                 },
                 "comment": "All roles can view app settings"
@@ -179,17 +185,33 @@
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["id", "permissions"],
+                  "columns": [
+                    "id",
+                    "permissions"
+                  ],
                   "filter": {}
                 },
                 "comment": "Org admins can view app settings"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "permissions"
+                  ],
+                  "filter": {}
+                },
+                "comment": "All roles can view app settings"
               }
             ],
             "update_permissions": [
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["permissions"],
+                  "columns": [
+                    "permissions"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -216,9 +238,32 @@
                 }
               }
             ],
-            "apollo_federation_config": {
-              "enable": "v1"
-            },
+            "insert_permissions": [
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "client_id",
+                    "system_id",
+                    "system_client_id"
+                  ]
+                },
+                "comment": "Managers can link clients to external systems"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "client_id",
+                    "system_id",
+                    "system_client_id"
+                  ]
+                },
+                "comment": "Org admins can link clients to external systems"
+              }
+            ],
             "select_permissions": [
               {
                 "role": "consultant",
@@ -264,29 +309,13 @@
                 "comment": "Org admins have full access to external client systems"
               }
             ],
-            "insert_permissions": [
-              {
-                "role": "manager",
-                "permission": {
-                  "check": {},
-                  "columns": ["client_id", "system_id", "system_client_id"]
-                },
-                "comment": "Managers can link clients to external systems"
-              },
-              {
-                "role": "org_admin",
-                "permission": {
-                  "check": {},
-                  "columns": ["client_id", "system_id", "system_client_id"]
-                },
-                "comment": "Org admins can link clients to external systems"
-              }
-            ],
             "update_permissions": [
               {
                 "role": "manager",
                 "permission": {
-                  "columns": ["system_client_id"],
+                  "columns": [
+                    "system_client_id"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -295,7 +324,9 @@
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["system_client_id"],
+                  "columns": [
+                    "system_client_id"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -310,7 +341,10 @@
                 },
                 "comment": "Only org admins can unlink clients from systems"
               }
-            ]
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
           },
           {
             "table": {
@@ -428,7 +462,11 @@
               {
                 "role": "viewer",
                 "permission": {
-                  "columns": ["id", "name", "active"],
+                  "columns": [
+                    "id",
+                    "name",
+                    "active"
+                  ],
                   "filter": {}
                 },
                 "comment": "Viewers can see basic client information"
@@ -438,7 +476,10 @@
               {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["contact_email", "contact_phone"],
+                  "columns": [
+                    "contact_email",
+                    "contact_phone"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -507,11 +548,32 @@
                 }
               }
             ],
+            "insert_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "name",
+                    "url",
+                    "description",
+                    "icon"
+                  ]
+                },
+                "comment": "Only org admins can add external systems"
+              }
+            ],
             "select_permissions": [
               {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["id", "name", "url", "description", "icon"],
+                  "columns": [
+                    "id",
+                    "name",
+                    "url",
+                    "description",
+                    "icon"
+                  ],
                   "filter": {}
                 },
                 "comment": "Consultants can view external systems"
@@ -549,21 +611,16 @@
                 "comment": "Org admins can view external systems"
               }
             ],
-            "insert_permissions": [
-              {
-                "role": "org_admin",
-                "permission": {
-                  "check": {},
-                  "columns": ["name", "url", "description", "icon"]
-                },
-                "comment": "Only org admins can add external systems"
-              }
-            ],
             "update_permissions": [
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["name", "url", "description", "icon"],
+                  "columns": [
+                    "name",
+                    "url",
+                    "description",
+                    "icon"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -590,17 +647,13 @@
             },
             "select_permissions": [
               {
-                "role": "viewer",
-                "permission": {
-                  "columns": ["id", "feature_name", "is_enabled"],
-                  "filter": {}
-                },
-                "comment": "All users can view enabled features"
-              },
-              {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["id", "feature_name", "is_enabled"],
+                  "columns": [
+                    "id",
+                    "feature_name",
+                    "is_enabled"
+                  ],
                   "filter": {}
                 },
                 "comment": "Consultants can view enabled features"
@@ -631,13 +684,28 @@
                   "filter": {}
                 },
                 "comment": "Org admins have full view of feature flags"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "feature_name",
+                    "is_enabled"
+                  ],
+                  "filter": {}
+                },
+                "comment": "All users can view enabled features"
               }
             ],
             "update_permissions": [
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["is_enabled", "allowed_roles"],
+                  "columns": [
+                    "is_enabled",
+                    "allowed_roles"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -650,25 +718,27 @@
               "name": "holidays",
               "schema": "public"
             },
-            "apollo_federation_config": {
-              "enable": "v1"
-            },
-            "select_permissions": [
+            "insert_permissions": [
               {
-                "role": "viewer",
+                "role": "org_admin",
                 "permission": {
+                  "check": {},
                   "columns": [
-                    "id",
                     "date",
                     "local_name",
                     "name",
                     "country_code",
-                    "region"
-                  ],
-                  "filter": {}
+                    "region",
+                    "is_fixed",
+                    "is_global",
+                    "launch_year",
+                    "types"
+                  ]
                 },
-                "comment": "All users can see holidays for payroll processing"
-              },
+                "comment": "Only org admins can add holidays"
+              }
+            ],
+            "select_permissions": [
               {
                 "role": "consultant",
                 "permission": {
@@ -721,33 +791,33 @@
                   "filter": {}
                 },
                 "comment": "Org admins have full access to holiday information"
-              }
-            ],
-            "insert_permissions": [
+              },
               {
-                "role": "org_admin",
+                "role": "viewer",
                 "permission": {
-                  "check": {},
                   "columns": [
+                    "id",
                     "date",
                     "local_name",
                     "name",
                     "country_code",
-                    "region",
-                    "is_fixed",
-                    "is_global",
-                    "launch_year",
-                    "types"
-                  ]
+                    "region"
+                  ],
+                  "filter": {}
                 },
-                "comment": "Only org admins can add holidays"
+                "comment": "All users can see holidays for payroll processing"
               }
             ],
             "update_permissions": [
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["date", "local_name", "name", "region"],
+                  "columns": [
+                    "date",
+                    "local_name",
+                    "name",
+                    "region"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -762,7 +832,10 @@
                 },
                 "comment": "Only org admins can delete holidays"
               }
-            ]
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
           },
           {
             "table": {
@@ -784,24 +857,6 @@
               }
             ],
             "insert_permissions": [
-              {
-                "role": "viewer",
-                "permission": {
-                  "check": {
-                    "user_id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  },
-                  "columns": [
-                    "start_date",
-                    "end_date",
-                    "leave_type",
-                    "reason",
-                    "user_id"
-                  ]
-                },
-                "comment": "Users can create their own leave requests"
-              },
               {
                 "role": "consultant",
                 "permission": {
@@ -849,28 +904,27 @@
                   ]
                 },
                 "comment": "Org Admins can create leave for any user"
-              }
-            ],
-            "select_permissions": [
+              },
               {
                 "role": "viewer",
                 "permission": {
-                  "columns": [
-                    "id",
-                    "user_id",
-                    "start_date",
-                    "end_date",
-                    "leave_type",
-                    "status"
-                  ],
-                  "filter": {
+                  "check": {
                     "user_id": {
                       "_eq": "X-Hasura-User-Id"
                     }
-                  }
+                  },
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason",
+                    "user_id"
+                  ]
                 },
-                "comment": "Users can view their own leave records"
-              },
+                "comment": "Users can create their own leave requests"
+              }
+            ],
+            "select_permissions": [
               {
                 "role": "consultant",
                 "permission": {
@@ -939,13 +993,37 @@
                   "allow_aggregations": true
                 },
                 "comment": "Org Admins can view all leave records"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "status"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Users can view their own leave records"
               }
             ],
             "update_permissions": [
               {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["start_date", "end_date", "leave_type", "reason"],
+                  "columns": [
+                    "start_date",
+                    "end_date",
+                    "leave_type",
+                    "reason"
+                  ],
                   "filter": {
                     "_and": [
                       {
@@ -1029,299 +1107,299 @@
             }
           },
           {
-  "table": {
-    "name": "notes",
-    "schema": "public"
-  },
-  "object_relationships": [
-    {
-      "name": "user",
-      "using": {
-        "foreign_key_constraint_on": "user_id"
-      }
-    }
-  ],
-  "array_relationships": [
-    {
-      "name": "notes_by_client",
-      "using": {
-        "manual_configuration": {
-          "column_mapping": {
-            "entity_id": "id"
+            "table": {
+              "name": "notes",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "user_id"
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "notes_by_client",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "entity_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "clients",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "notes_by_payroll",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "entity_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "payrolls",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "columns": [
+                    "entity_type",
+                    "entity_id",
+                    "content",
+                    "is_important",
+                    "user_id"
+                  ]
+                },
+                "comment": "Consultants can create notes"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "columns": [
+                    "entity_type",
+                    "entity_id",
+                    "content",
+                    "is_important",
+                    "user_id"
+                  ]
+                },
+                "comment": "Managers can create notes"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important"
+                  ]
+                },
+                "comment": "Org Admins can create notes"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "columns": [
+                    "entity_type",
+                    "entity_id",
+                    "content",
+                    "user_id"
+                  ]
+                },
+                "comment": "Viewers can create basic notes"
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "created_at",
+                    "entity_id",
+                    "entity_type",
+                    "id",
+                    "updated_at",
+                    "user_id",
+                    "is_important"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                },
+                "comment": "Consultants can view all notes on entities they have access to"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                },
+                "comment": "Managers can view all notes"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                },
+                "comment": "Org Admins can view all notes"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "entity_type",
+                    "entity_id",
+                    "user_id",
+                    "content",
+                    "is_important",
+                    "created_at"
+                  ],
+                  "filter": {}
+                },
+                "comment": "Viewers can view all notes"
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "is_important"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Consultants can update their own notes"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "is_important"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Managers can update their own notes"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "is_important"
+                  ],
+                  "filter": {},
+                  "check": {}
+                },
+                "comment": "Org Admins can update any notes"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "content"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Viewers can update their own note content"
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "consultant",
+                "permission": {
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Consultants can delete their own notes"
+              },
+              {
+                "role": "manager",
+                "permission": {
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Managers can delete their own notes"
+              },
+              {
+                "role": "org_admin",
+                "permission": {
+                  "filter": {}
+                },
+                "comment": "Org Admins can delete any notes"
+              }
+            ],
+            "apollo_federation_config": {
+              "enable": "v1"
+            }
           },
-          "insertion_order": null,
-          "remote_table": {
-            "name": "clients",
-            "schema": "public"
-          }
-        }
-      }
-    },
-    {
-      "name": "notes_by_payroll",
-      "using": {
-        "manual_configuration": {
-          "column_mapping": {
-            "entity_id": "id"
-          },
-          "insertion_order": null,
-          "remote_table": {
-            "name": "payrolls",
-            "schema": "public"
-          }
-        }
-      }
-    }
-  ],
-  "insert_permissions": [
-    {
-      "role": "consultant",
-      "permission": {
-        "check": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        },
-        "columns": [
-          "entity_type",
-          "entity_id",
-          "content",
-          "is_important",
-          "user_id"
-        ]
-      },
-      "comment": "Consultants can create notes"
-    },
-    {
-      "role": "manager",
-      "permission": {
-        "check": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        },
-        "columns": [
-          "entity_type",
-          "entity_id",
-          "content",
-          "is_important",
-          "user_id"
-        ]
-      },
-      "comment": "Managers can create notes"
-    },
-    {
-      "role": "org_admin",
-      "permission": {
-        "check": {},
-        "columns": [
-          "entity_type",
-          "entity_id",
-          "user_id",
-          "content",
-          "is_important"
-        ]
-      },
-      "comment": "Org Admins can create notes"
-    },
-    {
-      "role": "viewer",
-      "permission": {
-        "check": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        },
-        "columns": [
-          "entity_type",
-          "entity_id",
-          "content",
-          "user_id"
-        ]
-      },
-      "comment": "Viewers can create basic notes"
-    }
-  ],
-  "select_permissions": [
-    {
-      "role": "consultant",
-      "permission": {
-        "columns": [
-          "content",
-          "created_at",
-          "entity_id",
-          "entity_type",
-          "id",
-          "updated_at",
-          "user_id",
-          "is_important"
-        ],
-        "filter": {},
-        "allow_aggregations": true
-      },
-      "comment": "Consultants can view all notes on entities they have access to"
-    },
-    {
-      "role": "manager",
-      "permission": {
-        "columns": [
-          "id",
-          "entity_type",
-          "entity_id",
-          "user_id",
-          "content",
-          "is_important",
-          "created_at",
-          "updated_at"
-        ],
-        "filter": {},
-        "allow_aggregations": true
-      },
-      "comment": "Managers can view all notes"
-    },
-    {
-      "role": "org_admin",
-      "permission": {
-        "columns": [
-          "id",
-          "entity_type",
-          "entity_id",
-          "user_id",
-          "content",
-          "is_important",
-          "created_at",
-          "updated_at"
-        ],
-        "filter": {},
-        "allow_aggregations": true
-      },
-      "comment": "Org Admins can view all notes"
-    },
-    {
-      "role": "viewer",
-      "permission": {
-        "columns": [
-          "id",
-          "entity_type",
-          "entity_id",
-          "user_id",
-          "content",
-          "is_important",
-          "created_at"
-        ],
-        "filter": {}
-      },
-      "comment": "Viewers can view all notes"
-    }
-  ],
-  "update_permissions": [
-    {
-      "role": "consultant",
-      "permission": {
-        "columns": [
-          "content",
-          "is_important"
-        ],
-        "filter": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        },
-        "check": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        }
-      },
-      "comment": "Consultants can update their own notes"
-    },
-    {
-      "role": "manager",
-      "permission": {
-        "columns": [
-          "content",
-          "is_important"
-        ],
-        "filter": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        },
-        "check": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        }
-      },
-      "comment": "Managers can update their own notes"
-    },
-    {
-      "role": "org_admin",
-      "permission": {
-        "columns": [
-          "content",
-          "is_important"
-        ],
-        "filter": {},
-        "check": {}
-      },
-      "comment": "Org Admins can update any notes"
-    },
-    {
-      "role": "viewer",
-      "permission": {
-        "columns": [
-          "content"
-        ],
-        "filter": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        },
-        "check": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        }
-      },
-      "comment": "Viewers can update their own note content"
-    }
-  ],
-  "delete_permissions": [
-    {
-      "role": "consultant",
-      "permission": {
-        "filter": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        }
-      },
-      "comment": "Consultants can delete their own notes"
-    },
-    {
-      "role": "manager",
-      "permission": {
-        "filter": {
-          "user_id": {
-            "_eq": "X-Hasura-User-Id"
-          }
-        }
-      },
-      "comment": "Managers can delete their own notes"
-    },
-    {
-      "role": "org_admin",
-      "permission": {
-        "filter": {}
-      },
-      "comment": "Org Admins can delete any notes"
-    }
-  ],
-  "apollo_federation_config": {
-    "enable": "v1"
-  }
-},
           {
             "table": {
               "name": "payroll_cycles",
@@ -1355,17 +1433,13 @@
             ],
             "select_permissions": [
               {
-                "role": "viewer",
-                "permission": {
-                  "columns": ["id", "name", "description"],
-                  "filter": {}
-                },
-                "comment": "All users need to see payroll cycles"
-              },
-              {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["id", "name", "description"],
+                  "columns": [
+                    "id",
+                    "name",
+                    "description"
+                  ],
                   "filter": {}
                 },
                 "comment": "All users need to see payroll cycles"
@@ -1397,6 +1471,18 @@
                   "filter": {}
                 },
                 "comment": "Org admins can see all payroll cycle details"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "description"
+                  ],
+                  "filter": {}
+                },
+                "comment": "All users need to see payroll cycles"
               }
             ],
             "apollo_federation_config": {
@@ -1439,24 +1525,23 @@
                 "role": "org_admin",
                 "permission": {
                   "check": {},
-                  "columns": ["name", "description"]
+                  "columns": [
+                    "name",
+                    "description"
+                  ]
                 },
                 "comment": "Org Admins can insert payroll date types"
               }
             ],
             "select_permissions": [
               {
-                "role": "viewer",
-                "permission": {
-                  "columns": ["id", "name", "description"],
-                  "filter": {}
-                },
-                "comment": "All users need to see payroll date types"
-              },
-              {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["id", "name", "description"],
+                  "columns": [
+                    "id",
+                    "name",
+                    "description"
+                  ],
                   "filter": {}
                 },
                 "comment": "Consultants can view payroll date types"
@@ -1490,13 +1575,28 @@
                   "allow_aggregations": true
                 },
                 "comment": "Org Admins can view payroll date types"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "description"
+                  ],
+                  "filter": {}
+                },
+                "comment": "All users need to see payroll date types"
               }
             ],
             "update_permissions": [
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["name", "description"],
+                  "columns": [
+                    "name",
+                    "description"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -1660,7 +1760,9 @@
               {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["notes"],
+                  "columns": [
+                    "notes"
+                  ],
                   "filter": {
                     "payroll": {
                       "_or": [
@@ -1963,7 +2065,9 @@
               {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["status"],
+                  "columns": [
+                    "status"
+                  ],
                   "filter": {
                     "_or": [
                       {
@@ -2113,27 +2217,6 @@
                 }
               }
             ],
-            "select_permissions": [
-              {
-                "role": "org_admin",
-                "permission": {
-                  "columns": [
-                    "id",
-                    "user_id",
-                    "role",
-                    "resource",
-                    "operation",
-                    "granted",
-                    "conditions",
-                    "created_at",
-                    "created_by",
-                    "expires_at"
-                  ],
-                  "filter": {}
-                },
-                "comment": "Only org admins can view permission overrides"
-              }
-            ],
             "insert_permissions": [
               {
                 "role": "org_admin",
@@ -2157,11 +2240,36 @@
                 "comment": "Only org admins can create permission overrides"
               }
             ],
+            "select_permissions": [
+              {
+                "role": "org_admin",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "role",
+                    "resource",
+                    "operation",
+                    "granted",
+                    "conditions",
+                    "created_at",
+                    "created_by",
+                    "expires_at"
+                  ],
+                  "filter": {}
+                },
+                "comment": "Only org admins can view permission overrides"
+              }
+            ],
             "update_permissions": [
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["granted", "conditions", "expires_at"],
+                  "columns": [
+                    "granted",
+                    "conditions",
+                    "expires_at"
+                  ],
                   "filter": {},
                   "check": {}
                 },
@@ -2201,21 +2309,6 @@
               }
             ],
             "array_relationships": [
-              {
-                "name": "staffByManager",
-                "using": {
-                  "manual_configuration": {
-                    "column_mapping": {
-                      "id": "manager_id"
-                    },
-                    "insertion_order": null,
-                    "remote_table": {
-                      "name": "users",
-                      "schema": "public"
-                    }
-                  }
-                }
-              },
               {
                 "name": "audit_logs_performed",
                 "using": {
@@ -2340,6 +2433,21 @@
                 }
               },
               {
+                "name": "staffByManager",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "id": "manager_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "users",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "usersManager",
                 "using": {
                   "foreign_key_constraint_on": {
@@ -2370,7 +2478,10 @@
                 "permission": {
                   "check": {
                     "role": {
-                      "_in": ["viewer", "consultant"]
+                      "_in": [
+                        "viewer",
+                        "consultant"
+                      ]
                     }
                   },
                   "columns": [
@@ -2402,14 +2513,6 @@
               }
             ],
             "select_permissions": [
-              {
-                "role": "viewer",
-                "permission": {
-                  "columns": ["id", "image", "name", "is_staff"],
-                  "filter": {}
-                },
-                "comment": "Viewers can see basic user information"
-              },
               {
                 "role": "consultant",
                 "permission": {
@@ -2466,13 +2569,31 @@
                   "allow_aggregations": true
                 },
                 "comment": "Org Admins can view all user data"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "image",
+                    "name",
+                    "is_staff"
+                  ],
+                  "filter": {}
+                },
+                "comment": "Viewers can see basic user information"
               }
             ],
             "update_permissions": [
               {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["email", "image", "name", "username"],
+                  "columns": [
+                    "email",
+                    "image",
+                    "name",
+                    "username"
+                  ],
                   "filter": {
                     "id": {
                       "_eq": "X-Hasura-User-Id"
@@ -2527,7 +2648,10 @@
                           },
                           {
                             "role": {
-                              "_in": ["viewer", "consultant"]
+                              "_in": [
+                                "viewer",
+                                "consultant"
+                              ]
                             }
                           }
                         ]
@@ -2589,18 +2713,6 @@
             ],
             "insert_permissions": [
               {
-                "role": "viewer",
-                "permission": {
-                  "check": {
-                    "user_id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  },
-                  "columns": ["work_day", "work_hours", "user_id"]
-                },
-                "comment": "Users can insert their own work schedule"
-              },
-              {
                 "role": "consultant",
                 "permission": {
                   "check": {
@@ -2608,7 +2720,11 @@
                       "_eq": "X-Hasura-User-Id"
                     }
                   },
-                  "columns": ["work_day", "work_hours", "user_id"]
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id"
+                  ]
                 },
                 "comment": "Consultants can insert their own work schedule"
               },
@@ -2631,7 +2747,11 @@
                       }
                     ]
                   },
-                  "columns": ["work_day", "work_hours", "user_id"]
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id"
+                  ]
                 },
                 "comment": "Managers can insert work schedules for themselves and their team"
               },
@@ -2639,28 +2759,41 @@
                 "role": "org_admin",
                 "permission": {
                   "check": {},
-                  "columns": ["user_id", "work_day", "work_hours"]
+                  "columns": [
+                    "user_id",
+                    "work_day",
+                    "work_hours"
+                  ]
                 },
                 "comment": "Org Admins can insert any work schedules"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id"
+                  ]
+                },
+                "comment": "Users can insert their own work schedule"
               }
             ],
             "select_permissions": [
               {
-                "role": "viewer",
-                "permission": {
-                  "columns": ["id", "user_id", "work_day", "work_hours"],
-                  "filter": {
-                    "user_id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  }
-                },
-                "comment": "Users can view their own work schedule"
-              },
-              {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["id", "user_id", "work_day", "work_hours"],
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "work_day",
+                    "work_hours"
+                  ],
                   "filter": {
                     "user_id": {
                       "_eq": "X-Hasura-User-Id"
@@ -2715,30 +2848,33 @@
                   "allow_aggregations": true
                 },
                 "comment": "Org Admins can view all work schedules"
-              }
-            ],
-            "update_permissions": [
+              },
               {
                 "role": "viewer",
                 "permission": {
-                  "columns": ["work_day", "work_hours"],
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "work_day",
+                    "work_hours"
+                  ],
                   "filter": {
-                    "user_id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  },
-                  "check": {
                     "user_id": {
                       "_eq": "X-Hasura-User-Id"
                     }
                   }
                 },
-                "comment": "Users can update their own work schedule"
-              },
+                "comment": "Users can view their own work schedule"
+              }
+            ],
+            "update_permissions": [
               {
                 "role": "consultant",
                 "permission": {
-                  "columns": ["work_day", "work_hours"],
+                  "columns": [
+                    "work_day",
+                    "work_hours"
+                  ],
                   "filter": {
                     "user_id": {
                       "_eq": "X-Hasura-User-Id"
@@ -2755,7 +2891,10 @@
               {
                 "role": "manager",
                 "permission": {
-                  "columns": ["work_day", "work_hours"],
+                  "columns": [
+                    "work_day",
+                    "work_hours"
+                  ],
                   "filter": {
                     "_or": [
                       {
@@ -2794,11 +2933,35 @@
               {
                 "role": "org_admin",
                 "permission": {
-                  "columns": ["work_day", "work_hours", "user_id"],
+                  "columns": [
+                    "work_day",
+                    "work_hours",
+                    "user_id"
+                  ],
                   "filter": {},
                   "check": {}
                 },
                 "comment": "Org Admins can update any work schedules"
+              },
+              {
+                "role": "viewer",
+                "permission": {
+                  "columns": [
+                    "work_day",
+                    "work_hours"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "check": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": "Users can update their own work schedule"
               }
             ],
             "delete_permissions": [
@@ -2855,29 +3018,18 @@
               "schema": "public"
             },
             "configuration": {
-              "custom_name": "GeneratePayrollDates",
-              "custom_root_fields": {
-                "function": "generatePayrollDates"
-              },
-              "exposed_as": "mutation"
-            },
-            "permissions": [
-              {
-                "role": "manager"
-              },
-              {
-                "role": "org_admin"
-              }
-            ]
+              "custom_root_fields": {},
+              "exposed_as": "query"
+            }
           }
         ],
         "configuration": {
           "connection_info": {
-            "use_prepared_statements": true,
             "database_url": {
               "from_env": "PG_DATABASE_URL"
             },
-            "isolation_level": "read-committed"
+            "isolation_level": "read-committed",
+            "use_prepared_statements": true
           }
         }
       }
