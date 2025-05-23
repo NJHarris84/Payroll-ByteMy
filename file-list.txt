@@ -1,6 +1,8 @@
 ./update-imports.js
 ./pnpm-lock.yaml
+./Authentication-flow.md
 ./middleware.ts
+./schema_dump.sql
 ./__mocks__/handlers.ts
 ./__mocks__/server.ts
 ./__mocks__/mockData.ts
@@ -32,7 +34,6 @@
 ./app/api/cron/update-payroll-dates/route.ts
 ./app/(auth)/auth-layout.tsx
 ./app/(auth)/sign-in/[[...sign-in]]/page.tsx
-./app/(dashboard)/clients/loading.tsx.bak
 ./app/(dashboard)/clients/new/page.tsx
 ./app/(dashboard)/clients/loading.tsx
 ./app/(dashboard)/clients/[id]/page.tsx
@@ -41,7 +42,6 @@
 ./app/(dashboard)/settings/page.tsx
 ./app/(dashboard)/developer/page.tsx
 ./app/(dashboard)/calendar/page.tsx
-./app/(dashboard)/payrolls/loading.tsx.bak
 ./app/(dashboard)/payrolls/loading.tsx
 ./app/(dashboard)/payrolls/[id]/error.tsx
 ./app/(dashboard)/payrolls/[id]/loading.tsx
@@ -52,7 +52,6 @@
 ./app/(dashboard)/dashboard/page.tsx
 ./app/(dashboard)/layout.tsx
 ./app/(dashboard)/ai-assistant/page.tsx
-./app/(dashboard)/staff/loading.tsx.bak
 ./app/(dashboard)/staff/new/page.tsx
 ./app/(dashboard)/staff/loading.tsx
 ./app/(dashboard)/staff/[id]/page.tsx
@@ -66,13 +65,14 @@
 ./jest.setup.js
 ./schema.sql
 ./postcss.config.mjs
-./Hasura Metadata May 23 2025.json
+./Database & Hasura Integration: Technical Overview.md
 ./jest.config.js
 ./next.config.js
 ./quires
 ./.env.test
 ./docs/graphql-fragments.md
 ./TESTING.md
+./permissions
 ./next-env.d.ts
 ./README.md
 ./tailwind.config.ts
@@ -168,6 +168,7 @@
 ./components/client/client-card.tsx
 ./components/client/client-payroll-table.tsx
 ./components/client/index.ts
+./hasura-metadata.json
 ./public/file.svg
 ./public/vercel.svg
 ./public/next.svg
@@ -208,11 +209,9 @@
 ./scripts/fix-imports.sh
 ./vercel.json.txt
 ./.eslintrc.js
-./lib/auth/token-refresh-handler.tsx
 ./lib/auth/roles.ts
 ./lib/auth/index.ts
 ./lib/auth/token-manager.ts
-./lib/auth/token-provider.tsx
 ./lib/auth/auth.ts
 ./lib/utils/date-utils.ts
 ./lib/utils/utils.ts
@@ -241,7 +240,6 @@
 ./lib/graphql/mutations/clients/deleteClient.ts
 ./lib/graphql/mutations/clients/createClient.ts
 ./lib/graphql/mutations/clients/updateClient.ts
-./lib/graphql/mutations/index.ts.bak
 ./lib/graphql/mutations/payrolls/updatePayroll.ts
 ./lib/graphql/mutations/payrolls/insertPayroll.ts
 ./lib/graphql/mutations/payrolls/createPayroll.ts
@@ -265,7 +263,6 @@
 ./lib/graphql/queries/clients/getClientsList.ts
 ./lib/graphql/queries/clients/getClientById.ts
 ./lib/graphql/queries/clientExternalSystems/getClientExternalSystems.ts
-./lib/graphql/queries/index.ts.bak
 ./lib/graphql/queries/payrolls/getPayrollsMissingDates.ts
 ./lib/graphql/queries/payrolls/getPayrollSchedule.ts
 ./lib/graphql/queries/payrolls/getPayrolls.ts
@@ -294,7 +291,6 @@
 ./lib/hooks/ui/useForm.ts
 ./lib/hooks/ui/useDisclosure.ts
 ./lib/hooks/ui/useMediaQuery.ts
-./lib/hooks/index.ts.bak
 ./lib/hooks/utils/useDataFetching.ts
 ./lib/hooks/utils/useSubscription.ts
 ./lib/hooks/utils/useCacheInvalidation.ts
@@ -304,15 +300,11 @@
 ./lib/hooks/utils/useDataRefresh.ts
 ./lib/hooks/README.md
 ./lib/hooks/api/usePayrollCycles.ts
-./lib/hooks/api/usePayrollQueries.ts.bak
-./lib/hooks/api/useClientQueries.ts.bak
 ./lib/hooks/api/usePolling.ts
 ./lib/hooks/api/useClientExternalSystems.ts
 ./lib/hooks/api/useExternalSystems.ts
 ./lib/hooks/api/usePayrollDateTypes.ts
 ./lib/hooks/api/useUserRole.ts
-./lib/hooks/api/usePayroll.ts.bak2
-./lib/hooks/api/useClient.ts.bak
 ./lib/hooks/api/useAccounts.ts
 ./lib/hooks/api/usePolledQuery.ts
 ./lib/hooks/api/useLeave.ts
@@ -332,7 +324,6 @@
 ./lib/hooks/api/useNotes.ts
 ./lib/hooks/api/useStatistics.ts
 ./lib/hooks/api/useClientQueries.ts
-./lib/hooks/api/usePayroll.ts.bak
 ./lib/hooks/api/useWorkSchedule.ts
 ./lib/hooks/index.ts
 ./lib/api/auth-guard.ts
@@ -351,7 +342,7 @@
 ./components.json
 ./text.txt
 ./tsconfig.json
-./.vscode/settings.json
+./users.txt
+./schema_dump1.sql
 ./eslint.config.mjs
 ./drizzle/schema.ts
-./middleware.tsx
