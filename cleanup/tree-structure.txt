@@ -39,6 +39,7 @@
 │           └── utils
 │               ├── date-utils.test.ts
 │               └── error-handling.test.ts
+├── add-relative-paths.js
 ├── app
 │   ├── (auth)
 │   │   ├── layout.tsx
@@ -58,8 +59,6 @@
 │   │   │   │   └── page.tsx
 │   │   │   └── page.tsx
 │   │   ├── dashboard
-│   │   │   └── page.tsx
-│   │   ├── debug-auth
 │   │   │   └── page.tsx
 │   │   ├── developer
 │   │   │   └── page.tsx
@@ -134,53 +133,9 @@
 │   ├── providers.tsx
 │   └── sso-callback
 │       └── page.tsx
-├── cleanup
-│   ├── add-relative-paths.js
-│   ├── apollo-client.original.bak
-│   ├── apollo-client2.bak
-│   ├── auth-debug.txt
-│   ├── Authentication-flow.md
-│   ├── codegen.yml
-│   ├── components.json
-│   ├── Database & Hasura Integration: Technical Overview.md
-│   ├── file-list.txt
-│   ├── graphql-import-updates.md
-│   ├── hasura-metadata.json
-│   ├── hooks
-│   ├── list_tables.sql
-│   ├── neon_db_schema1.sql
-│   ├── PayCalculator-Logic.md
-│   ├── permissions
-│   ├── schema_reference.txt
-│   ├── schema.json
-│   ├── scripts
-│   │   ├── analysis.ts
-│   │   ├── check-fragments.js
-│   │   ├── check-fragments.ts
-│   │   ├── check-imports.sh
-│   │   ├── create-missing-graphql-files.sh
-│   │   ├── fix-component-page-imports.sh
-│   │   ├── fix-critical-files.sh
-│   │   ├── fix-graphql-queries-index.sh
-│   │   ├── fix-hooks-exports.sh
-│   │   ├── fix-imports.sh
-│   │   ├── list-exports.ts
-│   │   ├── migrate-next-auth-to-clerk.sh
-│   │   ├── project-structure.sh
-│   │   ├── standardize-imports.sh
-│   │   └── tsconfig.json
-│   ├── test
-│   │   └── employee.test.js
-│   ├── TESTING.md
-│   ├── text.txt
-│   ├── token-manager-new.bak
-│   ├── token-manager.bak
-│   ├── tree-structure.txt
-│   ├── typescript-exports.md
-│   ├── update-imports.js
-│   ├── users.txt
-│   └── vercel.json.txt
-├── cleanup.sh
+├── auth-debug.txt
+├── Authentication-flow.md
+├── codegen.yml
 ├── components
 │   ├── client
 │   │   ├── client-card.tsx
@@ -279,24 +234,32 @@
 │   │   ├── tabs.tsx
 │   │   └── textarea.tsx
 │   └── upcoming-payrolls.tsx
+├── components.json
 ├── cypress
 │   └── e2e
 │       ├── auth.cy.js
 │       ├── clients.cy.js
 │       ├── payroll-dates.cy.js
 │       └── payroll.cy.js
+├── Database & Hasura Integration: Technical Overview.md
 ├── docs
 │   └── graphql-fragments.md
 ├── drizzle
 │   └── schema.ts
 ├── eslint.config.mjs
+├── file-list.txt
+├── graphql-import-updates.md
+├── hasura-metadata.json
+├── hooks
 ├── jest.config.js
 ├── jest.setup.js
 ├── lib
 │   ├── api
 │   │   ├── api-response.ts
 │   │   ├── apollo-auth-link.ts
+│   │   ├── apollo-client.original.bak
 │   │   ├── apollo-client.ts
+│   │   ├── apollo-client2.bak
 │   │   ├── auth-guard.ts
 │   │   ├── client.ts
 │   │   ├── error-boundary.tsx
@@ -307,6 +270,8 @@
 │   │   ├── auth.ts
 │   │   ├── index.ts
 │   │   ├── roles.ts
+│   │   ├── token-manager-new.bak
+│   │   ├── token-manager.bak
 │   │   ├── token-manager.client.ts
 │   │   ├── token-manager.server.ts
 │   │   └── token-manager.ts
@@ -469,7 +434,9 @@
 │       ├── index.ts
 │       ├── jwt-utils.ts
 │       └── utils.ts
+├── list_tables.sql
 ├── middleware.ts
+├── neon_db_schema1.sql
 ├── next-env.d.ts
 ├── next.config.js
 ├── package.json
@@ -479,6 +446,8 @@
 │       │   └── sync-users.ts
 │       └── webhooks
 │           └── clerk.ts
+├── PayCalculator-Logic.md
+├── permissions
 ├── pnpm-lock.yaml
 ├── postcss.config.mjs
 ├── public
@@ -488,11 +457,37 @@
 │   ├── vercel.svg
 │   └── window.svg
 ├── README.md
+├── schema_reference.txt
+├── schema.json
+├── scripts
+│   ├── analysis.ts
+│   ├── check-fragments.js
+│   ├── check-fragments.ts
+│   ├── check-imports.sh
+│   ├── create-missing-graphql-files.sh
+│   ├── fix-component-page-imports.sh
+│   ├── fix-critical-files.sh
+│   ├── fix-graphql-queries-index.sh
+│   ├── fix-hooks-exports.sh
+│   ├── fix-imports.sh
+│   ├── list-exports.ts
+│   ├── migrate-next-auth-to-clerk.sh
+│   ├── project-structure.sh
+│   ├── standardize-imports.sh
+│   └── tsconfig.json
 ├── tailwind.config.ts
+├── test
+│   └── employee.test.js
+├── TESTING.md
+├── text.txt
 ├── tree-structure.txt
 ├── tsconfig.json
-└── types
-    ├── globals.d.ts
-    └── interface.ts
+├── types
+│   ├── globals.d.ts
+│   └── interface.ts
+├── typescript-exports.md
+├── update-imports.js
+├── users.txt
+└── vercel.json.txt
 
-128 directories, 368 files
+126 directories, 365 files

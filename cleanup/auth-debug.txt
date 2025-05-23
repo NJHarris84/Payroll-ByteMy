@@ -1,0 +1,1414 @@
+
+
+=== SIGN-IN PAGE (app/(auth)/sign-in/[[...sign-in]]/page.tsx) ===
+// app/(auth)/sign-in/[[...sign-in]]/page.tsx
+"use client";
+
+import { SignIn } from "@clerk/nextjs";
+
+export default function Page() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-muted">
+      <SignIn 
+        appearance={{
+          elements: {
+            rootBox: "mx-auto",
+            card: "shadow-lg"
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+=== AUTH LAYOUT (app/(auth)/layout.tsx) ===
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-muted">
+      {children}
+    </div>
+  );
+}
+
+=== APP PROVIDERS (app/providers.tsx) ===
+// app/providers.tsx
+"use client"
+
+import { ApolloProvider } from "@apollo/client"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/toaster"
+import { getClientApolloClient } from "@/lib/api/apollo-client" // Import directly
+
+export function AppProviders({ children }: { children: React.ReactNode }) {
+  const client = getClientApolloClient()
+
+  return (
+    <ApolloProvider client={client}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        {children}
+        <Toaster />
+      </ThemeProvider>
+    </ApolloProvider>
+  )
+}
+
+=== ROOT PROVIDERS (components/providers/root-providers.tsx) ===
+"use client";
+
+import { ApolloProvider } from "@apollo/client";
+import { ThemeProvider } from "./theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { apolloClient } from "@/lib/api/apollo-client";
+
+interface RootProvidersProps {
+  children: React.ReactNode;
+}
+
+export function RootProviders({ children }: RootProvidersProps) {
+  return (
+    <ApolloProvider client={apolloClient}>
+      <ThemeProvider defaultTheme="system" storageKey="payroll-theme">
+        {children}
+        <Toaster position="top-right" />
+      </ThemeProvider>
+    </ApolloProvider>
+  );
+}
+
+=== PROVIDERS INDEX (components/providers/index.ts) ===
+export * from "./root-providers"
+export * from "./theme-provider"
+
+=== CLIENT THEME PROVIDER (components/providers/client-theme-provider.tsx) ===
+'use client'
+
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { ReactNode } from 'react'
+
+export default function ClientThemeProvider({ children }: { children: ReactNode }) {
+  return (
+    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+      {children}
+    </NextThemesProvider>
+  )
+}
+
+
+=== THEME PROVIDER (components/providers/theme-provider.tsx) ===
+"use client";
+
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { type ReactNode } from "react";
+
+interface ThemeProviderProps {
+  children: ReactNode;
+  defaultTheme?: "dark" | "light" | "system";
+  storageKey?: string;
+}
+
+export function ThemeProvider({
+  children,
+  defaultTheme = "system",
+  storageKey = "theme",
+  ...props
+}: ThemeProviderProps) {
+  return (
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme={defaultTheme}
+      enableSystem
+      storageKey={storageKey}
+      {...props}
+    >
+      {children}
+    </NextThemesProvider>
+  );
+}
+
+// Default export for simpler imports
+export default function ClientThemeProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return <ThemeProvider>{children}</ThemeProvider>;
+}
+
+=== MIDDLEWARE (middleware.ts) ===
+// middleware.ts
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
+import { isTokenExpired } from './lib/utils/jwt-utils';
+
+// Define public routes that don't require authentication
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sso-callback(.*)',
+  '/api/webhooks(.*)',
+  '/api/auth(.*)',
+]);
+
+// Define role-based routes
+const roleBasedRoutes = {
+  '/clients/new': ['manager', 'org_admin', 'admin'],
+  '/payrolls/new': ['manager', 'org_admin', 'admin'],
+  '/staff': ['manager', 'org_admin', 'admin'],
+  '/settings': ['org_admin', 'admin'],
+  '/developer': ['admin'],
+} as const;
+
+export default clerkMiddleware(async (auth, request) => {
+  const { pathname } = request.nextUrl;
+  
+  // Skip public routes
+  if (isPublicRoute(request)) {
+    return NextResponse.next();
+  }
+
+  // Get auth state
+  const authState = await auth();
+  
+  // Check if user is authenticated
+  if (!authState.userId) {
+    console.warn('No userId found in auth state');
+    // For API routes, return 401
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    // For other routes, redirect to sign-in
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
+
+  try {
+    // Get the Hasura token
+    const token = await authState.getToken({ template: 'hasura' });
+    
+    if (!token) {
+      console.error('No Hasura token available');
+      return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+
+    // Check if token is expired
+    if (isTokenExpired(token)) {
+      console.error('Token is expired');
+      return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+
+    // Parse the token to get user role
+    let userRole = 'viewer'; // default role
+    try {
+      // Use Buffer.from for Node.js compatibility
+      const payload = JSON.parse(
+        Buffer.from(token.split('.')[1], 'base64').toString()
+      );
+      const hasuraClaims = payload['https://hasura.io/jwt/claims'];
+      
+      if (!hasuraClaims) {
+        console.error('No Hasura claims found in token');
+        return NextResponse.redirect(new URL('/sign-in?error=invalid-claims', request.url));
+      }
+      
+      userRole = hasuraClaims?.['x-hasura-default-role'] || 'viewer';
+    } catch (e) {
+      console.error('Failed to parse JWT:', e);
+      return NextResponse.redirect(new URL('/sign-in?error=token-parse-error', request.url));
+    }
+
+    // Check role-based access
+    for (const [route, allowedRoles] of Object.entries(roleBasedRoutes)) {
+      if (pathname.startsWith(route) && !allowedRoles.includes(userRole as any)) {
+        if (pathname.startsWith('/api/')) {
+          return NextResponse.json(
+            { error: 'Forbidden: Insufficient permissions' },
+            { status: 403 }
+          );
+        }
+        // Redirect to dashboard with a message
+        return NextResponse.redirect(new URL('/dashboard?error=unauthorized', request.url));
+      }
+    }
+
+    // Add headers for downstream use
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-user-id', authState.userId);
+    requestHeaders.set('x-user-role', userRole);
+    requestHeaders.set('authorization', `Bearer ${token}`);
+
+    return NextResponse.next({
+      request: { headers: requestHeaders }
+    });
+
+  } catch (error) {
+    console.error('Middleware error:', error);
+    // Log detailed error information
+    if (error instanceof Error) {
+      console.error(`Error name: ${error.name}, message: ${error.message}`);
+      console.error(`Stack trace: ${error.stack}`);
+    }
+    
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Authentication error' }, { status: 401 });
+    }
+    return NextResponse.redirect(new URL('/sign-in?error=auth-error', request.url));
+  }
+});
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+};
+
+=== API AUTH ROUTE (app/api/auth/token/route.ts) ===
+// app/api/auth/token/route.ts
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+
+export async function GET() {
+  try {
+    const { userId, getToken } = auth();
+    
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Not authenticated", code: "no-user-id" }, 
+        { status: 401 }
+      );
+    }
+    
+    const token = await getToken({ template: "hasura" });
+    
+    if (!token) {
+      console.error("Failed to generate Hasura token for user:", userId);
+      return NextResponse.json(
+        { error: "Could not generate authentication token", code: "token-generation-failed" }, 
+        { status: 401 }
+      );
+    }
+    
+    return NextResponse.json({ token });
+  } catch (error) {
+    console.error("Error generating token:", error);
+    return NextResponse.json(
+      { error: "Authentication error", code: "auth-error" }, 
+      { status: 500 }
+    );
+  }
+}
+
+=== AUTH LOGIC (lib/auth/auth.ts) ===
+// lib/auth.ts
+import { auth } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { HasuraRole, Permission, hasPermission } from "@/lib/auth/roles";
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
+
+// Check if a user has a specific Hasura role (server-side)
+export async function verifyHasuraRole(allowedRoles: HasuraRole[]): Promise<boolean> {
+  const { userId, getToken } = auth();
+  
+  if (!userId) {
+    return false;
+  }
+  
+  try {
+    const token = await getToken({ template: 'hasura' });
+    if (!token) return false;
+    
+    const userRole = getUserRole(token);
+    
+    return allowedRoles.includes(userRole);
+  } catch (error) {
+    console.error('Error verifying Hasura role:', error);
+    return false;
+  }
+}
+
+// Check if a user has a specific permission (server-side)
+export async function verifyPermission(requiredPermission: Permission): Promise<boolean> {
+  const { userId, getToken } = auth();
+  
+  if (!userId) {
+    return false;
+  }
+  
+  try {
+    const token = await getToken({ template: 'hasura' });
+    if (!token) return false;
+    
+    const userRole = getUserRole(token);
+    
+    return hasPermission(userRole, requiredPermission);
+  } catch (error) {
+    console.error('Error verifying permission:', error);
+    return false;
+  }
+}
+
+// API route middleware for role-based access control
+export function withRoleCheck(allowedRoles: HasuraRole[]) {
+  return async function middleware(
+    req: NextRequest
+  ): Promise<NextResponse | void> {
+    const hasRole = await verifyHasuraRole(allowedRoles);
+    
+    if (!hasRole) {
+      return NextResponse.json(
+        { error: "Not authorized" },
+        { status: 403 }
+      );
+    }
+    
+    return NextResponse.next();
+  };
+}
+
+// API route middleware for permission-based access control
+export function withPermissionCheck(requiredPermission: Permission) {
+  return async function middleware(
+    req: NextRequest
+  ): Promise<NextResponse | void> {
+    const hasRequiredPermission = await verifyPermission(requiredPermission);
+    
+    if (!hasRequiredPermission) {
+      return NextResponse.json(
+        { error: "Not authorized" },
+        { status: 403 }
+      );
+    }
+    
+    return NextResponse.next();
+  };
+}
+
+export function getUserRole(token: string): HasuraRole {
+  const hasuraClaims = getHasuraClaims(token);
+  return hasuraClaims['x-hasura-default-role'] as HasuraRole;
+}
+
+=== TOKEN MANAGER (lib/auth/token-manager.ts) ===
+// lib/auth/token-manager.ts
+import { auth } from '@clerk/nextjs/server';
+import { parseJWT } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
+
+class TokenManager {
+  private static instance: TokenManager;
+  private cache = new Map<string, { token: string; expiresAt: number }>();
+  private refreshPromise: Map<string, Promise<string | null>> = new Map();
+  private readonly expirationBuffer: number = 5 * 60 * 1000; // 5 minutes
+
+  private constructor(expirationBufferMinutes?: number) {
+    if (expirationBufferMinutes) {
+      this.expirationBuffer = expirationBufferMinutes * 60 * 1000;
+    }
+  }
+
+  static getInstance(expirationBufferMinutes?: number): TokenManager {
+    if (!TokenManager.instance) {
+      TokenManager.instance = new TokenManager(expirationBufferMinutes);
+    }
+    return TokenManager.instance;
+  }
+
+  async getToken(isServer: boolean = false): Promise<string | null> {
+    const cacheKey = isServer ? 'server' : 'client';
+    
+    // Check cache
+    const cached = this.cache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
+      return cached.token;
+    }
+
+    // For client-side, make an API call
+    if (!isServer && typeof window !== 'undefined') {
+      try {
+        const response = await fetch('/api/auth/token');
+        if (response.ok) {
+          const { token } = await response.json();
+          if (token) {
+            try {
+              const payload = parseJWT(token);
+              const expiresAt = (payload.exp || 0) * 1000;
+              this.cache.set(cacheKey, { token, expiresAt });
+              return token;
+            } catch (error) {
+              console.error('Failed to parse token:', error);
+              return token; // Return token even if parsing fails
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch token from API:', error);
+      }
+      return null;
+    }
+
+    // For server-side, use Clerk auth directly
+    return this.refreshToken(cacheKey);
+  }
+
+  private async refreshToken(cacheKey: string): Promise<string | null> {
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
+    }
+
+    const refreshPromiseInstance = (async () => {
+      try {
+        const { getToken } = auth();
+        if (!getToken) return null;
+
+        const token = await getToken({ template: 'hasura' });
+        if (token) {
+          try {
+            const payload = parseJWT(token);
+            const expiresAt = (payload.exp || 0) * 1000;
+            this.cache.set(cacheKey, { token, expiresAt });
+            return token;
+          } catch (error) {
+            console.error('Failed to parse token:', error);
+            return token; // Return token even if parsing fails
+          }
+        }
+        return null;
+      } catch (error) {
+        console.error('Token refresh failed:', error);
+        this.cache.delete(cacheKey);
+        return null;
+      } finally {
+        this.refreshPromise.delete(cacheKey);
+      }
+    })();
+
+    this.refreshPromise.set(cacheKey, refreshPromiseInstance);
+    return refreshPromiseInstance;
+  }
+
+  clearCache(): void {
+    this.cache.clear();
+    this.refreshPromise.clear();
+  }
+
+  isTokenValid(token: string): boolean {
+    try {
+      const payload = parseJWT(token);
+      const exp = payload.exp * 1000;
+      return exp > Date.now() + 60 * 1000; // 1-minute buffer
+    } catch {
+      return false;
+    }
+  }
+
+  getUserRoleFromToken(token: string): HasuraRole | null {
+    try {
+      const claims = getHasuraClaims(token);
+      return claims['x-hasura-default-role'] as HasuraRole;
+    } catch {
+      return null;
+    }
+  }
+}
+
+// Create and export the singleton instance
+export const tokenManager = TokenManager.getInstance();
+export default tokenManager;
+
+
+
+=== TOKEN MANAGER CLIENT (lib/auth/token-manager.client.ts) ===
+// lib/auth/token-manager.client.ts
+import { getAuth } from '@clerk/nextjs';
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
+
+class TokenManagerClient {
+  private static instance: TokenManagerClient;
+  private cache = new Map<string, { token: string; expiresAt: number }>();
+  private refreshPromise: Map<string, Promise<string | null>> = new Map();
+  private readonly expirationBuffer: number = 5 * 60 * 1000;
+
+  private constructor(expirationBufferMinutes?: number) {
+    if (expirationBufferMinutes) {
+      this.expirationBuffer = expirationBufferMinutes * 60 * 1000;
+    }
+  }
+
+  static getInstance(expirationBufferMinutes?: number): TokenManagerClient {
+    if (!TokenManagerClient.instance) {
+      TokenManagerClient.instance = new TokenManagerClient(expirationBufferMinutes);
+    }
+    return TokenManagerClient.instance;
+  }
+
+  async getToken(): Promise<string | null> {
+    const cacheKey = 'client';
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
+    }
+    const cached = this.cache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
+      return cached.token;
+    }
+    return this.refreshToken(cacheKey);
+  }
+
+  async refreshToken(cacheKey: string): Promise<string | null> {
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
+    }
+    const refreshPromiseInstance = (async () => {
+      try {
+        const authObj = getAuth();
+        const token = await authObj.getToken({ template: 'hasura' });
+        if (token) {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const expiresAt = (payload.exp || 0) * 1000;
+          this.cache.set(cacheKey, { token, expiresAt });
+          return token;
+        }
+        return null;
+      } catch (error) {
+        console.error('Token refresh failed (client):', error);
+        this.cache.delete(cacheKey);
+        return null;
+      } finally {
+        this.refreshPromise.delete(cacheKey);
+      }
+    })();
+    this.refreshPromise.set(cacheKey, refreshPromiseInstance);
+    return refreshPromiseInstance;
+  }
+
+  clearCache(): void {
+    this.cache.clear();
+    this.refreshPromise.clear();
+  }
+
+  isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000;
+      return exp > Date.now() + 60 * 1000;
+    } catch {
+      return false;
+    }
+  }
+
+  getUserRoleFromToken(token: string): HasuraRole | null {
+    try {
+      const claims = getHasuraClaims(token);
+      return claims['x-hasura-default-role'] as HasuraRole;
+    } catch {
+      return null;
+    }
+  }
+}
+
+export const tokenManagerClient = TokenManagerClient.getInstance();
+
+
+=== TOKEN MANAGER SERVER (lib/auth/token-manager.server.ts) ===
+// lib/auth/token-manager.server.ts
+import { auth } from '@clerk/nextjs/server';
+import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import type { HasuraRole } from '@/types/interface';
+
+class TokenManagerServer {
+  private static instance: TokenManagerServer;
+  private cache = new Map<string, { token: string; expiresAt: number }>();
+  private refreshPromise: Map<string, Promise<string | null>> = new Map();
+  private readonly expirationBuffer: number = 5 * 60 * 1000;
+
+  private constructor(expirationBufferMinutes?: number) {
+    if (expirationBufferMinutes) {
+      this.expirationBuffer = expirationBufferMinutes * 60 * 1000;
+    }
+  }
+
+  static getInstance(expirationBufferMinutes?: number): TokenManagerServer {
+    if (!TokenManagerServer.instance) {
+      TokenManagerServer.instance = new TokenManagerServer(expirationBufferMinutes);
+    }
+    return TokenManagerServer.instance;
+  }
+
+  async getToken(): Promise<string | null> {
+    const cacheKey = 'server';
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
+    }
+    const cached = this.cache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
+      return cached.token;
+    }
+    return this.refreshToken(cacheKey);
+  }
+
+  async refreshToken(cacheKey: string): Promise<string | null> {
+    if (this.refreshPromise.has(cacheKey)) {
+      return this.refreshPromise.get(cacheKey)!;
+    }
+    const refreshPromiseInstance = (async () => {
+      try {
+        const authObj = await auth();
+        const token = await authObj.getToken({ template: 'hasura' });
+        if (token) {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const expiresAt = (payload.exp || 0) * 1000;
+          this.cache.set(cacheKey, { token, expiresAt });
+          return token;
+        }
+        return null;
+      } catch (error) {
+        console.error('Token refresh failed (server):', error);
+        this.cache.delete(cacheKey);
+        return null;
+      } finally {
+        this.refreshPromise.delete(cacheKey);
+      }
+    })();
+    this.refreshPromise.set(cacheKey, refreshPromiseInstance);
+    return refreshPromiseInstance;
+  }
+
+  clearCache(): void {
+    this.cache.clear();
+    this.refreshPromise.clear();
+  }
+
+  isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000;
+      return exp > Date.now() + 60 * 1000;
+    } catch {
+      return false;
+    }
+  }
+
+  getUserRoleFromToken(token: string): HasuraRole | null {
+    try {
+      const claims = getHasuraClaims(token);
+      return claims['x-hasura-default-role'] as HasuraRole;
+    } catch {
+      return null;
+    }
+  }
+}
+
+export const tokenManagerServer = TokenManagerServer.getInstance();
+
+
+=== ROLES (lib/auth/roles.ts) ===
+// lib/roles.ts
+
+// Define the HasuraRole type that matches what comes from Clerk JWT
+export type HasuraRole = "admin" | "org_admin" | "manager" | "consultant" | "viewer";
+
+// Define application roles (with display names)
+export interface AppRole {
+  id: HasuraRole;
+  name: string;
+  description: string;
+  permissions: Permission[];
+}
+
+// Define permissions
+export type Permission = 
+  | "manage_users" 
+  | "manage_clients" 
+  | "manage_payrolls" 
+  | "view_reports" 
+  | "manage_settings"
+  | "view_payrolls";
+
+// Map from HasuraRole to permissions
+export const rolePermissions: Record<HasuraRole, Permission[]> = {
+  "admin": ["manage_users", "manage_clients", "manage_payrolls", "view_reports", "manage_settings"],
+  "org_admin": ["manage_users", "manage_clients", "manage_payrolls", "view_reports", "manage_settings"],
+  "manager": ["manage_clients", "manage_payrolls", "view_reports"],
+  "consultant": ["view_payrolls", "view_reports"],
+  "viewer": ["view_payrolls"]
+};
+
+// Standard app roles with display names
+export const appRoles: AppRole[] = [
+  {
+    id: "admin",
+    name: "Developer",
+    description: "Full access to all features",
+    permissions: rolePermissions.admin
+  },
+  {
+    id: "org_admin",
+    name: "Administrator", 
+    description: "Full access to organization features",
+    permissions: rolePermissions.org_admin
+  },
+  {
+    id: "manager",
+    name: "Manager",
+    description: "Can manage clients and payrolls",
+    permissions: rolePermissions.manager
+  },
+  {
+    id: "consultant",
+    name: "Consultant",
+    description: "Can view payrolls and reports",
+    permissions: rolePermissions.consultant
+  },
+  {
+    id: "viewer",
+    name: "Viewer", 
+    description: "Can only view payrolls",
+    permissions: rolePermissions.viewer
+  }
+];
+
+// Role checker functions
+export const isAdmin = (role: HasuraRole): boolean => role === "admin" || role === "org_admin";
+export const isManager = (role: HasuraRole): boolean => role === "manager";
+export const isConsultant = (role: HasuraRole): boolean => role === "consultant";
+export const isViewer = (role: HasuraRole): boolean => role === "viewer";
+
+// Helper function to check if a role has a specific permission
+export function hasPermission(role: HasuraRole, permission: Permission): boolean {
+  return rolePermissions[role]?.includes(permission) || false;
+}
+
+// Helper function to get an AppRole by Hasura role
+export function getAppRoleByHasuraRole(hasuraRole: HasuraRole): AppRole | undefined {
+  return appRoles.find(role => role.id === hasuraRole);
+}
+
+// Helper function to get display name for a Hasura role
+export function getRoleDisplayName(hasuraRole: HasuraRole): string {
+  const role = getAppRoleByHasuraRole(hasuraRole);
+  return role?.name || hasuraRole;
+}
+
+// Get a list of all valid role values
+export const validRoles = appRoles.map(role => role.id);
+
+// Role to display name mapping
+export const roleMapping: Record<HasuraRole, string> = {
+  "admin": "Developer",
+  "org_admin": "Administrator",
+  "manager": "Manager",
+  "consultant": "Consultant",
+  "viewer": "Viewer"
+};
+
+=== AUTH GUARD (lib/api/auth-guard.ts) ===
+// lib/api/auth-guard.ts
+import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
+
+export function withAuth(
+  handler: (req: NextRequest, context: any) => Promise<NextResponse>,
+  options?: {
+    roles?: string[]
+    permissions?: string[]
+  }
+) {
+  return async (req: NextRequest, context: any) => {
+    const { userId, sessionClaims } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
+    const userRole = sessionClaims?.publicMetadata?.role || 'viewer'
+    
+    // Check roles
+    if (options?.roles && !options.roles.includes(userRole as string)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+    
+    // Add auth context
+    context.auth = { userId, userRole }
+    
+    return handler(req, context)
+  }
+}
+
+// Usage:
+export const GET = withAuth(
+  async (req, { params, auth }) => {
+    // Handler has access to auth.userId and auth.userRole
+    return NextResponse.json({ data: 'protected' })
+  },
+  { roles: ['admin', 'manager'] }
+)
+
+=== JWT UTILS (lib/utils/jwt-utils.ts) ===
+import { HasuraJWTPayload } from '@/types/interface';
+
+/**
+ * Safely parses a JWT token and returns the payload with proper typing
+ * @param token JWT token string
+ * @returns Parsed JWT payload with Hasura claims
+ * @throws Error if token is invalid
+ */
+export function parseJWT(token: string): HasuraJWTPayload {
+  try {
+    // Handle tokens with 'Bearer ' prefix
+    const tokenValue = token.startsWith('Bearer ') ? token.slice(7) : token;
+    
+    const parts = tokenValue.split('.');
+    if (parts.length !== 3) {
+      throw new Error('Invalid JWT format');
+    }
+
+    // In browser environments
+    if (typeof window !== 'undefined') {
+      return JSON.parse(atob(parts[1])) as HasuraJWTPayload;
+    }
+    
+    // In Node.js environments
+    return JSON.parse(Buffer.from(parts[1], 'base64').toString()) as HasuraJWTPayload;
+  } catch (error) {
+    console.error('Failed to parse JWT token:', error);
+    throw new Error('Failed to parse JWT token');
+  }
+}
+
+/**
+ * Extracts Hasura claims from a JWT token
+ * @param token JWT token string
+ * @returns Hasura claims object or empty object if claims not found
+ */
+export function getHasuraClaims(token: string) {
+  try {
+    const payload = parseJWT(token);
+    return payload['https://hasura.io/jwt/claims'] || {};
+  } catch (error) {
+    console.error('Failed to extract Hasura claims:', error);
+    return {};
+  }
+}
+
+/**
+ * Checks if a token is expired
+ * @param token JWT token string
+ * @returns true if token is expired, false otherwise
+ */
+export function isTokenExpired(token: string): boolean {
+  try {
+    const payload = parseJWT(token);
+    const exp = payload.exp * 1000; // Convert to milliseconds
+    return Date.now() > exp;
+  } catch {
+    return true; // If we can't parse the token, assume it's expired
+  }
+}
+
+
+=== useAuth HOOK (lib/hooks/api/useAuth.ts) ===
+// hooks/useAuth.ts
+import { useAuth as useClerkAuth, useUser } from '@clerk/nextjs'
+import { useEffect, useState } from 'react'
+import { tokenManager } from '@/lib/auth/token-manager'
+import { syncUserById } from '@/lib/services/user-sync'
+
+export function useAuth() {
+  const { isLoaded, isSignedIn, user } = useClerkAuth()
+  const { user: userData } = useUser()
+  const [userRole, setUserRole] = useState<string | null>(null)
+  const [isLoadingRole, setIsLoadingRole] = useState(true)
+  
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) {
+      setIsLoadingRole(false)
+      return
+    }
+    
+    async function loadRole() {
+      try {
+        const token = await tokenManager.getToken(false)
+        if (token) {
+          const payload = JSON.parse(atob(token.split('.')[1]))
+          const hasuraClaims = payload['https://hasura.io/jwt/claims']
+          setUserRole(hasuraClaims?.['x-hasura-default-role'] || 'viewer')
+        }
+      } catch (error) {
+        console.error('Failed to load user role:', error)
+      } finally {
+        setIsLoadingRole(false)
+      }
+    }
+    
+    loadRole()
+  }, [isLoaded, isSignedIn])
+  
+  useEffect(() => {
+    // When a user signs in, ensure their data is synced
+    if (isSignedIn && user) {
+      // Optional: Only sync if this is a new session
+      // This prevents unnecessary syncs on every page load
+      const lastSyncTime = localStorage.getItem(`lastSync-${user.id}`)
+      const now = Date.now()
+      const syncInterval = 24 * 60 * 60 * 1000 // 24 hours
+      
+      if (!lastSyncTime || now - parseInt(lastSyncTime) > syncInterval) {
+        syncUserById(user.id)
+          .then(() => {
+            localStorage.setItem(`lastSync-${user.id}`, now.toString())
+          })
+          .catch(error => {
+            console.error('Error syncing user on login:', error)
+          })
+      }
+    }
+  }, [isSignedIn, user])
+  
+  return {
+    isLoaded,
+    isSignedIn,
+    user,
+    userRole,
+    isLoadingRole,
+    hasRole: (roles: string[]) => roles.includes(userRole || ''),
+    canAccess: (permission: string) => {
+      // Map permissions to roles
+      const permissionMap: Record<string, string[]> = {
+        'manage_users': ['admin', 'org_admin'],
+        'manage_clients': ['admin', 'org_admin', 'manager'],
+        'manage_payrolls': ['admin', 'org_admin', 'manager'],
+        'view_reports': ['admin', 'org_admin', 'manager', 'consultant'],
+        'view_payrolls': ['admin', 'org_admin', 'manager', 'consultant', 'viewer'],
+      }
+      return permissionMap[permission]?.includes(userRole || '') || false
+    }
+  }
+}
+
+=== useSessions HOOK (lib/hooks/api/useSessions.ts) ===
+import { useQuery } from '@apollo/client';
+import { GET_USER_SESSIONS } from '@/lib/graphql/queries/sessions/getSessions';
+
+export function useUserSessions(userId: number, options = {}) {
+  return useQuery(GET_USER_SESSIONS, {
+    variables: { userId },
+    skip: !userId,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'network-only', // Always get fresh session data
+    ...options
+  });
+}
+
+
+=== ROLE GATES COMPONENT (components/common/role-gates.tsx) ===
+// components/role-gates.tsx
+"use client"
+
+import { ReactNode } from 'react'
+import { Skeleton } from "@/components/ui/skeleton"
+import { useUserRole } from '@/lib/hooks/api';
+import { HasuraRole, Permission } from '@/lib/auth';
+
+type RoleGateProps = {
+  children: ReactNode
+  allowedRoles: HasuraRole[]
+  fallback?: ReactNode
+}
+
+export function HasuraRoleGate({ 
+  children, 
+  allowedRoles,
+  fallback = <div className="p-4 text-muted-foreground">You don't have permission to view this content</div>
+}: RoleGateProps) {
+  const { userRole, isLoading } = useUserRole();
+  
+  // Handle loading state
+  if (isLoading) {
+    return <Skeleton className="w-full h-32" />
+  }
+  
+  if (!userRole || !allowedRoles.includes(userRole)) {
+    return <>{fallback}</>
+  }
+  
+  return <>{children}</>
+}
+
+type PermissionGateProps = {
+  children: ReactNode
+  requiredPermission: Permission
+  fallback?: ReactNode
+}
+
+export function PermissionGate({ 
+  children, 
+  requiredPermission,
+  fallback = <div className="p-4 text-muted-foreground">You don't have permission to view this content</div>
+}: PermissionGateProps) {
+  const { hasPermission: userHasPermission, isLoading } = useUserRole();
+  
+  // Handle loading state
+  if (isLoading) {
+    return <Skeleton className="w-full h-32" />
+  }
+  
+  if (!userHasPermission(requiredPermission)) {
+    return <>{fallback}</>
+  }
+  
+  return <>{children}</>
+}
+
+=== USER ROLE MANAGEMENT FORM (components/forms/user-role-management.tsx) ===
+// components/user-role-management.tsx
+"use client"
+
+import { useState } from "react"
+import { Edit, MoreHorizontal, PlusCircle, Trash2, UserPlus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Checkbox } from "@/components/ui/checkbox"
+import { appRoles, validRoles } from '@/lib/auth'
+import { HasuraRoleGate } from "@/components/common/role-gates"
+
+// Sample user data
+const users = [
+  {
+    id: 1,
+    name: "John Doe",
+    email: "john@example.com",
+    role: "org_admin",
+    status: "Active",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    role: "manager",
+    status: "Active",
+  },
+  {
+    id: 3,
+    name: "Mike Johnson",
+    email: "mike@example.com",
+    role: "consultant",
+    status: "Active",
+  },
+  {
+    id: 4,
+    name: "Sarah Williams",
+    email: "sarah@example.com",
+    role: "viewer",
+    status: "Inactive",
+  },
+]
+
+export function UserRoleManagement() {
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false)
+  const [isAddRoleOpen, setIsAddRoleOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<"users" | "roles">("users")
+
+  return (
+    <HasuraRoleGate allowedRoles={["admin", "org_admin"]}>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex space-x-4">
+            <Button variant={activeTab === "users" ? "default" : "outline"} onClick={() => setActiveTab("users")}>
+              Users
+            </Button>
+            <Button variant={activeTab === "roles" ? "default" : "outline"} onClick={() => setActiveTab("roles")}>
+              Roles
+            </Button>
+          </div>
+          <div>
+            {activeTab === "users" ? (
+              <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Add User
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New User</DialogTitle>
+                    <DialogDescription>Create a new user account and assign a role.</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Name
+                      </Label>
+                      <Input id="name" className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="email" className="text-right">
+                        Email
+                      </Label>
+                      <Input id="email" type="email" className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="role" className="text-right">
+                        Role
+                      </Label>
+                      <Select>
+                        <SelectTrigger id="role" className="col-span-3">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {appRoles.map((role) => (
+                            <SelectItem key={role.id} value={role.id}>
+                              {role.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Add User</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Dialog open={isAddRoleOpen} onOpenChange={setIsAddRoleOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Role
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Role</DialogTitle>
+                    <DialogDescription>Create a new role with specific permissions.</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="role-name" className="text-right">
+                        Name
+                      </Label>
+                      <Input id="role-name" className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="description" className="text-right">
+                        Description
+                      </Label>
+                      <Input id="description" className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-start gap-4">
+                      <Label className="text-right pt-2">Permissions</Label>
+                      <div className="col-span-3 space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="manage_users" />
+                          <Label htmlFor="manage_users">Manage Users</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="manage_clients" />
+                          <Label htmlFor="manage_clients">Manage Clients</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="manage_payrolls" />
+                          <Label htmlFor="manage_payrolls">Manage Payrolls</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="view_reports" />
+                          <Label htmlFor="view_reports">View Reports</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="view_payrolls" />
+                          <Label htmlFor="view_payrolls">View Payrolls</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="manage_settings" />
+                          <Label htmlFor="manage_settings">Manage Settings</Label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Add Role</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
+        </div>
+
+        {activeTab === "users" ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => {
+                const userRole = appRoles.find(r => r.id === user.role);
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{userRole?.name}</TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        user.status === 'Active' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      }`}>
+                        {user.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Permissions</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {appRoles.map((role) => (
+                <TableRow key={role.id}>
+                  <TableCell className="font-medium">{role.name}</TableCell>
+                  <TableCell>{role.description}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {role.permissions.map((permission) => (
+                        <span
+                          key={permission}
+                          className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+                        >
+                          {permission.replace(/_/g, " ")}
+                        </span>
+                      ))}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </div>
+    </HasuraRoleGate>
+  )
+}
+
+=== ENV VARIABLES (names only) ===
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
+AUTH_GITHUB_ID
+AUTH_GITHUB_SECRET
+AUTH_SECRET
+DATABASE_URL
+DATABASE_URL_UNPOOLED
+PGDATABASE
+PGHOST
+PGHOST_UNPOOLED
+PGPASSWORD
+PGUSER
+POSTGRES_DATABASE
+POSTGRES_HOST
+POSTGRES_PASSWORD
+POSTGRES_PRISMA_URL
+POSTGRES_URL
+POSTGRES_URL_NON_POOLING
+POSTGRES_URL_NO_SSL
+POSTGRES_USER
+NEXT_PUBLIC_HASURA_GRAPHQL_URL
+NEXT_PUBLIC_HASURA_ADMIN_SECRET
+AUTH_GOOGLE_ID
+AUTH_GOOGLE_SECRET
+JWT_SECRET
+NEXTAUTH_URL
+NEXTAUTH_SECRET

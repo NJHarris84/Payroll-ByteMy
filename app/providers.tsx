@@ -5,6 +5,7 @@ import { ApolloProvider } from "@apollo/client"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { getClientApolloClient } from "@/lib/api/apollo-client" // Import directly
+import { ThemeProvider } from "@/components/providers"
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const client = getClientApolloClient()

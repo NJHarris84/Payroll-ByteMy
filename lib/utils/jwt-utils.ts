@@ -8,7 +8,10 @@ import { HasuraJWTPayload } from '@/types/interface';
  */
 export function parseJWT(token: string): HasuraJWTPayload {
   try {
-    const parts = token.split('.');
+    // Handle tokens with 'Bearer ' prefix
+    const tokenValue = token.startsWith('Bearer ') ? token.slice(7) : token;
+    
+    const parts = tokenValue.split('.');
     if (parts.length !== 3) {
       throw new Error('Invalid JWT format');
     }
@@ -21,6 +24,7 @@ export function parseJWT(token: string): HasuraJWTPayload {
     // In Node.js environments
     return JSON.parse(Buffer.from(parts[1], 'base64').toString()) as HasuraJWTPayload;
   } catch (error) {
+    console.error('Failed to parse JWT token:', error);
     throw new Error('Failed to parse JWT token');
   }
 }
@@ -28,9 +32,29 @@ export function parseJWT(token: string): HasuraJWTPayload {
 /**
  * Extracts Hasura claims from a JWT token
  * @param token JWT token string
- * @returns Hasura claims object
+ * @returns Hasura claims object or empty object if claims not found
  */
 export function getHasuraClaims(token: string) {
-  const payload = parseJWT(token);
-  return payload['https://hasura.io/jwt/claims'];
+  try {
+    const payload = parseJWT(token);
+    return payload['https://hasura.io/jwt/claims'] || {};
+  } catch (error) {
+    console.error('Failed to extract Hasura claims:', error);
+    return {};
+  }
+}
+
+/**
+ * Checks if a token is expired
+ * @param token JWT token string
+ * @returns true if token is expired, false otherwise
+ */
+export function isTokenExpired(token: string): boolean {
+  try {
+    const payload = parseJWT(token);
+    const exp = payload.exp * 1000; // Convert to milliseconds
+    return Date.now() > exp;
+  } catch {
+    return true; // If we can't parse the token, assume it's expired
+  }
 }

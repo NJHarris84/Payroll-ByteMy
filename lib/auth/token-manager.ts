@@ -1,6 +1,6 @@
 // lib/auth/token-manager.ts
 import { auth } from '@clerk/nextjs/server';
-import { getHasuraClaims } from '@/lib/utils/jwt-utils';
+import { parseJWT } from '@/lib/utils/jwt-utils';
 import type { HasuraRole } from '@/types/interface';
 
 class TokenManager {
@@ -38,10 +38,15 @@ class TokenManager {
         if (response.ok) {
           const { token } = await response.json();
           if (token) {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const expiresAt = (payload.exp || 0) * 1000;
-            this.cache.set(cacheKey, { token, expiresAt });
-            return token;
+            try {
+              const payload = parseJWT(token);
+              const expiresAt = (payload.exp || 0) * 1000;
+              this.cache.set(cacheKey, { token, expiresAt });
+              return token;
+            } catch (error) {
+              console.error('Failed to parse token:', error);
+              return token; // Return token even if parsing fails
+            }
           }
         }
       } catch (error) {
@@ -61,15 +66,20 @@ class TokenManager {
 
     const refreshPromiseInstance = (async () => {
       try {
-        const { getToken } = await auth();
+        const { getToken } = auth();
         if (!getToken) return null;
 
         const token = await getToken({ template: 'hasura' });
         if (token) {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          const expiresAt = (payload.exp || 0) * 1000;
-          this.cache.set(cacheKey, { token, expiresAt });
-          return token;
+          try {
+            const payload = parseJWT(token);
+            const expiresAt = (payload.exp || 0) * 1000;
+            this.cache.set(cacheKey, { token, expiresAt });
+            return token;
+          } catch (error) {
+            console.error('Failed to parse token:', error);
+            return token; // Return token even if parsing fails
+          }
         }
         return null;
       } catch (error) {
@@ -92,7 +102,7 @@ class TokenManager {
 
   isTokenValid(token: string): boolean {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = parseJWT(token);
       const exp = payload.exp * 1000;
       return exp > Date.now() + 60 * 1000; // 1-minute buffer
     } catch {
@@ -110,4 +120,7 @@ class TokenManager {
   }
 }
 
+// Create and export the singleton instance
 export const tokenManager = TokenManager.getInstance();
+export default tokenManager;
+

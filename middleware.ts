@@ -1,6 +1,7 @@
 // middleware.ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { isTokenExpired } from './lib/utils/jwt-utils';
 
 // Define public routes that don't require authentication
 const isPublicRoute = createRouteMatcher([
@@ -33,6 +34,7 @@ export default clerkMiddleware(async (auth, request) => {
   
   // Check if user is authenticated
   if (!authState.userId) {
+    console.warn('No userId found in auth state');
     // For API routes, return 401
     if (pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -50,6 +52,12 @@ export default clerkMiddleware(async (auth, request) => {
       return NextResponse.redirect(new URL('/sign-in', request.url));
     }
 
+    // Check if token is expired
+    if (isTokenExpired(token)) {
+      console.error('Token is expired');
+      return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+
     // Parse the token to get user role
     let userRole = 'viewer'; // default role
     try {
@@ -58,9 +66,16 @@ export default clerkMiddleware(async (auth, request) => {
         Buffer.from(token.split('.')[1], 'base64').toString()
       );
       const hasuraClaims = payload['https://hasura.io/jwt/claims'];
+      
+      if (!hasuraClaims) {
+        console.error('No Hasura claims found in token');
+        return NextResponse.redirect(new URL('/sign-in?error=invalid-claims', request.url));
+      }
+      
       userRole = hasuraClaims?.['x-hasura-default-role'] || 'viewer';
     } catch (e) {
       console.error('Failed to parse JWT:', e);
+      return NextResponse.redirect(new URL('/sign-in?error=token-parse-error', request.url));
     }
 
     // Check role-based access
@@ -89,7 +104,16 @@ export default clerkMiddleware(async (auth, request) => {
 
   } catch (error) {
     console.error('Middleware error:', error);
-    return NextResponse.redirect(new URL('/sign-in', request.url));
+    // Log detailed error information
+    if (error instanceof Error) {
+      console.error(`Error name: ${error.name}, message: ${error.message}`);
+      console.error(`Stack trace: ${error.stack}`);
+    }
+    
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Authentication error' }, { status: 401 });
+    }
+    return NextResponse.redirect(new URL('/sign-in?error=auth-error', request.url));
   }
 });
 
@@ -100,7 +124,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public files (public directory)
+     * - public folder
      */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
