@@ -1,0 +1,159 @@
+Looking at your authentication flow documentation, I can see you have a well-structured permission system. For adding dynamic permission management, here are the best approaches I'd recommend:
+
+## 🎯 **Recommended Approach: Hybrid Database + Cache Solution**
+
+### **Architecture Overview**
+```
+Permission Changes → Database → Cache Invalidation → Real-time Updates
+```
+
+### **1. Database Schema for Dynamic Permissions**
+
+```sql
+-- Store permission overrides in your database
+CREATE TABLE permission_overrides (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT, -- nullable, for user-specific overrides
+  role TEXT, -- nullable, for role-specific overrides
+  permission TEXT NOT NULL,
+  granted BOOLEAN NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  created_by TEXT NOT NULL,
+  expires_at TIMESTAMP, -- optional expiration
+  CONSTRAINT check_user_or_role CHECK (
+    (user_id IS NOT NULL AND role IS NULL) OR 
+    (user_id IS NULL AND role IS NOT NULL)
+  )
+);
+
+-- Index for fast lookups
+CREATE INDEX idx_permission_overrides_user ON permission_overrides(user_id);
+CREATE INDEX idx_permission_overrides_role ON permission_overrides(role);
+```
+
+### **2. Enhanced Permission System**
+
+### **3. Admin UI for Permission Management**
+
+### **4. GraphQL Schema for Hasura**
+
+```graphql
+# Add to your Hasura GraphQL schema
+
+type permission_overrides {
+  id: uuid!
+  user_id: String
+  role: String
+  permission: String!
+  granted: Boolean!
+  created_at: timestamptz!
+  created_by: String!
+  expires_at: timestamptz
+}
+
+# Queries
+query GetPermissionOverrides($userId: String, $role: String) {
+  permission_overrides(
+    where: {
+      _and: [
+        {_or: [{user_id: {_eq: $userId}}, {role: {_eq: $role}}]},
+        {_or: [{expires_at: {_is_null: true}}, {expires_at: {_gt: "now()"}}]}
+      ]
+    }
+  ) {
+    id
+    user_id
+    role
+    permission
+    granted
+    expires_at
+  }
+}
+
+# Mutations
+mutation UpsertPermissionOverride(
+  $userId: String
+  $role: String
+  $permission: String!
+  $granted: Boolean!
+  $createdBy: String!
+  $expiresAt: timestamptz
+) {
+  insert_permission_overrides_one(
+    object: {
+      user_id: $userId
+      role: $role
+      permission: $permission
+      granted: $granted
+      created_by: $createdBy
+      expires_at: $expiresAt
+    }
+    on_conflict: {
+      constraint: permission_overrides_user_role_permission_key
+      update_columns: [granted, expires_at]
+    }
+  ) {
+    id
+  }
+}
+
+# Subscription for real-time updates
+subscription PermissionChanges($userId: String, $role: String) {
+  permission_overrides_stream(
+    where: {
+      _or: [{user_id: {_eq: $userId}}, {role: {_eq: $role}}]
+    }
+    cursor: {initial_value: {created_at: "now()"}}
+  ) {
+    user_id
+    role
+    permission
+    granted
+  }
+}
+```
+
+### **5. Integration with Existing Auth Flow**
+
+Update your existing components to use the enhanced permission system:
+
+```typescript
+// Update your existing HasuraRoleGate
+export function HasuraRoleGate({ allowedRoles, children }) {
+  const { hasPermission } = useDynamicPermissions();
+  // Now includes dynamic overrides
+}
+
+// Update middleware.ts
+export default clerkMiddleware(async (auth, request) => {
+  // ... existing code ...
+  
+  // Get dynamic permissions
+  const permissions = await PermissionManager.getInstance()
+    .getUserPermissions(userId, userRole);
+  
+  // Add to headers for Hasura
+  headers.set('x-hasura-permissions', JSON.stringify(permissions));
+});
+```
+
+## 🚀 **Implementation Steps**
+
+1. **Create Database Tables**: Add the permission_overrides table to your Neon database
+2. **Update Hasura**: Add the new table and create permissions for it
+3. **Implement Permission Manager**: Add the server-side permission management logic
+4. **Create Admin UI**: Build the interface for managing permissions
+5. **Update Components**: Replace static permission checks with dynamic ones
+6. **Add Caching**: Implement Redis or in-memory caching for performance
+7. **Test Thoroughly**: Ensure permissions cascade correctly
+
+## 💡 **Advanced Features to Consider**
+
+1. **Audit Logging**: Track who changed which permissions when
+2. **Temporary Permissions**: Auto-expire after a certain time
+3. **Permission Templates**: Pre-defined permission sets for common scenarios
+4. **Bulk Operations**: Apply permissions to multiple users/roles at once
+5. **Permission Dependencies**: Some permissions require others
+6. **Webhooks**: Notify external systems of permission changes
+
+This approach gives you maximum flexibility while maintaining security and performance. The hybrid approach ensures that even if the dynamic system fails, users still have their base role permissions.

@@ -11,7 +11,7 @@ export const WORK_SCHEDULE_FRAGMENT = gql`
     day_of_week
     start_time
     end_time
-    is_working_day
+    is_day_off
     created_at
     updated_at
   }

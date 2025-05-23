@@ -1,6 +1,6 @@
 // graphql/mutations/staff/updateStaff.ts
-import { gql } from "@apollo/client";
-import { STAFF_FRAGMENT } from "../../fragments/staffFragment";
+import { gql } from '@apollo/client';
+import { STAFF_FRAGMENT } from '../../fragments/staffFragment';
 
 export const UPDATE_STAFF = gql`
   mutation UpdateStaff($id: uuid!, $input: users_set_input!) {

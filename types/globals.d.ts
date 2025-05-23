@@ -193,3 +193,35 @@ export interface PaginationState {
   pageSize: number;
   totalItems: number;
 }
+
+declare namespace GraphQL {
+  interface PayrollQueryResponse {
+    payrolls: Array<Payroll>;
+  }
+
+  interface PayrollMutationResponse {
+    insert_payrolls_one: Payroll;
+    update_payrolls_by_pk: Payroll;
+    delete_payrolls_by_pk: Payroll;
+  }
+
+  interface StaffQueryResponse {
+    users: Array<Staff>;
+  }
+
+  interface StaffMutationResponse {
+    insert_users_one: Staff;
+    update_users_by_pk: Staff;
+    delete_users_by_pk: Staff;
+  }
+
+  interface NoteQueryResponse {
+    notes: Array<Note>;
+  }
+
+  interface NoteMutationResponse {
+    insert_notes_one: Note;
+    update_notes_by_pk: Note;
+    delete_notes_by_pk: Note;
+  }
+}

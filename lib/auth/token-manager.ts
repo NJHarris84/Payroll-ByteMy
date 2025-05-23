@@ -4,8 +4,7 @@ import { getAuth } from '@clerk/nextjs/client'
 
 class TokenManager {
   private static instance: TokenManager
-  private tokenCache: Map<string, { token: string; expiresAt: number }> = new Map()
-  private refreshPromises: Map<string, Promise<string | null>> = new Map()
+  private cache = new Map<string, { token: string; expiresAt: number }>()
   
   static getInstance(): TokenManager {
     if (!TokenManager.instance) {
@@ -15,55 +14,47 @@ class TokenManager {
   }
   
   async getToken(isServer: boolean = false): Promise<string | null> {
-    const key = `token-${isServer ? 'server' : 'client'}`
+    const cacheKey = isServer ? 'server' : 'client'
     
-    // Check cache first
-    const cached = this.tokenCache.get(key)
-    if (cached && cached.expiresAt > Date.now() + 5 * 60 * 1000) { // 5 min buffer
+    // Check cache with 5-minute buffer
+    const cached = this.cache.get(cacheKey)
+    if (cached && cached.expiresAt > Date.now() + 5 * 60 * 1000) {
       return cached.token
     }
     
-    // Check if refresh is already in progress
-    const existingRefresh = this.refreshPromises.get(key)
-    if (existingRefresh) {
-      return existingRefresh
-    }
-    
-    // Start new refresh
-    const refreshPromise = this.refreshToken(isServer, key)
-    this.refreshPromises.set(key, refreshPromise)
-    
-    try {
-      const token = await refreshPromise
-      return token
-    } finally {
-      this.refreshPromises.delete(key)
-    }
-  }
-  
-  private async refreshToken(isServer: boolean, key: string): Promise<string | null> {
     try {
       const authObj = isServer ? await auth() : getAuth()
       const token = await authObj.getToken({ template: 'hasura' })
       
       if (token) {
-        // Decode to get expiry
+        // Cache token with expiration
         const payload = JSON.parse(atob(token.split('.')[1]))
-        const expiresAt = payload.exp * 1000
+        const expiresAt = (payload.exp || 0) * 1000
         
-        this.tokenCache.set(key, { token, expiresAt })
+        this.cache.set(cacheKey, { token, expiresAt })
+        return token
       }
       
-      return token
+      return null
     } catch (error) {
-      console.error('Token refresh failed:', error)
+      console.error('Token fetch failed:', error)
+      this.cache.delete(cacheKey) // Clear bad cache
       return null
     }
   }
   
   clearCache(): void {
-    this.tokenCache.clear()
-    this.refreshPromises.clear()
+    this.cache.clear()
+  }
+  
+  isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const exp = payload.exp * 1000
+      return exp > Date.now() + 60 * 1000 // 1-minute buffer
+    } catch {
+      return false
+    }
   }
 }
 

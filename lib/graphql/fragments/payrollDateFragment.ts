@@ -8,10 +8,10 @@ export const PAYROLL_DATE_FRAGMENT = gql`
   fragment PayrollDateFragment on payroll_dates {
     id
     payroll_id
-    original_eft_date
-    adjusted_eft_date
-    processing_date
-    notes
+    date
+    cutoff_date
+    payment_date
+    status
     created_at
     updated_at
   }

@@ -1,6 +1,6 @@
 // graphql/mutations/payrolls/updatePayroll.ts
 import { gql } from "@apollo/client";
-import { PAYROLL_DETAIL_FRAGMENT } from "../../fragments/payrollFragment";
+import { PAYROLL_FRAGMENT } from "../../fragments/payrollFragment";
 
 export const UPDATE_PAYROLL = gql` 
 mutation UpdatePayroll($id: uuid!, $input: payrolls_set_input!) {
@@ -8,8 +8,8 @@ mutation UpdatePayroll($id: uuid!, $input: payrolls_set_input!) {
       pk_columns: { id: $id },
       _set: $input
     ) {
-      ...PayrollDetailFragment
+      ...PayrollFragment
     }
   }
-  ${PAYROLL_DETAIL_FRAGMENT}
+  ${PAYROLL_FRAGMENT}
   `;

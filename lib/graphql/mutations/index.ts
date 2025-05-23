@@ -18,16 +18,13 @@ export * from './notes/updateNote';
 export * from './payrolls/createPayroll';
 export * from './payrolls/updatePayroll';
 export * from './payrolls/deletePayroll';
-export * from './payrolls/updatePayrollStatus';
 export * from './payrolls/generatePayrollDates';
-export * from './payroll_dates/generatePayrollDates';
-export * from './payroll_dates/updatePayrollDate';
+export * from './payrolls/updatePayrollStatus';
 
 // Staff mutations
 export * from './staff/createStaff';
 export * from './staff/updateStaff';
 export * from './staff/deleteStaff';
-export * from './staff/updateUser';
 
 // Work schedule mutations
 export * from './work_schedule/createWorkSchedule';
