@@ -1,0 +1,7 @@
+fragment PayrollDateTypeFragment on payroll_date_types {
+  id
+  name
+  description
+  created_at
+  updated_at
+}

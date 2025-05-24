@@ -3,7 +3,7 @@
 
 import { useParams, notFound } from "next/navigation";
 import { useQuery } from "@apollo/client";
-import { GET_PAYROLL_BY_ID } from '@/lib/graphql/queries/payrolls';
+import { GET_PAYROLL_BY_ID } from '@/lib/graphql';
 import { PayrollDatesView } from "@/components/payroll/payroll-dates-view";
 import { ClientCard } from "@/components/client/client-card";
 import { PayrollDetailsCard } from "@/components/payroll/payroll-details-card";

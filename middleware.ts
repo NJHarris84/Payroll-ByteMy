@@ -2,6 +2,16 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { isTokenExpired } from './lib/utils/jwt-utils';
+import { getAuth, clerkClient } from '@clerk/nextjs/server'
+import { validateEnvironment, environmentConfig } from './lib/utils/env-validator'
+
+// Validate environment on startup
+try {
+  validateEnvironment(environmentConfig);
+} catch (error) {
+  console.error('🚨 Environment Configuration Error:', error);
+  process.exit(1);
+}
 
 // Define public routes that don't require authentication
 const isPublicRoute = createRouteMatcher([
@@ -22,6 +32,9 @@ const roleBasedRoutes = {
 } as const;
 
 export default clerkMiddleware(async (auth, request) => {
+  // Log request details for security monitoring
+  console.log(`[Security Check] Path: ${request.nextUrl.pathname}, Method: ${request.method}`);
+
   const { pathname } = request.nextUrl;
   
   // Skip public routes
@@ -41,6 +54,27 @@ export default clerkMiddleware(async (auth, request) => {
     }
     // For other routes, redirect to sign-in
     return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
+
+  // Additional role-based access control
+  try {
+    const user = await clerkClient.users.getUser(authState.userId);
+    const userRole = user.publicMetadata.role as string;
+
+    // Example role-based restriction
+    const restrictedAdminRoutes = ['/admin', '/settings'];
+    if (restrictedAdminRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
+      if (userRole !== 'admin') {
+        console.warn(`[Security] Unauthorized role access: ${userRole} to ${request.nextUrl.pathname}`);
+        return new NextResponse('Forbidden', { status: 403 });
+      }
+    }
+
+    // Attach user role to request for downstream use
+    request.headers.set('x-user-role', userRole);
+  } catch (error) {
+    console.error('[Authentication Error]', error);
+    return redirectToSignIn(request);
   }
 
   try {
@@ -116,6 +150,12 @@ export default clerkMiddleware(async (auth, request) => {
     return NextResponse.redirect(new URL('/sign-in?error=auth-error', request.url));
   }
 });
+
+function redirectToSignIn(request: NextRequest) {
+  return NextResponse.redirect(
+    new URL(`/sign-in?returnUrl=${encodeURIComponent(request.url)}`, request.url)
+  );
+}
 
 export const config = {
   matcher: [

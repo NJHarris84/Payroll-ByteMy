@@ -1,0 +1,9 @@
+# import "../fragments/PayrollDateFragment.graphql"
+
+mutation InsertBulkPayrollDates($objects: [payroll_dates_insert_input!]!) {
+  insert_payroll_dates(objects: $objects) {
+    returning {
+      ...PayrollDateFragment
+    }
+  }
+}

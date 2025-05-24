@@ -1,0 +1,7 @@
+# import "../fragments/PayrollFragment.graphql"
+
+mutation DeletePayroll($id: uuid!) {
+  delete_payrolls_by_pk(id: $id) {
+    ...PayrollFragment
+  }
+}

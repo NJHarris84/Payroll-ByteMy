@@ -1,0 +1,17 @@
+query GetClientStatistics {
+  clients_aggregate {
+    aggregate {
+      count
+    }
+  }
+  active_clients: clients_aggregate(where: {active: {_eq: true}}) {
+    aggregate {
+      count
+    }
+  }
+  clients_with_payrolls: clients_aggregate(where: {payrolls: {}}) {
+    aggregate {
+      count
+    }
+  }
+}

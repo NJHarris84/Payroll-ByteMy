@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getServerApolloClient } from '@/lib/api';
-import { UPDATE_STAFF } from '@/lib/graphql/mutations/staff';
+import { UPDATE_STAFF } from '@/lib/graphql';
 
 export async function POST(req: NextRequest) {
   try {

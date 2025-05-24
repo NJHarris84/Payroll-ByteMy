@@ -1,0 +1,10 @@
+# import "../fragments/NoteFragment.graphql"
+
+query GetNotes($entityId: uuid!, $entityType: String!) {
+  notes(
+    where: {entity_id: {_eq: $entityId}, entity_type: {_eq: $entityType}}
+    order_by: {created_at: desc}
+  ) {
+    ...NoteFragment
+  }
+}

@@ -1,0 +1,7 @@
+# import "../fragments/HolidayFragment.graphql"
+
+query GetHolidaysByCountry($country_code: bpchar!) {
+  holidays(where: {country_code: {_eq: $country_code}}, order_by: {date: asc}) {
+    ...HolidayFragment
+  }
+}

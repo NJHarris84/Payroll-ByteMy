@@ -1,0 +1,67 @@
+FIXED DOC: documentaion/typescript-exports.md → documentation/typescript-exports.md
+FIXED DOC: documentaion/t.md → documentation/t.md
+FIXED DOC: documentaion/graphql-import-updates.md → documentation/graphql-import-updates.md
+FIXED DOC: documentaion/graphql-fragments.md → documentation/graphql-fragments.md
+FIXED DOC: documentaion/fix-imports-README.md → documentation/fix-imports-README.md
+FIXED DOC: documentaion/TESTING.md → documentation/TESTING.md
+FIXED DOC: documentaion/PayCalculator-Logic.md → documentation/PayCalculator-Logic.md
+FIXED DOC: documentaion/Database & Hasura Integration: Technical Overview.md → documentation/Database & Hasura Integration: Technical Overview.md
+FIXED DOC: documentaion/Authentication-flow.md → documentation/Authentication-flow.md
+MOVED: components/toggle.tsx → components/ui/toggle.tsx
+MOVED: components/toggle-group.tsx → components/ui/toggle-group.tsx
+MOVED: components/theme-toggle.tsx → components/ui/theme-toggle.tsx
+MOVED: components/textarea.tsx → components/ui/textarea.tsx
+MOVED: components/tabs.tsx → components/ui/tabs.tsx
+MOVED: components/spinner.tsx → components/ui/spinner.tsx
+MOVED: components/slider.tsx → components/ui/slider.tsx
+MOVED: components/skeleton.tsx → components/ui/skeleton.tsx
+MOVED: components/select.tsx → components/ui/select.tsx
+MOVED: components/progress.tsx → components/ui/progress.tsx
+MOVED: components/popover.tsx → components/ui/popover.tsx
+MOVED: components/combobox.tsx → components/ui/combobox.tsx
+MOVED: components/checkbox.tsx → components/ui/checkbox.tsx
+MOVED: components/calendar.tsx → components/ui/calendar.tsx
+MOVED: components/badge.tsx → components/ui/badge.tsx
+MOVED: components/avatar.tsx → components/ui/avatar.tsx
+MOVED: components/avatar-group.tsx → components/ui/avatar-group.tsx
+MOVED: components/accordion.tsx → components/ui/accordion.tsx
+MOVED: components/payroll/payroll-list-card.tsx → components/ui/payroll-list-card.tsx
+MOVED: components/payroll/payroll-list-card.test.tsx → components/ui/payroll-list-card.test.tsx
+MOVED: components/payroll/payroll-details-card.tsx → components/ui/payroll-details-card.tsx
+MOVED: components/payroll/payroll-details-card.test.tsx → components/ui/payroll-details-card.test.tsx
+MOVED: components/payroll/edit-payroll-dialog.tsx → components/ui/edit-payroll-dialog.tsx
+MOVED: components/client/client-card.tsx → components/ui/client-card.tsx
+MOVED: components/client/client-card.test.tsx → components/ui/client-card.test.tsx
+MOVED: components/common/urgent-alerts.tsx → components/ui/urgent-alerts.tsx
+MOVED: components/common/alert.tsx → components/ui/alert.tsx
+MOVED: components/markdown-viewer.tsx → components/common/markdown-viewer.tsx
+MOVED: components/dashboard-shell.tsx → components/layout/dashboard-shell.tsx
+MOVED: app/layout.tsx → components/layout/layout.tsx
+DUPLICATE: app/(dashboard)/layout.tsx → _cleanup/app/(dashboard)/layout.tsx (Duplicate at components/layout/layout.tsx)
+DUPLICATE: app/(auth)/layout.tsx → _cleanup/app/(auth)/layout.tsx (Duplicate at components/layout/layout.tsx)
+MOVED: lib/hooks/useUsers.ts → lib/hooks/api/useUsers.ts
+MOVED: lib/hooks/useUserRole.ts → lib/hooks/api/useUserRole.ts
+MOVED: lib/hooks/useAuth.ts → lib/hooks/api/useAuth.ts
+MOVED: lib/hooks/useMediaQuery.ts → lib/hooks/ui/useMediaQuery.ts
+MOVED: lib/hooks/useDataFetching.ts → lib/hooks/utils/useDataFetching.ts
+MOVED: lib/hooks/useCacheInvalidation.ts → lib/hooks/utils/useCacheInvalidation.ts
+MOVED: lib/graphql/fragments/WorkScheduleFragment.generated.ts → lib/graphql/generated/WorkScheduleFragment.generated.ts
+MOVED: lib/graphql/fragments/StaffManagerFragment.generated.ts → lib/graphql/generated/StaffManagerFragment.generated.ts
+MOVED: lib/graphql/fragments/StaffLeaveFragment.generated.ts → lib/graphql/generated/StaffLeaveFragment.generated.ts
+MOVED: lib/graphql/fragments/StaffFragment.generated.ts → lib/graphql/generated/StaffFragment.generated.ts
+MOVED: lib/graphql/fragments/PayrollFragment.generated.ts → lib/graphql/generated/PayrollFragment.generated.ts
+MOVED: lib/graphql/fragments/PayrollDetailFragment.generated.ts → lib/graphql/generated/PayrollDetailFragment.generated.ts
+MOVED: lib/graphql/fragments/PayrollDateTypeFragment.generated.ts → lib/graphql/generated/PayrollDateTypeFragment.generated.ts
+MOVED: lib/graphql/fragments/PayrollDateFragment.generated.ts → lib/graphql/generated/PayrollDateFragment.generated.ts
+MOVED: lib/graphql/fragments/PayrollCycleFragment.generated.ts → lib/graphql/generated/PayrollCycleFragment.generated.ts
+MOVED: lib/graphql/fragments/NoteFragment.generated.ts → lib/graphql/generated/NoteFragment.generated.ts
+MOVED: lib/graphql/fragments/LeaveFragment.generated.ts → lib/graphql/generated/LeaveFragment.generated.ts
+MOVED: lib/graphql/fragments/HolidayFragment.generated.ts → lib/graphql/generated/HolidayFragment.generated.ts
+MOVED: lib/graphql/fragments/FeatureFlagFragment.generated.ts → lib/graphql/generated/FeatureFlagFragment.generated.ts
+MOVED: lib/graphql/fragments/ExternalSystemFragment.generated.ts → lib/graphql/generated/ExternalSystemFragment.generated.ts
+MOVED: lib/graphql/fragments/ClientFragment.generated.ts → lib/graphql/generated/ClientFragment.generated.ts
+MOVED: lib/graphql/fragments/ClientExternalSystemFragment.generated.ts → lib/graphql/generated/ClientExternalSystemFragment.generated.ts
+MOVED: lib/graphql/fragments/AppSettingsFragment.generated.ts → lib/graphql/generated/AppSettingsFragment.generated.ts
+MOVED: lib/graphql/fragments/AdjustmentRuleFragment.generated.ts → lib/graphql/generated/AdjustmentRuleFragment.generated.ts
+MOVED: __tests__/unit/lib/utils/error-handling.test.ts → __tests__/error-handling.test.ts
+MOVED: __tests__/unit/app/api/payrolls/route.test.ts → __tests__/route.test.ts

@@ -1,0 +1,7 @@
+# import "../fragments/NoteFragment.graphql"
+
+mutation UpdateNote($id: uuid!, $input: notes_set_input!) {
+  update_notes_by_pk(pk_columns: {id: $id}, _set: $input) {
+    ...NoteFragment
+  }
+}

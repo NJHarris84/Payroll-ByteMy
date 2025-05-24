@@ -1,6 +1,8 @@
-// lib/user-sync.ts
+'use server';
+
+// lib/services/user-sync.ts
 import { clerkClient } from "@clerk/nextjs/server";
-import { adminApolloClient } from "../api/apollo-client";
+import { adminApolloClient } from "@/lib/api";
 import { gql } from "@apollo/client";
 
 // Query to find a user by Clerk ID

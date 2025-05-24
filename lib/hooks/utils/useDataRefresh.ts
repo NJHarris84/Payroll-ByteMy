@@ -1,6 +1,6 @@
 import { useApolloClient } from "@apollo/client";
 import { toast } from "sonner"; // Using Sonner for toast notifications
-import { useCacheInvalidation } from "./useCacheInvalidation";
+import { useCacheInvalidation } from "./";
 
 export function useDataRefresh() {
   const { invalidateEntity, refetchQuery, refetchQueries } = useCacheInvalidation();

@@ -3,7 +3,7 @@ import { GET_CLIENT_EXTERNAL_SYSTEMS } from '@/lib/graphql/queries/clientExterna
 import {
   CREATE_CLIENT_EXTERNAL_SYSTEM,
   DELETE_CLIENT_EXTERNAL_SYSTEM
-} from '@/lib/graphql/mutations';
+} from '@/lib/graphql';
 
 export function useClientExternalSystems(clientId: string, options = {}) {
   return useQuery(GET_CLIENT_EXTERNAL_SYSTEMS, {

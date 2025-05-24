@@ -1,0 +1,11 @@
+# import "../fragments/StaffFragment.graphql"
+# import "../fragments/StaffManagerFragment.graphql"
+# import "../fragments/StaffLeaveFragment.graphql"
+
+query GetStaffById($id: uuid!) {
+  users_by_pk(id: $id) {
+    ...StaffFragment
+    ...StaffManagerFragment
+    ...StaffLeaveFragment
+  }
+}

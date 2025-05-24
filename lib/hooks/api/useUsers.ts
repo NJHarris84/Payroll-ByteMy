@@ -3,13 +3,13 @@ import {
   GET_USERS,
   GET_USER_BY_ID,
   GET_USERS_BY_ROLE,
-} from '@/lib/graphql/queries/users';
+} from '@/lib/graphql';
 import {
   CREATE_USER,
   UPDATE_USER,
   DELETE_USER,
   UPDATE_USER_ROLE
-} from '@/lib/graphql/mutations/users';
+} from '@/lib/graphql';
 
 // Get all users
 export function useUsers(options = {}) {

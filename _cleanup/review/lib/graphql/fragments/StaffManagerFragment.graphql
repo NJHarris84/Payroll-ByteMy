@@ -1,0 +1,8 @@
+fragment StaffManagerFragment on users {
+  manager {
+    id
+    name
+    email
+    role
+  }
+}

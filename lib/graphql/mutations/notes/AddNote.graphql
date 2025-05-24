@@ -1,0 +1,7 @@
+# import "../fragments/NoteFragment.graphql"
+
+mutation AddNote($input: notes_insert_input!) {
+  insert_notes_one(object: $input) {
+    ...NoteFragment
+  }
+}

@@ -1,0 +1,9 @@
+fragment StaffLeaveFragment on users {
+  leaves {
+    id
+    start_date
+    end_date
+    leave_type
+    status
+  }
+}

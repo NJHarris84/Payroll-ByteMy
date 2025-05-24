@@ -1,0 +1,11 @@
+# import "../fragments/ClientFragment.graphql"
+# import "../fragments/PayrollFragment.graphql"
+
+query GetClientById($id: uuid!) {
+  clients_by_pk(id: $id) {
+    ...ClientFragment
+    payrolls {
+      ...PayrollFragment
+    }
+  }
+}

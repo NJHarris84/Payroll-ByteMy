@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_PAYROLL_CYCLES } from '@/lib/graphql/queries/payrollCycles/getPayrollCycles';
+import { GET_PAYROLL_CYCLES } from '@/lib/graphql';
 
 export function usePayrollCycles(options = {}) {
   return useQuery(GET_PAYROLL_CYCLES, {

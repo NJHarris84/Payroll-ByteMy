@@ -1,0 +1,7 @@
+# import "../fragments/ClientFragment.graphql"
+
+mutation CreateClient($input: clients_insert_input!) {
+  insert_clients_one(object: $input) {
+    ...ClientFragment
+  }
+}

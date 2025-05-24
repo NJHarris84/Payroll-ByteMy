@@ -1,0 +1,9 @@
+# import "../fragments/LeaveFragment.graphql"
+
+query GetLeave($userId: uuid, $startDate: date, $endDate: date) {
+  leave(
+    where: {user_id: {_eq: $userId}, start_date: {_gte: $startDate}, end_date: {_lte: $endDate}}
+  ) {
+    ...LeaveFragment
+  }
+}

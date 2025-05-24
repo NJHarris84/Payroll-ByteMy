@@ -1,0 +1,7 @@
+# import "../fragments/ClientFragment.graphql"
+
+mutation DeleteClient($id: uuid!) {
+  delete_clients_by_pk(id: $id) {
+    ...ClientFragment
+  }
+}

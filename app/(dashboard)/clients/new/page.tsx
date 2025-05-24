@@ -11,8 +11,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { useUserRole } from '@/lib/hooks/api'
-import { CREATE_CLIENT } from '@/lib/graphql/mutations/clients'
+import { useUserRole } from '@/lib/hooks'
+import { CREATE_CLIENT } from '@/lib/graphql'
 
 export default function NewClientPage() {
   const router = useRouter()

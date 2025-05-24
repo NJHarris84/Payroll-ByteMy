@@ -1,0 +1,8 @@
+fragment WorkScheduleFragment on work_schedule {
+  id
+  user_id
+  work_day
+  work_hours
+  created_at
+  updated_at
+}

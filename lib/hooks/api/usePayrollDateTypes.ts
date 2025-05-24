@@ -4,7 +4,7 @@ import {
   CREATE_PAYROLL_DATE_TYPE,
   UPDATE_PAYROLL_DATE_TYPE,
   DELETE_PAYROLL_DATE_TYPE
-} from '@/lib/graphql/mutations';
+} from '@/lib/graphql';
 
 export function usePayrollDateTypes(options = {}) {
   return useQuery(GET_PAYROLL_DATE_TYPES, {

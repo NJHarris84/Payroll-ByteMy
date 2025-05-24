@@ -1,7 +1,7 @@
 // app/api/payrolls/[id]/route.ts
 import { NextRequest } from "next/server"
 import { getServerApolloClient } from '@/lib/api'
-import { GET_PAYROLL_BY_ID } from '@/lib/graphql/queries/payrolls'
+import { GET_PAYROLL_BY_ID } from '@/lib/graphql'
 import { auth } from "@clerk/nextjs/server"
 import { apiSuccess, apiError, apiNotFound, apiUnauthorized } from '@/lib/api'
 

@@ -1,0 +1,17 @@
+# import "../fragments/PayrollFragment.graphql"
+
+fragment PayrollDetailFragment on payrolls {
+  ...PayrollFragment
+  client {
+    id
+    name
+  }
+  payroll_cycle {
+    id
+    name
+  }
+  payroll_date_type {
+    id
+    name
+  }
+}

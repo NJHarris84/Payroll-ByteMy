@@ -1,12 +1,39 @@
+/**
+ * Payroll Date Service
+ * 
+ * This service is responsible for managing payroll dates, including:
+ * - Calculating and generating future payroll dates
+ * - Ensuring dates are adjusted for holidays and business days
+ * - Recalculating dates when payroll configurations change
+ * - Extending date ranges for all active payrolls
+ * 
+ * Business rules implemented:
+ * - Different calculation methods based on payroll cycle (weekly, monthly, etc.)
+ * - Date adjustment based on business days (previous/next business day)
+ * - Holiday-aware processing date calculations
+ */
+
 // lib/payroll-date-service.ts
 import { db } from "@/lib/db";
 import { adjustment_rules, holidays, payrolls, payroll_dates } from "@/drizzle/schema"
 import { eq, and, gte, lte, or } from "drizzle-orm"
 import { addMonths } from "date-fns"
-import { calculatePayrollDates } from "@/lib/utils/date-utils";
+import { calculatePayrollDates } from "@/lib/utils";
 
 /**
  * Ensures payroll dates are calculated and stored for the given period
+ * 
+ * This function:
+ * 1. Checks for existing dates in the requested range
+ * 2. Calculates additional dates if needed
+ * 3. Stores new dates in the database
+ * 4. Returns all dates (existing + newly calculated)
+ * 
+ * @param {string} payrollId - The unique identifier of the payroll
+ * @param {Date} [fromDate=new Date()] - The start date for calculations (defaults to today)
+ * @param {Date} [toDate=addMonths(new Date(), 24)] - The end date for calculations (defaults to 2 years from now)
+ * @returns {Promise<Array<PayrollDate>>} All payroll dates in the requested range
+ * @throws {Error} If payroll is not found
  */
 export async function ensurePayrollDatesExist(
   payrollId: string, 
@@ -123,7 +150,13 @@ export async function ensurePayrollDatesExist(
 
 /**
  * Recalculates and updates all future payroll dates for a given payroll
- * Call this when a payroll's configuration changes
+ * 
+ * This function should be called when a payroll's configuration changes (e.g., 
+ * cycle type, date type, processing days before EFT, etc.) to ensure all future
+ * dates reflect the updated configuration.
+ * 
+ * @param {string} payrollId - The unique identifier of the payroll to recalculate
+ * @returns {Promise<Array<PayrollDate>>} The newly calculated payroll dates
  */
 export async function recalculatePayrollDates(payrollId: string) {
   // First, delete all future dates
@@ -141,6 +174,12 @@ export async function recalculatePayrollDates(payrollId: string) {
 
 /**
  * Monthly job to ensure all payrolls have dates extending 2 years out
+ * 
+ * This function should be scheduled to run periodically (e.g., once a month)
+ * to ensure that all active payrolls have dates calculated far enough into the future.
+ * It iterates through all active payrolls and calls ensurePayrollDatesExist for each.
+ * 
+ * @returns {Promise<void>}
  */
 export async function extendAllPayrollDates() {
   // Get all active payrolls

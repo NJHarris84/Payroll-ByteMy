@@ -1,0 +1,4 @@
+fragment AppSettingsFragment on app_settings {
+  id
+  permissions
+}

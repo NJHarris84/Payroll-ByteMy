@@ -1,0 +1,18 @@
+# import "../fragments/PayrollDateTypeFragment.graphql"
+
+query GetPayrollDateTypes {
+  payroll_date_types(order_by: {name: asc}) {
+    ...PayrollDateTypeFragment
+    adjustment_rules {
+      id
+      cycle_id
+      rule_code
+      rule_description
+    }
+    payrolls_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}

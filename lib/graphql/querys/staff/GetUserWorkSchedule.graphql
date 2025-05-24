@@ -1,0 +1,7 @@
+# import "../fragments/WorkScheduleFragment.graphql"
+
+query GetUserWorkSchedule($userId: uuid!) {
+  work_schedule(where: {user_id: {_eq: $userId}}) {
+    ...WorkScheduleFragment
+  }
+}

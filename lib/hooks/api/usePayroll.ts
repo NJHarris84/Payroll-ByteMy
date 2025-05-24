@@ -5,7 +5,7 @@ import {
   GET_USER_PAYROLLS,
   INSERT_PAYROLL,
   UPDATE_PAYROLL
-} from '@/lib/graphql/queries';
+} from '@/lib/graphql';
 import { GET_PAYROLLS } from '@/lib/graphql/queries/payrolls/getPayrolls';
 import { UPDATE_PAYROLL_STATUS } from '@/lib/graphql/mutations/payrolls/updatePayrollStatus';
 

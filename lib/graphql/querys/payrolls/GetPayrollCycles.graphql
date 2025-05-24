@@ -1,0 +1,18 @@
+# import "../fragments/PayrollCycleFragment.graphql"
+
+query GetPayrollCycles {
+  payroll_cycles(order_by: {name: asc}) {
+    ...PayrollCycleFragment
+    adjustment_rules {
+      id
+      date_type_id
+      rule_code
+      rule_description
+    }
+    payrolls_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}

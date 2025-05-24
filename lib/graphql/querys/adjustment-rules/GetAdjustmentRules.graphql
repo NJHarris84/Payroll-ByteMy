@@ -1,0 +1,7 @@
+# import "../fragments/AdjustmentRuleFragment.graphql"
+
+query GetAdjustmentRules {
+  adjustment_rules(order_by: {created_at: desc}) {
+    ...AdjustmentRuleFragment
+  }
+}

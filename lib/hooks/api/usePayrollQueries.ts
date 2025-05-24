@@ -7,14 +7,14 @@ import {
   GET_PAYROLLS_BY_MANAGER,
   GET_PAYROLLS_BY_MONTH,
   GET_PAYROLLS_MISSING_DATES
-} from "@/lib/graphql/queries";
+} from "@/lib/graphql";
 import {
   CREATE_PAYROLL,
   UPDATE_PAYROLL,
   DELETE_PAYROLL,
   UPDATE_PAYROLL_STATUS,
   GENERATE_PAYROLL_DATES_FUNCTION
-} from "@/lib/graphql/mutations";
+} from "@/lib/graphql";
 
 // Main payroll queries
 export function usePayrolls(options = {}) {

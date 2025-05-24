@@ -1,0 +1,15 @@
+# import "../fragments/PayrollFragment.graphql"
+
+query GetPayrolls {
+  payrolls {
+    ...PayrollFragment
+    payroll_cycle {
+      id
+      name
+    }
+    payroll_date_type {
+      id
+      name
+    }
+  }
+}

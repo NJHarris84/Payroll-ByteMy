@@ -1,0 +1,13 @@
+# import "../fragments/PayrollFragment.graphql"
+# import "../fragments/PayrollDateFragment.graphql"
+
+query GetPayrollsByMonth($startDate: date!, $endDate: date!) {
+  payrolls(
+    where: {payroll_dates: {original_eft_date: {_gte: $startDate, _lt: $endDate}}}
+  ) {
+    ...PayrollFragment
+    payroll_dates(where: {original_eft_date: {_gte: $startDate, _lt: $endDate}}) {
+      ...PayrollDateFragment
+    }
+  }
+}

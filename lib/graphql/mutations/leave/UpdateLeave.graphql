@@ -1,0 +1,7 @@
+# import "../fragments/LeaveFragment.graphql"
+
+mutation UpdateLeave($id: uuid!, $input: leave_set_input!) {
+  update_leave_by_pk(pk_columns: {id: $id}, _set: $input) {
+    ...LeaveFragment
+  }
+}

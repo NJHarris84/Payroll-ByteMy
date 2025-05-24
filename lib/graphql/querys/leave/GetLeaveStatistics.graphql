@@ -1,0 +1,13 @@
+query GetLeaveStatistics($startDate: date!, $endDate: date!) {
+  leave_aggregate(
+    where: {start_date: {_gte: $startDate}, end_date: {_lte: $endDate}}
+  ) {
+    aggregate {
+      count
+    }
+    nodes {
+      leave_type
+      status
+    }
+  }
+}

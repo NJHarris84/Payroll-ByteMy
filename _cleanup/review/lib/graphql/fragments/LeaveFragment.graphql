@@ -1,0 +1,9 @@
+fragment LeaveFragment on leave {
+  id
+  user_id
+  start_date
+  end_date
+  leave_type
+  reason
+  status
+}

@@ -1,0 +1,11 @@
+# import "../fragments/PayrollDateFragment.graphql"
+
+mutation GeneratePayrollDates($payroll_id: uuid!, $original_eft_date: date!, $adjusted_eft_date: date!, $processing_date: date, $notes: String) {
+  insert_payroll_dates(
+    objects: [{payroll_id: $payroll_id, original_eft_date: $original_eft_date, adjusted_eft_date: $adjusted_eft_date, processing_date: $processing_date, notes: $notes}]
+  ) {
+    returning {
+      ...PayrollDateFragment
+    }
+  }
+}

@@ -1,0 +1,7 @@
+fragment PayrollCycleFragment on payroll_cycles {
+  id
+  name
+  description
+  created_at
+  updated_at
+}

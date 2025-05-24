@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useQuery } from "@apollo/client";
 import { UserDetails } from "@/types/interface";
-import { GET_STAFF_BY_ID } from '@/lib/graphql/queries/staff';
-import { useUserRole } from '@/lib/hooks/api';
+import { GET_STAFF_BY_ID } from '@/lib/graphql';
+import { useUserRole } from '@/lib/hooks';
 import { Button } from "@/components/ui/button";
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@/components/ui/table";
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";

@@ -1,8 +1,8 @@
 // hooks/useAuth.ts
 import { useAuth as useClerkAuth, useUser } from '@clerk/nextjs'
 import { useEffect, useState } from 'react'
-import { tokenManager } from '@/lib/auth/token-manager'
-import { syncUserById } from '@/lib/services/user-sync'
+import { tokenManager } from '@/lib/auth/token-manager.base'
+import { syncUserById } from '@/lib/services'
 
 export function useAuth() {
   const { isLoaded, isSignedIn, user } = useClerkAuth()

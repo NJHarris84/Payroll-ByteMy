@@ -1,16 +1,16 @@
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
-import { Role, isAdmin, isManager, isConsultant } from "@/lib/auth/roles"; // Import your roles utilities
+import { HasuraRole, Permission, hasPermission } from "@/lib/auth"; // Import from client-safe exports
 
 interface UseUserRoleOptions {
-  fallbackRole?: Role;
-  onRoleChange?: (role: Role) => void;
+  fallbackRole?: HasuraRole;
+  onRoleChange?: (role: HasuraRole) => void;
 }
 
 export function useUserRole(options: UseUserRoleOptions = {}) {
   const { fallbackRole, onRoleChange } = options;
   const { user, isLoaded } = useUser();
-  const [role, setRole] = useState<Role | undefined>(fallbackRole);
+  const [role, setRole] = useState<HasuraRole | undefined>(fallbackRole);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -18,8 +18,8 @@ export function useUserRole(options: UseUserRoleOptions = {}) {
     if (isLoaded) {
       try {
         // Extract role from user metadata, using your existing Role type
-        const userRole = user?.publicMetadata?.role as Role || 
-                         user?.privateMetadata?.role as Role;
+        const userRole = user?.publicMetadata?.role as HasuraRole || 
+                         user?.privateMetadata?.role as HasuraRole;
         
         setRole(userRole || fallbackRole);
         
@@ -37,9 +37,9 @@ export function useUserRole(options: UseUserRoleOptions = {}) {
   // Use your existing role check functions
   return {
     role,
-    isAdmin: role ? isAdmin(role) : false,
-    isManager: role ? isManager(role) : false,
-    isConsultant: role ? isConsultant(role) : false,
+    isAdmin: role ? hasPermission(role, 'admin') : false,
+    isManager: role ? hasPermission(role, 'manager') : false,
+    isConsultant: role ? hasPermission(role, 'consultant') : false,
     isClient: role === 'client',
     isLoading: !isLoaded || isLoading,
     error

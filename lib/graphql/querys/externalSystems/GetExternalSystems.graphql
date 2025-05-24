@@ -1,0 +1,7 @@
+# import "../fragments/ExternalSystemFragment.graphql"
+
+query GetExternalSystems {
+  external_systems {
+    ...ExternalSystemFragment
+  }
+}

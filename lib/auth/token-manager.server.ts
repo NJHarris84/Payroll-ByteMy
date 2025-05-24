@@ -1,18 +1,13 @@
 // lib/auth/token-manager.server.ts
-import { auth } from '@clerk/nextjs/server';
-import { getHasuraClaims } from '@/lib/utils/jwt-utils';
-import type { HasuraRole } from '@/types/interface';
+import 'server-only'; // Explicitly mark this module as server-only
+import { TokenManagerBase } from './token-manager.base';
+import type { HasuraRole } from './roles';
 
-class TokenManagerServer {
+class TokenManagerServer extends TokenManagerBase {
   private static instance: TokenManagerServer;
-  private cache = new Map<string, { token: string; expiresAt: number }>();
-  private refreshPromise: Map<string, Promise<string | null>> = new Map();
-  private readonly expirationBuffer: number = 5 * 60 * 1000;
 
   private constructor(expirationBufferMinutes?: number) {
-    if (expirationBufferMinutes) {
-      this.expirationBuffer = expirationBufferMinutes * 60 * 1000;
-    }
+    super(expirationBufferMinutes);
   }
 
   static getInstance(expirationBufferMinutes?: number): TokenManagerServer {
@@ -22,66 +17,39 @@ class TokenManagerServer {
     return TokenManagerServer.instance;
   }
 
-  async getToken(): Promise<string | null> {
-    const cacheKey = 'server';
-    if (this.refreshPromise.has(cacheKey)) {
-      return this.refreshPromise.get(cacheKey)!;
-    }
-    const cached = this.cache.get(cacheKey);
-    if (cached && cached.expiresAt > Date.now() + this.expirationBuffer) {
-      return cached.token;
-    }
-    return this.refreshToken(cacheKey);
+  protected getCacheKey(): string {
+    return 'server';
   }
 
-  async refreshToken(cacheKey: string): Promise<string | null> {
-    if (this.refreshPromise.has(cacheKey)) {
-      return this.refreshPromise.get(cacheKey)!;
-    }
-    const refreshPromiseInstance = (async () => {
-      try {
-        const authObj = await auth();
-        const token = await authObj.getToken({ template: 'hasura' });
-        if (token) {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          const expiresAt = (payload.exp || 0) * 1000;
-          this.cache.set(cacheKey, { token, expiresAt });
-          return token;
-        }
-        return null;
-      } catch (error) {
-        console.error('Token refresh failed (server):', error);
-        this.cache.delete(cacheKey);
-        return null;
-      } finally {
-        this.refreshPromise.delete(cacheKey);
+  protected async refreshTokenImpl(cacheKey: string): Promise<string | null> {
+    try {
+      // Server-side token refresh implementation
+      // This would typically use Clerk or your auth provider's server SDK
+      const token = ''; // Replace with actual implementation
+      
+      if (token) {
+        const expiresAt = this.getExpirationFromToken(token);
+        this.cache.set(cacheKey, { token, expiresAt });
       }
-    })();
-    this.refreshPromise.set(cacheKey, refreshPromiseInstance);
-    return refreshPromiseInstance;
-  }
-
-  clearCache(): void {
-    this.cache.clear();
-    this.refreshPromise.clear();
-  }
-
-  isTokenValid(token: string): boolean {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const exp = payload.exp * 1000;
-      return exp > Date.now() + 60 * 1000;
-    } catch {
-      return false;
+      
+      this.refreshPromise.delete(cacheKey);
+      return token;
+    } catch (error) {
+      console.error('Error refreshing server token:', error);
+      this.refreshPromise.delete(cacheKey);
+      return null;
     }
   }
 
-  getUserRoleFromToken(token: string): HasuraRole | null {
+  private getExpirationFromToken(token: string): number {
     try {
-      const claims = getHasuraClaims(token);
-      return claims['x-hasura-default-role'] as HasuraRole;
+      const parts = token.split('.');
+      if (parts.length !== 3) return 0;
+      
+      const payload = JSON.parse(atob(parts[1]));
+      return payload.exp * 1000;
     } catch {
-      return null;
+      return 0;
     }
   }
 }

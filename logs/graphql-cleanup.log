@@ -1,0 +1,191 @@
+Updated content: lib/graphql/scalars.ts
+Updated content: lib/graphql/enums.ts
+Renamed: lib/graphql/GetExternalSystems.generated.ts → lib/graphql/getExternalSystems.generated.ts
+Updated content: lib/graphql/getExternalSystems.generated.ts
+Renamed: lib/graphql/GetDashboardData.generated.ts → lib/graphql/getDashboardData.generated.ts
+Updated content: lib/graphql/getDashboardData.generated.ts
+Renamed: lib/graphql/querys/staff/GetUserWorkSchedule.generated.ts → lib/graphql/querys/staff/getUserWorkSchedule.generated.ts
+Updated content: lib/graphql/querys/staff/getUserWorkSchedule.generated.ts
+Renamed: lib/graphql/querys/staff/GetStaffList.generated.ts → lib/graphql/querys/staff/getStaffList.generated.ts
+Updated content: lib/graphql/querys/staff/getStaffList.generated.ts
+Renamed: lib/graphql/querys/staff/GetStaffById.generated.ts → lib/graphql/querys/staff/getStaffById.generated.ts
+Updated content: lib/graphql/querys/staff/getStaffById.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetUserPayrolls.generated.ts → lib/graphql/querys/payrolls/getUserPayrolls.generated.ts
+Updated content: lib/graphql/querys/payrolls/getUserPayrolls.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollsMissingDates.generated.ts → lib/graphql/querys/payrolls/getPayrollsMissingDates.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollsMissingDates.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollsByMonth.generated.ts → lib/graphql/querys/payrolls/getPayrollsByMonth.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollsByMonth.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrolls.generated.ts → lib/graphql/querys/payrolls/getPayrolls.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrolls.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollStatistics.generated.ts → lib/graphql/querys/payrolls/getPayrollStatistics.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollStatistics.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollList.generated.ts → lib/graphql/querys/payrolls/getPayrollList.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollList.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollDates.generated.ts → lib/graphql/querys/payrolls/getPayrollDates.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollDates.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollDateTypes.generated.ts → lib/graphql/querys/payrolls/getPayrollDateTypes.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollDateTypes.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollCycles.generated.ts → lib/graphql/querys/payrolls/getPayrollCycles.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollCycles.generated.ts
+Renamed: lib/graphql/querys/payrolls/GetPayrollById.generated.ts → lib/graphql/querys/payrolls/getPayrollById.generated.ts
+Updated content: lib/graphql/querys/payrolls/getPayrollById.generated.ts
+Renamed: lib/graphql/querys/payrolls/GeneratePayrollDates.generated.ts → lib/graphql/querys/payrolls/generatePayrollDates.generated.ts
+Updated content: lib/graphql/querys/payrolls/generatePayrollDates.generated.ts
+Renamed: lib/graphql/querys/notes/GetNotes.generated.ts → lib/graphql/querys/notes/getNotes.generated.ts
+Updated content: lib/graphql/querys/notes/getNotes.generated.ts
+Renamed: lib/graphql/querys/leave/GetLeaveStatistics.generated.ts → lib/graphql/querys/leave/getLeaveStatistics.generated.ts
+Updated content: lib/graphql/querys/leave/getLeaveStatistics.generated.ts
+Renamed: lib/graphql/querys/leave/GetLeave.generated.ts → lib/graphql/querys/leave/getLeave.generated.ts
+Updated content: lib/graphql/querys/leave/getLeave.generated.ts
+Renamed: lib/graphql/querys/holidays/GetHolidaysByCountry.generated.ts → lib/graphql/querys/holidays/getHolidaysByCountry.generated.ts
+Updated content: lib/graphql/querys/holidays/getHolidaysByCountry.generated.ts
+Renamed: lib/graphql/querys/holidays/GetHolidays.generated.ts → lib/graphql/querys/holidays/getHolidays.generated.ts
+Updated content: lib/graphql/querys/holidays/getHolidays.generated.ts
+Renamed: lib/graphql/querys/feature-flags/GetFeatureFlags.generated.ts → lib/graphql/querys/feature-flags/getFeatureFlags.generated.ts
+Updated content: lib/graphql/querys/feature-flags/getFeatureFlags.generated.ts
+Renamed: lib/graphql/querys/clients/GetClientsList.generated.ts → lib/graphql/querys/clients/getClientsList.generated.ts
+Updated content: lib/graphql/querys/clients/getClientsList.generated.ts
+Renamed: lib/graphql/querys/clients/GetClientStatistics.generated.ts → lib/graphql/querys/clients/getClientStatistics.generated.ts
+Updated content: lib/graphql/querys/clients/getClientStatistics.generated.ts
+Renamed: lib/graphql/querys/clients/GetClientExternalSystems.generated.ts → lib/graphql/querys/clients/getClientExternalSystems.generated.ts
+Updated content: lib/graphql/querys/clients/getClientExternalSystems.generated.ts
+Renamed: lib/graphql/querys/clients/GetClientById.generated.ts → lib/graphql/querys/clients/getClientById.generated.ts
+Updated content: lib/graphql/querys/clients/getClientById.generated.ts
+Renamed: lib/graphql/querys/app-settings/GetAppSettings.generated.ts → lib/graphql/querys/app-settings/getAppSettings.generated.ts
+Updated content: lib/graphql/querys/app-settings/getAppSettings.generated.ts
+Renamed: lib/graphql/querys/adjustment-rules/GetAdjustmentRules.generated.ts → lib/graphql/querys/adjustment-rules/getAdjustmentRules.generated.ts
+Updated content: lib/graphql/querys/adjustment-rules/getAdjustmentRules.generated.ts
+Renamed: lib/graphql/querys/adjustment-rules/GetAdjustmentRuleByCycleAndType.generated.ts → lib/graphql/querys/adjustment-rules/getAdjustmentRuleByCycleAndType.generated.ts
+Updated content: lib/graphql/querys/adjustment-rules/getAdjustmentRuleByCycleAndType.generated.ts
+Updated content: lib/graphql/queries/work_schedule/getUserWorkSchedule.ts
+Updated content: lib/graphql/queries/statistics/getStatistics.ts
+Updated content: lib/graphql/queries/staff/getStaffList.ts
+Updated content: lib/graphql/queries/staff/getStaffById.ts
+Updated content: lib/graphql/queries/payrolls/getUserPayrolls.ts
+Updated content: lib/graphql/queries/payrolls/getPayrollsMissingDates.ts
+Updated content: lib/graphql/queries/payrolls/getPayrollsByMonth.ts
+Updated content: lib/graphql/queries/payrolls/getPayrolls.ts
+Updated content: lib/graphql/queries/payrolls/getPayrollSchedule.ts
+Updated content: lib/graphql/queries/payrolls/getPayrollList.ts
+Updated content: lib/graphql/queries/payrolls/getPayrollDates.ts
+Updated content: lib/graphql/queries/payrolls/getPayrollById.ts
+Updated content: lib/graphql/queries/payrollDateTypes/getPayrollDateTypes.ts
+Updated content: lib/graphql/queries/payrollCycles/getPayrollCycles.ts
+Updated content: lib/graphql/queries/notes/getNotes.ts
+Updated content: lib/graphql/queries/leave/getLeave.ts
+Updated content: lib/graphql/queries/holidays/getHolidaysByYear.ts
+Updated content: lib/graphql/queries/holidays/getHolidaysByCountry.ts
+Updated content: lib/graphql/queries/holidays/getHolidays.ts
+Updated content: lib/graphql/queries/featureFlags/getFeatureFlags.ts
+Updated content: lib/graphql/queries/externalSystems/getExternalSystems.ts
+Updated content: lib/graphql/queries/dashboard/getDashboardData.ts
+Updated content: lib/graphql/queries/clients/getClientsList.ts
+Updated content: lib/graphql/queries/clients/getClientById.ts
+Updated content: lib/graphql/queries/clientExternalSystems/getClientExternalSystems.ts
+Updated content: lib/graphql/queries/appSettings/getAppSettings.ts
+Updated content: lib/graphql/queries/adjustmentRules/getAdjustmentRules.ts
+Updated content: lib/graphql/queries/adjustmentRules/getAdjustmentRuleByCycleAndType.ts
+Updated content: lib/graphql/mutations/work_schedule/createWorkSchedule.ts
+Renamed: lib/graphql/mutations/work-schedule/CreateWorkSchedule.generated.ts → lib/graphql/mutations/work-schedule/createWorkSchedule.generated.ts
+Updated content: lib/graphql/mutations/work-schedule/createWorkSchedule.generated.ts
+Updated content: lib/graphql/mutations/staff/updateUser.ts
+Updated content: lib/graphql/mutations/staff/updateStaff.ts
+Updated content: lib/graphql/mutations/staff/deleteStaff.ts
+Updated content: lib/graphql/mutations/staff/createStaff.ts
+Renamed: lib/graphql/mutations/staff/UpdateUser.generated.ts → lib/graphql/mutations/staff/updateUser.generated.ts
+Updated content: lib/graphql/mutations/staff/updateUser.generated.ts
+Renamed: lib/graphql/mutations/staff/UpdateStaff.generated.ts → lib/graphql/mutations/staff/updateStaff.generated.ts
+Updated content: lib/graphql/mutations/staff/updateStaff.generated.ts
+Renamed: lib/graphql/mutations/staff/DeleteStaff.generated.ts → lib/graphql/mutations/staff/deleteStaff.generated.ts
+Updated content: lib/graphql/mutations/staff/deleteStaff.generated.ts
+Renamed: lib/graphql/mutations/staff/CreateStaff.generated.ts → lib/graphql/mutations/staff/createStaff.generated.ts
+Updated content: lib/graphql/mutations/staff/createStaff.generated.ts
+Updated content: lib/graphql/mutations/payrolls/updatePayrollStatus.ts
+Updated content: lib/graphql/mutations/payrolls/updatePayroll.ts
+Updated content: lib/graphql/mutations/payrolls/insertPayroll.ts
+Updated content: lib/graphql/mutations/payrolls/generatePayrollDates.ts
+Updated content: lib/graphql/mutations/payrolls/deletePayroll.ts
+Updated content: lib/graphql/mutations/payrolls/createPayroll.ts
+Renamed: lib/graphql/mutations/payrolls/UpdatePayrollStatus.generated.ts → lib/graphql/mutations/payrolls/updatePayrollStatus.generated.ts
+Updated content: lib/graphql/mutations/payrolls/updatePayrollStatus.generated.ts
+Renamed: lib/graphql/mutations/payrolls/UpdatePayrollDate.generated.ts → lib/graphql/mutations/payrolls/updatePayrollDate.generated.ts
+Updated content: lib/graphql/mutations/payrolls/updatePayrollDate.generated.ts
+Renamed: lib/graphql/mutations/payrolls/UpdatePayroll.generated.ts → lib/graphql/mutations/payrolls/updatePayroll.generated.ts
+Updated content: lib/graphql/mutations/payrolls/updatePayroll.generated.ts
+Renamed: lib/graphql/mutations/payrolls/InsertPayroll.generated.ts → lib/graphql/mutations/payrolls/insertPayroll.generated.ts
+Updated content: lib/graphql/mutations/payrolls/insertPayroll.generated.ts
+Renamed: lib/graphql/mutations/payrolls/InsertBulkPayrollDates.generated.ts → lib/graphql/mutations/payrolls/insertBulkPayrollDates.generated.ts
+Updated content: lib/graphql/mutations/payrolls/insertBulkPayrollDates.generated.ts
+Renamed: lib/graphql/mutations/payrolls/DeletePayroll.generated.ts → lib/graphql/mutations/payrolls/deletePayroll.generated.ts
+Updated content: lib/graphql/mutations/payrolls/deletePayroll.generated.ts
+Renamed: lib/graphql/mutations/payrolls/CreatePayroll.generated.ts → lib/graphql/mutations/payrolls/createPayroll.generated.ts
+Updated content: lib/graphql/mutations/payrolls/createPayroll.generated.ts
+Updated content: lib/graphql/mutations/payroll_dates/updatePayrollDate.ts
+Updated content: lib/graphql/mutations/payroll_dates/generatePayrollDates.ts
+Updated content: lib/graphql/mutations/notes/updateNote.ts
+Updated content: lib/graphql/mutations/notes/addNote.ts
+Renamed: lib/graphql/mutations/notes/UpdateNote.generated.ts → lib/graphql/mutations/notes/updateNote.generated.ts
+Updated content: lib/graphql/mutations/notes/updateNote.generated.ts
+Renamed: lib/graphql/mutations/notes/AddNote.generated.ts → lib/graphql/mutations/notes/addNote.generated.ts
+Updated content: lib/graphql/mutations/notes/addNote.generated.ts
+Updated content: lib/graphql/mutations/leave/updateLeave.ts
+Updated content: lib/graphql/mutations/leave/createLeave.ts
+Renamed: lib/graphql/mutations/leave/UpdateLeave.generated.ts → lib/graphql/mutations/leave/updateLeave.generated.ts
+Updated content: lib/graphql/mutations/leave/updateLeave.generated.ts
+Renamed: lib/graphql/mutations/leave/CreateLeave.generated.ts → lib/graphql/mutations/leave/createLeave.generated.ts
+Updated content: lib/graphql/mutations/leave/createLeave.generated.ts
+Updated content: lib/graphql/mutations/holidays/syncHolidays.ts
+Renamed: lib/graphql/mutations/holidays/SyncHolidays.generated.ts → lib/graphql/mutations/holidays/syncHolidays.generated.ts
+Updated content: lib/graphql/mutations/holidays/syncHolidays.generated.ts
+Updated content: lib/graphql/mutations/clients/updateClient.ts
+Updated content: lib/graphql/mutations/clients/deleteClient.ts
+Updated content: lib/graphql/mutations/clients/createClient.ts
+Renamed: lib/graphql/mutations/clients/UpdateClient.generated.ts → lib/graphql/mutations/clients/updateClient.generated.ts
+Updated content: lib/graphql/mutations/clients/updateClient.generated.ts
+Renamed: lib/graphql/mutations/clients/DeleteClient.generated.ts → lib/graphql/mutations/clients/deleteClient.generated.ts
+Updated content: lib/graphql/mutations/clients/deleteClient.generated.ts
+Renamed: lib/graphql/mutations/clients/CreateClient.generated.ts → lib/graphql/mutations/clients/createClient.generated.ts
+Updated content: lib/graphql/mutations/clients/createClient.generated.ts
+Updated content: lib/graphql/mutations/adjustmentRules/updateAdjustmentRule.ts
+Updated content: lib/graphql/mutations/adjustmentRules/deleteAdjustmentRule.ts
+Updated content: lib/graphql/mutations/adjustmentRules/createAdjustmentRule.ts
+Renamed: lib/graphql/mutations/adjustment-rules/UpdateAdjustmentRule.generated.ts → lib/graphql/mutations/adjustment-rules/updateAdjustmentRule.generated.ts
+Updated content: lib/graphql/mutations/adjustment-rules/updateAdjustmentRule.generated.ts
+Renamed: lib/graphql/mutations/adjustment-rules/DeleteAdjustmentRule.generated.ts → lib/graphql/mutations/adjustment-rules/deleteAdjustmentRule.generated.ts
+Updated content: lib/graphql/mutations/adjustment-rules/deleteAdjustmentRule.generated.ts
+Renamed: lib/graphql/mutations/adjustment-rules/CreateAdjustmentRule.generated.ts → lib/graphql/mutations/adjustment-rules/createAdjustmentRule.generated.ts
+Updated content: lib/graphql/mutations/adjustment-rules/createAdjustmentRule.generated.ts
+Updated content: lib/graphql/generated/types.ts
+Updated content: lib/graphql/fragments/WorkScheduleFragment.ts
+Updated content: lib/graphql/fragments/WorkScheduleFragment.generated.ts
+Updated content: lib/graphql/fragments/StaffManagerFragment.generated.ts
+Updated content: lib/graphql/fragments/StaffLeaveFragment.generated.ts
+Updated content: lib/graphql/fragments/StaffFragment.ts
+Updated content: lib/graphql/fragments/StaffFragment.generated.ts
+Updated content: lib/graphql/fragments/PayrollFragment.ts
+Updated content: lib/graphql/fragments/PayrollFragment.generated.ts
+Updated content: lib/graphql/fragments/PayrollDetailFragment.generated.ts
+Updated content: lib/graphql/fragments/PayrollDateTypeFragment.generated.ts
+Updated content: lib/graphql/fragments/PayrollDateFragment.ts
+Updated content: lib/graphql/fragments/PayrollDateFragment.generated.ts
+Updated content: lib/graphql/fragments/PayrollCycleFragment.ts
+Updated content: lib/graphql/fragments/PayrollCycleFragment.generated.ts
+Updated content: lib/graphql/fragments/NoteFragment.ts
+Updated content: lib/graphql/fragments/NoteFragment.generated.ts
+Updated content: lib/graphql/fragments/LeaveFragment.ts
+Updated content: lib/graphql/fragments/LeaveFragment.generated.ts
+Updated content: lib/graphql/fragments/HolidayFragment.ts
+Updated content: lib/graphql/fragments/HolidayFragment.generated.ts
+Updated content: lib/graphql/fragments/FeatureFlagFragment.ts
+Updated content: lib/graphql/fragments/FeatureFlagFragment.generated.ts
+Updated content: lib/graphql/fragments/ExternalSystemFragment.ts
+Updated content: lib/graphql/fragments/ExternalSystemFragment.generated.ts
+Updated content: lib/graphql/fragments/ClientFragment.ts
+Updated content: lib/graphql/fragments/ClientFragment.generated.ts
+Updated content: lib/graphql/fragments/ClientExternalSystemFragment.ts
+Updated content: lib/graphql/fragments/ClientExternalSystemFragment.generated.ts
+Updated content: lib/graphql/fragments/AppSettingsFragment.ts
+Updated content: lib/graphql/fragments/AppSettingsFragment.generated.ts
+Updated content: lib/graphql/fragments/AdjustmentRuleFragment.ts
+Updated content: lib/graphql/fragments/AdjustmentRuleFragment.generated.ts

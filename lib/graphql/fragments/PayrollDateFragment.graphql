@@ -1,0 +1,10 @@
+fragment PayrollDateFragment on payroll_dates {
+  id
+  payroll_id
+  original_eft_date
+  adjusted_eft_date
+  processing_date
+  notes
+  created_at
+  updated_at
+}

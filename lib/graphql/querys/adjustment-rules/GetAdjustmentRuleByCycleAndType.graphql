@@ -1,0 +1,9 @@
+# import "../fragments/AdjustmentRuleFragment.graphql"
+
+query GetAdjustmentRuleByCycleAndType($cycleId: uuid!, $dateTypeId: uuid!) {
+  adjustment_rules(
+    where: {cycle_id: {_eq: $cycleId}, date_type_id: {_eq: $dateTypeId}}
+  ) {
+    ...AdjustmentRuleFragment
+  }
+}

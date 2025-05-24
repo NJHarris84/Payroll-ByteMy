@@ -1,0 +1,11 @@
+# import "../fragments/StaffFragment.graphql"
+# import "../fragments/StaffManagerFragment.graphql"
+# import "../fragments/StaffLeaveFragment.graphql"
+
+query GetStaffList {
+  users(where: {is_staff: {_eq: true}}) {
+    ...StaffFragment
+    ...StaffManagerFragment
+    ...StaffLeaveFragment
+  }
+}

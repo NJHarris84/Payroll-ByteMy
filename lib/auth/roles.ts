@@ -1,4 +1,4 @@
-// lib/roles.ts
+// lib/auth/roles.ts
 
 // Define the HasuraRole type that matches what comes from Clerk JWT
 export type HasuraRole = "admin" | "org_admin" | "manager" | "consultant" | "viewer";
@@ -40,7 +40,7 @@ export const appRoles: AppRole[] = [
   {
     id: "org_admin",
     name: "Administrator", 
-    description: "Full access to organization features",
+    description: "Full access to organisation features", // ✅ Australian spelling
     permissions: rolePermissions.org_admin
   },
   {
@@ -96,3 +96,21 @@ export const roleMapping: Record<HasuraRole, string> = {
   "consultant": "Consultant",
   "viewer": "Viewer"
 };
+
+// Export constants for index.ts re-exports
+export const ROLES = {
+  ADMIN: "admin" as HasuraRole,
+  ORG_ADMIN: "org_admin" as HasuraRole,
+  MANAGER: "manager" as HasuraRole,
+  CONSULTANT: "consultant" as HasuraRole,
+  VIEWER: "viewer" as HasuraRole
+};
+
+export const PERMISSIONS: Permission[] = [
+  "manage_users",
+  "manage_clients", 
+  "manage_payrolls",
+  "view_reports",
+  "manage_settings",
+  "view_payrolls"
+];

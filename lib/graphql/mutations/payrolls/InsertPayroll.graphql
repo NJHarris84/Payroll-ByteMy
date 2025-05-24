@@ -1,0 +1,7 @@
+# import "../fragments/PayrollFragment.graphql"
+
+mutation InsertPayroll($input: payrolls_insert_input!) {
+  insert_payrolls_one(object: $input) {
+    ...PayrollFragment
+  }
+}

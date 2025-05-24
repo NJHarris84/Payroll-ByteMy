@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useSmartPolling, useUserRole } from '@/lib/hooks/api';
+import { useSmartPolling, useUserRole } from '@/lib/hooks';
 import { GET_CLIENTS_LIST as GET_CLIENTS } from "@/lib/graphql/queries/clients/getClientsList"; 
 import { Client } from "@/types/interface";
 import { ClientsTable } from "@/components/client/clients-table";

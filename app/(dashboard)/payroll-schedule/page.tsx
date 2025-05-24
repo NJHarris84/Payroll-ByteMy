@@ -32,9 +32,9 @@ import { cn } from '@/lib/utils'
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { GET_PAYROLLS_BY_MONTH } from '@/lib/graphql/queries/payrolls'
-import { GET_HOLIDAYS } from '@/lib/graphql/queries/holidays'
-import { useSmartPolling } from '@/lib/hooks/api'
+import { GET_PAYROLLS_BY_MONTH } from '@/lib/graphql'
+import { GET_HOLIDAYS } from '@/lib/graphql'
+import { useSmartPolling } from '@/lib/hooks'
 
 // Types for our data
 interface Leave {

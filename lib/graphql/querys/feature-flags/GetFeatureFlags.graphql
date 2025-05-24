@@ -1,0 +1,7 @@
+# import "../fragments/FeatureFlagFragment.graphql"
+
+query GetFeatureFlags {
+  feature_flags {
+    ...FeatureFlagFragment
+  }
+}

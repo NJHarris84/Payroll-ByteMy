@@ -1,12 +1,24 @@
-// lib/holiday-sync-service.ts
+// lib/services/holiday-sync-service.ts
 import { gql } from '@apollo/client'
-import { adminApolloClient } from "@/lib/api/apollo-client"
-import { adminClient } from "./apollo-admin";
-import { SYNC_HOLIDAYS } from "@/lib/graphql/mutations/holidays/syncHolidays";
+import { adminApolloClient } from "@/lib/api/apollo-client.client"
+import { SYNC_HOLIDAYS } from "@/lib/graphql";
 import axios from "axios";
 
 // Type definition for holiday API response
 export interface PublicHoliday {
+    date: string
+    localName: string
+    name: string
+    countryCode: string
+    fixed: boolean
+    global: boolean
+    counties?: string[]
+    launchYear: number
+    types: string[]
+}
+
+// Type definition for Nager.Date API response
+export interface NagerDateHoliday {
     date: string
     localName: string
     name: string
@@ -27,15 +39,15 @@ const INSERT_HOLIDAYS_MUTATION = gql`
       constraint: holidays_pkey,
       update_columns: [
         date, 
-        local_name,  # ✅ Corrected
+        local_name,
         name, 
-        country_code,  # ✅ Corrected
+        country_code,
         region,
-        is_fixed,  # ✅ Corrected
-        is_global,  # ✅ Corrected
-        launch_year,  # ✅ Corrected
+        is_fixed,
+        is_global,
+        launch_year,
         types, 
-        updated_at  # ✅ Corrected
+        updated_at
       ]
     }
   ) {
@@ -43,12 +55,11 @@ const INSERT_HOLIDAYS_MUTATION = gql`
     returning {
       id
       date
-      local_name  # ✅ Corrected
+      local_name
       name
     }
   }
 }
-
 `
 
 export async function fetchPublicHolidays(year: number, countryCode: string): Promise<PublicHoliday[]> {
@@ -72,13 +83,12 @@ export async function syncHolidaysForCountry(year: number, countryCode: string, 
         const publicHolidays = await fetchPublicHolidays(year, countryCode);
 
         // Separate national holidays (counties = null) from state-specific ones
-
         const holidaysToInsert = publicHolidays.map(holiday => ({
             date: holiday.date,
             local_name: holiday.localName,
             name: holiday.name,
             country_code: holiday.countryCode,
-            region: holiday.counties ? holiday.counties.map(c => c.replace("${holiday.courtyCode}-", "")) : ["National"], // ✅ Store as an array
+            region: holiday.counties ? holiday.counties.map(c => c.replace(`${holiday.countryCode}-`, "")) : ["National"], // Fixed typo: courtyCode -> countryCode
             is_fixed: holiday.fixed,
             is_global: holiday.global,
             launch_year: holiday.launchYear,
@@ -86,13 +96,9 @@ export async function syncHolidaysForCountry(year: number, countryCode: string, 
             updated_at: new Date().toISOString()
         }));
 
-
-        // Use admin client to insert holidays
-        const adminClient = adminApolloClient;
-
         // Insert national holidays first (only once)
-        if (!region) {  // ✅ Insert National Holidays only once (when region is undefined)
-            const { data, errors } = await adminClient.mutate({
+        if (!region) {  // Insert National Holidays only once (when region is undefined)
+            const { data, errors } = await adminApolloClient.mutate({
                 mutation: INSERT_HOLIDAYS_MUTATION,
                 variables: { objects: holidaysToInsert }
             });
@@ -110,8 +116,6 @@ export async function syncHolidaysForCountry(year: number, countryCode: string, 
         throw error;
     }
 }
-
-
 
 /**
  * Syncs Australian holidays from the Nager.Date API
@@ -180,4 +184,36 @@ export async function syncMultipleYears(startYear: number = new Date().getFullYe
       const year = startYear + i;
       try {
         const result = await syncAustralianHolidays(year);
-        if
+        if (result.success) {
+          totalSynced++;
+          console.log(`Successfully synced holidays for ${year}`);
+        } else {
+          errors.push(`Failed to sync ${year}: ${result.message}`);
+          console.error(`Failed to sync holidays for ${year}:`, result.message);
+        }
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        errors.push(`Error syncing ${year}: ${errorMessage}`);
+        console.error(`Error syncing holidays for ${year}:`, error);
+      }
+    }
+    
+    if (errors.length > 0) {
+      return {
+        success: false,
+        message: `Partial sync completed. ${totalSynced}/${years} years synced successfully. Errors: ${errors.join('; ')}`
+      };
+    }
+    
+    return {
+      success: true,
+      message: `Successfully synced holidays for ${totalSynced} years (${startYear}-${startYear + years - 1})`
+    };
+  } catch (error) {
+    console.error("Error in syncMultipleYears:", error);
+    return {
+      success: false,
+      message: `Failed to sync multiple years: ${error instanceof Error ? error.message : "Unknown error"}`
+    };
+  }
+}

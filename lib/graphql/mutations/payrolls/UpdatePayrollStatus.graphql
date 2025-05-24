@@ -1,0 +1,7 @@
+# import "../fragments/PayrollFragment.graphql"
+
+mutation UpdatePayrollStatus($id: uuid!, $status: payroll_status!) {
+  update_payrolls_by_pk(pk_columns: {id: $id}, _set: {status: $status}) {
+    ...PayrollFragment
+  }
+}

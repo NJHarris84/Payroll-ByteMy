@@ -1,0 +1,7 @@
+# import "../fragments/ClientExternalSystemFragment.graphql"
+
+query GetClientExternalSystems($clientId: uuid!) {
+  client_external_systems(where: {client_id: {_eq: $clientId}}) {
+    ...ClientExternalSystemFragment
+  }
+}

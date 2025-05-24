@@ -1,0 +1,7 @@
+# import "../fragments/StaffFragment.graphql"
+
+mutation DeleteStaff($id: uuid!) {
+  delete_users_by_pk(id: $id) {
+    ...StaffFragment
+  }
+}

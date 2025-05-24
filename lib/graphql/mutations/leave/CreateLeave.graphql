@@ -1,0 +1,7 @@
+# import "../fragments/LeaveFragment.graphql"
+
+mutation CreateLeave($input: leave_insert_input!) {
+  insert_leave_one(object: $input) {
+    ...LeaveFragment
+  }
+}

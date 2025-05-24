@@ -1,0 +1,7 @@
+{
+  "lib/graphql/types/index.ts": "_cleanup/review/lib/graphql/types/index.ts",
+  "lib/graphql/test/index.ts": "_cleanup/review/lib/graphql/test/index.ts",
+  "lib/graphql/queries/workSchedule/index.ts": "_cleanup/review/lib/graphql/queries/workSchedule/index.ts",
+  "lib/graphql/mutations/workSchedule/index.ts": "_cleanup/review/lib/graphql/mutations/workSchedule/index.ts",
+  "lib/graphql/mutations/payrollDates/index.ts": "_cleanup/review/lib/graphql/mutations/payrollDates/index.ts"
+}

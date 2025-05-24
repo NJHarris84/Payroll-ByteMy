@@ -1,0 +1,27 @@
+query GetPayrollStatistics {
+  payrolls_aggregate {
+    aggregate {
+      count
+    }
+    nodes {
+      status
+    }
+  }
+  active_payrolls: payrolls_aggregate(where: {status: {_eq: "Active"}}) {
+    aggregate {
+      count
+    }
+  }
+  implementation_payrolls: payrolls_aggregate(
+    where: {status: {_eq: "Implementation"}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  inactive_payrolls: payrolls_aggregate(where: {status: {_eq: "Inactive"}}) {
+    aggregate {
+      count
+    }
+  }
+}

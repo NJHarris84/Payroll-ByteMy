@@ -1,0 +1,9 @@
+# import "../fragments/PayrollFragment.graphql"
+
+query GetPayrollsMissingDates($startDate: date!, $endDate: date!) {
+  payrolls(
+    where: {_not: {payroll_dates: {original_eft_date: {_gte: $startDate, _lte: $endDate}}}, status: {_eq: "Active"}}
+  ) {
+    ...PayrollFragment
+  }
+}

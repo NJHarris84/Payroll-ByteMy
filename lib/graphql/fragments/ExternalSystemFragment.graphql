@@ -1,0 +1,9 @@
+fragment ExternalSystemFragment on external_systems {
+  id
+  name
+  url
+  description
+  icon
+  created_at
+  updated_at
+}

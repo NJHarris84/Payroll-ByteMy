@@ -1,0 +1,10 @@
+# import "../fragments/HolidayFragment.graphql"
+
+mutation SyncHolidays($objects: [holidays_insert_input!]!, $onConflict: holidays_on_conflict) {
+  insert_holidays(objects: $objects, on_conflict: $onConflict) {
+    returning {
+      ...HolidayFragment
+    }
+    affected_rows
+  }
+}

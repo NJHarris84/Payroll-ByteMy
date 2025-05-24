@@ -1,0 +1,11 @@
+# import "../fragments/PayrollDetailFragment.graphql"
+# import "../fragments/PayrollDateFragment.graphql"
+
+query GetPayrollById($id: uuid!) {
+  payrolls_by_pk(id: $id) {
+    ...PayrollDetailFragment
+    payroll_dates {
+      ...PayrollDateFragment
+    }
+  }
+}

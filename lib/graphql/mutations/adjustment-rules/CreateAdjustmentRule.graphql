@@ -1,0 +1,7 @@
+# import "../fragments/AdjustmentRuleFragment.graphql"
+
+mutation CreateAdjustmentRule($input: adjustment_rules_insert_input!) {
+  insert_adjustment_rules_one(object: $input) {
+    ...AdjustmentRuleFragment
+  }
+}

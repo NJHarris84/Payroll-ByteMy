@@ -1,0 +1,55 @@
+schema: "./schema.graphql"
+documents: "lib/graphql/**/*.graphql"
+generates:
+  lib/generated/types.ts:
+    plugins:
+      - typescript
+    config:
+      strict: true
+      strictScalars: true
+      enumsAsTypes: true
+      useTypeImports: true
+      scalars:
+        # Core GraphQL and built-in scalar types
+        ID: string
+        String: string
+        Boolean: boolean
+        Int: number
+        Float: number
+
+        # Common custom scalar types
+        DateTime: string
+        Date: string
+        date: string  # Added explicit mapping for date scalar
+        JSON: { [key: string]: any }
+
+        # Project-specific scalar types
+        _Any: any
+        bpchar: string
+        uuid: string
+        timestamptz: string
+        jsonb: { [key: string]: any }
+        numeric: number
+        timestamp: string
+
+        # Enum-like scalar types mapped to project enums
+        leave_status_enum: 'import("../graphql/enums").LeaveStatusEnum'
+        payroll_cycle_type: string
+        payroll_date_type: string
+        payroll_status: 'import("../graphql/enums").PayrollStatusEnum'
+        user_role: 'import("../graphql/enums").UserRoleEnum'
+
+  lib/graphql/:
+    preset: near-operation-file
+    presetConfig:
+      extension: .generated.ts
+      baseTypesPath: ../generated/types.ts
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      withHOC: false
+      withComponent: false
+      useTypeImports: true
+      enumsAsTypes: true

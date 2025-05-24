@@ -1,0 +1,7 @@
+# import "../fragments/StaffFragment.graphql"
+
+mutation CreateStaff($input: users_insert_input!) {
+  insert_users_one(object: $input) {
+    ...StaffFragment
+  }
+}

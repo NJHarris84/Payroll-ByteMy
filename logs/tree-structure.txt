@@ -1,0 +1,732 @@
+.
+├── __mocks__
+│   ├── handlers.ts
+│   ├── mockData.ts
+│   └── server.ts
+├── __tests__
+│   ├── components
+│   │   ├── common
+│   │   │   └── error-boundary.test.tsx
+│   │   └── payroll
+│   │       └── payroll-details-card.test.tsx
+│   ├── integration
+│   │   ├── payroll-flow.test.tsx
+│   │   └── payroll-workflow.test.tsx
+│   ├── setup.ts
+│   └── unit
+│       ├── app
+│       │   └── api
+│       │       └── payrolls
+│       │           └── route.test.ts
+│       ├── components
+│       │   ├── client
+│       │   │   └── client-card.test.tsx
+│       │   ├── common
+│       │   │   └── data-table.test.tsx
+│       │   └── payroll
+│       │       └── payroll-list-card.test.tsx
+│       ├── hooks
+│       │   └── ui
+│       │       └── useForm.test.ts
+│       └── lib
+│           ├── hooks
+│           │   └── api
+│           │       ├── useApolloQuery.test.ts
+│           │       └── usePolledQuery.test.ts
+│           ├── services
+│           │   ├── holiday-sync-service.test.ts
+│           │   └── payroll-service.test.ts
+│           └── utils
+│               ├── date-utils.test.ts
+│               └── error-handling.test.ts
+├── _cleanup
+│   ├── add-relative-paths.js
+│   ├── apollo-client.original.bak
+│   ├── apollo-client2.bak
+│   ├── auth-debug.txt
+│   ├── Authentication-flow.md
+│   ├── codegen.yml
+│   ├── components.json
+│   ├── Database & Hasura Integration: Technical Overview.md
+│   ├── file-list.txt
+│   ├── graphql-import-updates.md
+│   ├── hasura-metadata.json
+│   ├── hooks
+│   ├── list_tables.sql
+│   ├── neon_db_schema1.sql
+│   ├── PayCalculator-Logic.md
+│   ├── permissions
+│   ├── schema_reference.txt
+│   ├── schema.json
+│   ├── scripts
+│   │   ├── analysis.ts
+│   │   ├── check-fragments.js
+│   │   ├── check-fragments.ts
+│   │   ├── check-imports.sh
+│   │   ├── create-missing-graphql-files.sh
+│   │   ├── create-review-copies.js
+│   │   ├── fix-component-page-imports.sh
+│   │   ├── fix-critical-files.sh
+│   │   ├── fix-graphql-queries-index.sh
+│   │   ├── fix-hooks-exports.sh
+│   │   ├── fix-imports.sh
+│   │   ├── list-exports.ts
+│   │   ├── migrate-next-auth-to-clerk.sh
+│   │   ├── project-structure.sh
+│   │   ├── standardize-imports.sh
+│   │   └── tsconfig.json
+│   ├── test
+│   │   └── employee.test.js
+│   ├── TESTING.md
+│   ├── text.txt
+│   ├── token-manager-new.bak
+│   ├── token-manager.bak
+│   ├── tree-structure.txt
+│   ├── typescript-exports.md
+│   ├── update-imports.js
+│   ├── users.txt
+│   └── vercel.json.txt
+├── app
+│   ├── (auth)
+│   │   ├── layout.tsx
+│   │   └── sign-in
+│   │       └── [[...sign-in]]
+│   │           └── page.tsx
+│   ├── (dashboard)
+│   │   ├── ai-assistant
+│   │   │   └── page.tsx
+│   │   ├── calendar
+│   │   │   └── page.tsx
+│   │   ├── clients
+│   │   │   ├── [id]
+│   │   │   │   └── page.tsx
+│   │   │   ├── loading.tsx
+│   │   │   ├── new
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── dashboard
+│   │   │   └── page.tsx
+│   │   ├── debug-auth
+│   │   │   └── page.tsx
+│   │   ├── developer
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── onboarding
+│   │   │   └── page.tsx
+│   │   ├── payroll-schedule
+│   │   │   ├── loading.tsx
+│   │   │   └── page.tsx
+│   │   ├── payrolls
+│   │   │   ├── [id]
+│   │   │   │   ├── error.tsx
+│   │   │   │   ├── loading.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── loading.tsx
+│   │   │   └── page.tsx
+│   │   ├── settings
+│   │   │   ├── account
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── staff
+│   │   │   ├── [id]
+│   │   │   │   └── page.tsx
+│   │   │   ├── loading.tsx
+│   │   │   ├── new
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── tax-calculator
+│   │       └── page.tsx
+│   ├── api
+│   │   ├── auth
+│   │   │   └── token
+│   │   │       └── route.ts
+│   │   ├── chat
+│   │   │   └── route.ts
+│   │   ├── clerk-webhooks
+│   │   │   └── route.ts
+│   │   ├── cron
+│   │   │   ├── generate-batch
+│   │   │   │   └── route.ts
+│   │   │   ├── sync-holidays
+│   │   │   │   └── route.ts
+│   │   │   └── update-payroll-dates
+│   │   │       └── route.ts
+│   │   ├── developer
+│   │   │   └── route.ts
+│   │   ├── holidays
+│   │   │   └── sync
+│   │   │       └── route.ts
+│   │   ├── payroll-dates
+│   │   │   ├── [payrollId]
+│   │   │   │   └── route.ts
+│   │   │   └── generated
+│   │   │       └── route.ts
+│   │   ├── payrolls
+│   │   │   ├── [id]
+│   │   │   │   └── route.ts
+│   │   │   ├── route.ts
+│   │   │   └── schedule
+│   │   │       └── route.ts
+│   │   ├── update-user-role
+│   │   │   └── route.ts
+│   │   └── user
+│   │       ├── [id]
+│   │       │   └── route.ts
+│   │       └── route.ts
+│   ├── error.tsx
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── providers.tsx
+│   └── sso-callback
+│       └── page.tsx
+├── cleanup.sh
+├── components
+│   ├── client
+│   │   ├── client-card.tsx
+│   │   ├── client-payroll-table.tsx
+│   │   ├── clients-table.tsx
+│   │   └── index.ts
+│   ├── common
+│   │   ├── add-note.tsx
+│   │   ├── ai-chat.tsx
+│   │   ├── alert.tsx
+│   │   ├── data-table.tsx
+│   │   ├── error-boundary.tsx
+│   │   ├── error-display.tsx
+│   │   ├── export-csv.tsx
+│   │   ├── export-pdf.tsx
+│   │   ├── form-field.tsx
+│   │   ├── index.ts
+│   │   ├── live-data-table.tsx
+│   │   ├── markdown-viewer.tsx
+│   │   ├── notes-list-with-add.tsx
+│   │   ├── notes-list.tsx
+│   │   ├── recent-activity.tsx
+│   │   ├── refresh-button.tsx
+│   │   ├── role-gates.tsx
+│   │   └── urgent-alerts.tsx
+│   ├── COMPONENT_TEMPLATE.md
+│   ├── dialogs
+│   │   ├── confirm-dialog.tsx
+│   │   ├── custom-dialog.tsx
+│   │   ├── edit-payroll-dialog.tsx
+│   │   ├── index.ts
+│   │   ├── modal-form.tsx
+│   │   ├── notes-modal.tsx
+│   │   └── README.md
+│   ├── forms
+│   │   ├── index.ts
+│   │   └── user-role-management.tsx
+│   ├── index.ts
+│   ├── layout
+│   │   ├── client-wrapper.tsx
+│   │   ├── dashboard-shell.tsx
+│   │   ├── index.ts
+│   │   ├── main-nav.tsx
+│   │   ├── sidebar.tsx
+│   │   ├── theme-toggle.tsx
+│   │   └── user-nav.tsx
+│   ├── payroll
+│   │   ├── australian-tax-calculator.tsx
+│   │   ├── generate-missing-dates-button.tsx
+│   │   ├── index.ts
+│   │   ├── payroll-dates-view.tsx
+│   │   ├── payroll-details-card.tsx
+│   │   ├── payroll-list-card.tsx
+│   │   ├── payroll-schedule-view.tsx
+│   │   ├── payroll-subscription.tsx
+│   │   ├── payrolls-missing-dates.tsx
+│   │   ├── regenerate-dates.tsx
+│   │   └── upcoming-payrolls.tsx
+│   ├── providers
+│   │   ├── client-theme-provider.tsx
+│   │   ├── index.ts
+│   │   ├── root-providers.tsx
+│   │   └── theme-provider.tsx
+│   ├── README.md
+│   ├── ui
+│   │   ├── alert-dialog.tsx
+│   │   ├── alert.tsx
+│   │   ├── aspect-ratio.tsx
+│   │   ├── avatar.tsx
+│   │   ├── badge.tsx
+│   │   ├── button.tsx
+│   │   ├── calendar.tsx
+│   │   ├── card.tsx
+│   │   ├── chart.tsx
+│   │   ├── checkbox.tsx
+│   │   ├── dialog.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── form-layout.tsx
+│   │   ├── index.ts
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── loading-states.tsx
+│   │   ├── modal.tsx
+│   │   ├── page-header.tsx
+│   │   ├── popover.tsx
+│   │   ├── resizable.tsx
+│   │   ├── scroll-area.tsx
+│   │   ├── section-card.tsx
+│   │   ├── select.tsx
+│   │   ├── separator.tsx
+│   │   ├── skeleton.tsx
+│   │   ├── sonner.tsx
+│   │   ├── spinner.tsx
+│   │   ├── switch.tsx
+│   │   ├── table.tsx
+│   │   ├── tabs.tsx
+│   │   └── textarea.tsx
+│   └── upcoming-payrolls.tsx
+├── cypress
+│   └── e2e
+│       ├── auth.cy.js
+│       ├── clients.cy.js
+│       ├── payroll-dates.cy.js
+│       └── payroll.cy.js
+├── docs
+│   └── graphql-fragments.md
+├── drizzle
+│   └── schema.ts
+├── eslint.config.mjs
+├── jest.config.js
+├── jest.setup.js
+├── lib
+│   ├── api
+│   │   ├── api-response.ts
+│   │   ├── apollo-auth-link.ts
+│   │   ├── apollo-client.ts
+│   │   ├── auth-guard.ts
+│   │   ├── client.ts
+│   │   ├── error-boundary.tsx
+│   │   ├── index.ts
+│   │   ├── optimistic-updates.ts
+│   │   └── server.ts
+│   ├── auth
+│   │   ├── auth.ts
+│   │   ├── index.ts
+│   │   ├── roles.ts
+│   │   ├── token-manager.client.ts
+│   │   ├── token-manager.server.ts
+│   │   └── token-manager.ts
+│   ├── db.ts
+│   ├── graphql
+│   │   ├── fragments
+│   │   │   ├── adjustmentRuleFragment.ts
+│   │   │   ├── appSettingsFragment.ts
+│   │   │   ├── clientExternalSystemFragment.ts
+│   │   │   ├── clientFragment.ts
+│   │   │   ├── externalSystemFragment.ts
+│   │   │   ├── featureFlagFragment.ts
+│   │   │   ├── holidayFragment.ts
+│   │   │   ├── index.ts
+│   │   │   ├── leaveFragment.ts
+│   │   │   ├── noteFragment.ts
+│   │   │   ├── payrollCycleFragment.ts
+│   │   │   ├── payrollDateFragment.ts
+│   │   │   ├── payrollDateTypeFragment.ts
+│   │   │   ├── payrollFragment.ts
+│   │   │   ├── staffFragment.ts
+│   │   │   └── workScheduleFragment.ts
+│   │   ├── generated
+│   │   │   ├── apollo-helpers.ts
+│   │   │   └── types.ts
+│   │   ├── index.ts
+│   │   ├── mutations
+│   │   │   ├── adjustmentRules
+│   │   │   │   ├── createAdjustmentRule.ts
+│   │   │   │   ├── deleteAdjustmentRule.ts
+│   │   │   │   └── updateAdjustmentRule.ts
+│   │   │   ├── clients
+│   │   │   │   ├── createClient.ts
+│   │   │   │   ├── deleteClient.ts
+│   │   │   │   └── updateClient.ts
+│   │   │   ├── holidays
+│   │   │   │   └── syncHolidays.ts
+│   │   │   ├── index.ts
+│   │   │   ├── leave
+│   │   │   │   ├── createLeave.ts
+│   │   │   │   └── updateLeave.ts
+│   │   │   ├── notes
+│   │   │   │   ├── addNote.ts
+│   │   │   │   └── updateNote.ts
+│   │   │   ├── payroll_dates
+│   │   │   │   ├── generatePayrollDates.ts
+│   │   │   │   └── updatePayrollDate.ts
+│   │   │   ├── payrolls
+│   │   │   │   ├── createPayroll.ts
+│   │   │   │   ├── deletePayroll.ts
+│   │   │   │   ├── generatePayrollDates.ts
+│   │   │   │   ├── insertPayroll.ts
+│   │   │   │   ├── updatePayroll.ts
+│   │   │   │   └── updatePayrollStatus.ts
+│   │   │   ├── staff
+│   │   │   │   ├── createStaff.ts
+│   │   │   │   ├── deleteStaff.ts
+│   │   │   │   ├── updateStaff.ts
+│   │   │   │   └── updateUser.ts
+│   │   │   └── work_schedule
+│   │   │       └── createWorkSchedule.ts
+│   │   └── queries
+│   │       ├── adjustmentRules
+│   │       │   └── getAdjustmentRules.ts
+│   │       ├── appSettings
+│   │       │   └── getAppSettings.ts
+│   │       ├── clientExternalSystems
+│   │       │   └── getClientExternalSystems.ts
+│   │       ├── clients
+│   │       │   ├── getClientById.ts
+│   │       │   └── getClientsList.ts
+│   │       ├── dashboard
+│   │       │   └── getDashboardData.ts
+│   │       ├── externalSystems
+│   │       │   └── getExternalSystems.ts
+│   │       ├── featureFlags
+│   │       │   └── getFeatureFlags.ts
+│   │       ├── holidays
+│   │       │   ├── getHolidays.ts
+│   │       │   ├── getHolidaysByCountry.ts
+│   │       │   └── getHolidaysByYear.ts
+│   │       ├── index.ts
+│   │       ├── leave
+│   │       │   └── getLeave.ts
+│   │       ├── notes
+│   │       │   └── getNotes.ts
+│   │       ├── payrollCycles
+│   │       │   └── getPayrollCycles.ts
+│   │       ├── payrollDateTypes
+│   │       │   └── getPayrollDateTypes.ts
+│   │       ├── payrolls
+│   │       │   ├── getPayrollById.ts
+│   │       │   ├── getPayrollDates.ts
+│   │       │   ├── getPayrollList.ts
+│   │       │   ├── getPayrolls.ts
+│   │       │   ├── getPayrollsByMonth.ts
+│   │       │   ├── getPayrollSchedule.ts
+│   │       │   ├── getPayrollsMissingDates.ts
+│   │       │   └── getUserPayrolls.ts
+│   │       ├── staff
+│   │       │   ├── getStaffById.ts
+│   │       │   └── getStaffList.ts
+│   │       ├── statistics
+│   │       │   └── getStatistics.ts
+│   │       └── work_schedule
+│   │           └── getUserWorkSchedule.ts
+│   ├── hooks
+│   │   ├── api
+│   │   │   ├── useAccounts.ts
+│   │   │   ├── useAdjustmentRules.ts
+│   │   │   ├── useApolloQuery.ts
+│   │   │   ├── useAppSettings.ts
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useClient.ts
+│   │   │   ├── useClientExternalSystems.ts
+│   │   │   ├── useClientQueries.ts
+│   │   │   ├── useDashboard.ts
+│   │   │   ├── useExternalSystems.ts
+│   │   │   ├── useFeatureFlags.ts
+│   │   │   ├── useHolidays.ts
+│   │   │   ├── useLeave.ts
+│   │   │   ├── useNotes.ts
+│   │   │   ├── usePayroll.ts
+│   │   │   ├── usePayrollCycles.ts
+│   │   │   ├── usePayrollDateTypes.ts
+│   │   │   ├── usePayrollQueries.ts
+│   │   │   ├── usePolledQuery.ts
+│   │   │   ├── usePolling.ts
+│   │   │   ├── useSessions.ts
+│   │   │   ├── useStaff.ts
+│   │   │   ├── useStatistics.ts
+│   │   │   ├── useUserRole.ts
+│   │   │   ├── useUsers.ts
+│   │   │   └── useWorkSchedule.ts
+│   │   ├── index.ts
+│   │   ├── README.md
+│   │   ├── ui
+│   │   │   ├── useDisclosure.ts
+│   │   │   ├── useForm.ts
+│   │   │   └── useMediaQuery.ts
+│   │   └── utils
+│   │       ├── index.ts
+│   │       ├── useCacheInvalidation.ts
+│   │       ├── useDataFetching.ts
+│   │       ├── useDataRefresh.ts
+│   │       ├── useDebounce.ts
+│   │       ├── useLocalStorage.ts
+│   │       └── useSubscription.ts
+│   ├── index.ts
+│   ├── README.md
+│   ├── services
+│   │   ├── holiday-sync-service.ts
+│   │   ├── index.ts
+│   │   ├── payroll-date-service.ts
+│   │   ├── payroll-service.ts
+│   │   └── user-sync.ts
+│   └── utils
+│       ├── date-utils.ts
+│       ├── error-handling.tsx
+│       ├── index.ts
+│       ├── jwt-utils.ts
+│       └── utils.ts
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.js
+├── package.json
+├── pages
+│   └── api
+│       ├── admin
+│       │   └── sync-users.ts
+│       └── webhooks
+│           └── clerk.ts
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── public
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── README.md
+├── review-copies
+│   ├── app
+│   │   ├── api
+│   │   │   ├── auth
+│   │   │   │   └── token
+│   │   │   │       └── route.ts
+│   │   │   ├── chat
+│   │   │   │   └── route.ts
+│   │   │   ├── clerk-webhooks
+│   │   │   │   └── route.ts
+│   │   │   ├── cron
+│   │   │   │   ├── generate-batch
+│   │   │   │   │   └── route.ts
+│   │   │   │   ├── sync-holidays
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── update-payroll-dates
+│   │   │   │       └── route.ts
+│   │   │   ├── developer
+│   │   │   │   └── route.ts
+│   │   │   ├── holidays
+│   │   │   │   └── sync
+│   │   │   │       └── route.ts
+│   │   │   ├── payroll-dates
+│   │   │   │   ├── [payrollId]
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── generated
+│   │   │   │       └── route.ts
+│   │   │   ├── payrolls
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── route.ts
+│   │   │   │   ├── route.ts
+│   │   │   │   └── schedule
+│   │   │   │       └── route.ts
+│   │   │   ├── update-user-role
+│   │   │   │   └── route.ts
+│   │   │   └── user
+│   │   │       ├── [id]
+│   │   │       │   └── route.ts
+│   │   │       └── route.ts
+│   │   └── providers.tsx
+│   ├── components
+│   │   ├── common
+│   │   │   ├── add-note.tsx
+│   │   │   ├── ai-chat.tsx
+│   │   │   ├── alert.tsx
+│   │   │   ├── data-table.tsx
+│   │   │   ├── error-boundary.tsx
+│   │   │   ├── error-display.tsx
+│   │   │   ├── export-csv.tsx
+│   │   │   ├── export-pdf.tsx
+│   │   │   ├── form-field.tsx
+│   │   │   ├── index.ts
+│   │   │   ├── live-data-table.tsx
+│   │   │   ├── markdown-viewer.tsx
+│   │   │   ├── notes-list-with-add.tsx
+│   │   │   ├── notes-list.tsx
+│   │   │   ├── recent-activity.tsx
+│   │   │   ├── refresh-button.tsx
+│   │   │   ├── role-gates.tsx
+│   │   │   └── urgent-alerts.tsx
+│   │   ├── dialogs
+│   │   │   ├── confirm-dialog.tsx
+│   │   │   ├── custom-dialog.tsx
+│   │   │   ├── edit-payroll-dialog.tsx
+│   │   │   ├── index.ts
+│   │   │   ├── modal-form.tsx
+│   │   │   ├── notes-modal.tsx
+│   │   │   └── README.md
+│   │   ├── forms
+│   │   │   ├── index.ts
+│   │   │   └── user-role-management.tsx
+│   │   ├── providers
+│   │   │   ├── client-theme-provider.tsx
+│   │   │   ├── root-providers.tsx
+│   │   │   └── theme-provider.tsx
+│   │   └── ui
+│   │       ├── alert-dialog.tsx
+│   │       ├── alert.tsx
+│   │       ├── aspect-ratio.tsx
+│   │       ├── avatar.tsx
+│   │       ├── badge.tsx
+│   │       ├── button.tsx
+│   │       ├── calendar.tsx
+│   │       ├── card.tsx
+│   │       ├── chart.tsx
+│   │       ├── checkbox.tsx
+│   │       ├── dialog.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── form-layout.tsx
+│   │       ├── index.ts
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── loading-states.tsx
+│   │       ├── modal.tsx
+│   │       ├── page-header.tsx
+│   │       ├── popover.tsx
+│   │       ├── resizable.tsx
+│   │       ├── scroll-area.tsx
+│   │       ├── section-card.tsx
+│   │       ├── select.tsx
+│   │       ├── separator.tsx
+│   │       ├── skeleton.tsx
+│   │       ├── sonner.tsx
+│   │       ├── spinner.tsx
+│   │       ├── switch.tsx
+│   │       ├── table.tsx
+│   │       ├── tabs.tsx
+│   │       └── textarea.tsx
+│   ├── eslint.config.mjs
+│   ├── jest.config.js
+│   ├── jest.setup.js
+│   ├── lib
+│   │   ├── api
+│   │   │   ├── api-response.ts
+│   │   │   ├── apollo-auth-link.ts
+│   │   │   ├── apollo-client.ts
+│   │   │   ├── auth-guard.ts
+│   │   │   ├── client.ts
+│   │   │   ├── error-boundary.tsx
+│   │   │   ├── index.ts
+│   │   │   ├── optimistic-updates.ts
+│   │   │   └── server.ts
+│   │   ├── auth
+│   │   │   ├── roles.ts
+│   │   │   ├── token-manager.client.ts
+│   │   │   ├── token-manager.server.ts
+│   │   │   └── token-manager.ts
+│   │   ├── graphql
+│   │   │   ├── fragments
+│   │   │   │   ├── adjustmentRuleFragment.ts
+│   │   │   │   ├── appSettingsFragment.ts
+│   │   │   │   ├── clientExternalSystemFragment.ts
+│   │   │   │   ├── clientFragment.ts
+│   │   │   │   ├── externalSystemFragment.ts
+│   │   │   │   ├── featureFlagFragment.ts
+│   │   │   │   ├── holidayFragment.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── leaveFragment.ts
+│   │   │   │   ├── noteFragment.ts
+│   │   │   │   ├── payrollCycleFragment.ts
+│   │   │   │   ├── payrollDateFragment.ts
+│   │   │   │   ├── payrollDateTypeFragment.ts
+│   │   │   │   ├── payrollFragment.ts
+│   │   │   │   ├── staffFragment.ts
+│   │   │   │   └── workScheduleFragment.ts
+│   │   │   ├── mutations
+│   │   │   │   ├── adjustmentRules
+│   │   │   │   │   ├── createAdjustmentRule.ts
+│   │   │   │   │   ├── deleteAdjustmentRule.ts
+│   │   │   │   │   └── updateAdjustmentRule.ts
+│   │   │   │   ├── clients
+│   │   │   │   │   ├── createClient.ts
+│   │   │   │   │   ├── deleteClient.ts
+│   │   │   │   │   └── updateClient.ts
+│   │   │   │   ├── holidays
+│   │   │   │   │   └── syncHolidays.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── leave
+│   │   │   │   │   ├── createLeave.ts
+│   │   │   │   │   └── updateLeave.ts
+│   │   │   │   ├── notes
+│   │   │   │   │   ├── addNote.ts
+│   │   │   │   │   └── updateNote.ts
+│   │   │   │   ├── payroll_dates
+│   │   │   │   │   ├── generatePayrollDates.ts
+│   │   │   │   │   └── updatePayrollDate.ts
+│   │   │   │   ├── payrolls
+│   │   │   │   │   ├── createPayroll.ts
+│   │   │   │   │   ├── deletePayroll.ts
+│   │   │   │   │   ├── generatePayrollDates.ts
+│   │   │   │   │   ├── insertPayroll.ts
+│   │   │   │   │   ├── updatePayroll.ts
+│   │   │   │   │   └── updatePayrollStatus.ts
+│   │   │   │   ├── staff
+│   │   │   │   │   ├── createStaff.ts
+│   │   │   │   │   ├── deleteStaff.ts
+│   │   │   │   │   ├── updateStaff.ts
+│   │   │   │   │   └── updateUser.ts
+│   │   │   │   └── work_schedule
+│   │   │   │       └── createWorkSchedule.ts
+│   │   │   └── queries
+│   │   │       ├── adjustmentRules
+│   │   │       │   └── getAdjustmentRules.ts
+│   │   │       ├── appSettings
+│   │   │       │   └── getAppSettings.ts
+│   │   │       ├── clientExternalSystems
+│   │   │       │   └── getClientExternalSystems.ts
+│   │   │       ├── clients
+│   │   │       │   ├── getClientById.ts
+│   │   │       │   └── getClientsList.ts
+│   │   │       ├── dashboard
+│   │   │       │   └── getDashboardData.ts
+│   │   │       ├── externalSystems
+│   │   │       │   └── getExternalSystems.ts
+│   │   │       ├── featureFlags
+│   │   │       │   └── getFeatureFlags.ts
+│   │   │       ├── holidays
+│   │   │       │   ├── getHolidays.ts
+│   │   │       │   ├── getHolidaysByCountry.ts
+│   │   │       │   └── getHolidaysByYear.ts
+│   │   │       ├── index.ts
+│   │   │       ├── leave
+│   │   │       │   └── getLeave.ts
+│   │   │       ├── notes
+│   │   │       │   └── getNotes.ts
+│   │   │       ├── payrollCycles
+│   │   │       │   └── getPayrollCycles.ts
+│   │   │       ├── payrollDateTypes
+│   │   │       │   └── getPayrollDateTypes.ts
+│   │   │       ├── payrolls
+│   │   │       │   ├── getPayrollById.ts
+│   │   │       │   ├── getPayrollDates.ts
+│   │   │       │   ├── getPayrollList.ts
+│   │   │       │   ├── getPayrolls.ts
+│   │   │       │   ├── getPayrollsByMonth.ts
+│   │   │       │   ├── getPayrollSchedule.ts
+│   │   │       │   ├── getPayrollsMissingDates.ts
+│   │   │       │   └── getUserPayrolls.ts
+│   │   │       ├── staff
+│   │   │       │   ├── getStaffById.ts
+│   │   │       │   └── getStaffList.ts
+│   │   │       ├── statistics
+│   │   │       │   └── getStatistics.ts
+│   │   │       └── work_schedule
+│   │   │           └── getUserWorkSchedule.ts
+│   │   └── utils
+│   │       ├── error-handling.tsx
+│   │       └── utils.ts
+│   ├── next.config.js
+│   ├── package.json
+│   ├── tailwind.config.ts
+│   └── tsconfig.json
+├── review-copies.zip
+├── tailwind.config.ts
+├── tree-structure.txt
+├── tsconfig.json
+└── types
+    ├── globals.d.ts
+    └── interface.ts
+
+190 directories, 540 files
