@@ -16,16 +16,16 @@ export type Scalars = {
   _Any: { input: any; output: any; }
   bpchar: { input: string; output: string; }
   date: { input: string; output: string; }
-  jsonb: { input: {"[ { key: string } ]":"any"}; output: {"[ { key: string } ]":"any"}; }
-  leave_status_enum: { input: import("../graphql/types").LeaveStatusEnum; output: import("../graphql/types").LeaveStatusEnum; }
+  jsonb: { input: any; output: any; }
+  leave_status_enum: { input: import("../graphql/enums").LeaveStatusEnum; output: import("../graphql/enums").LeaveStatusEnum; }
   numeric: { input: number; output: number; }
-  payroll_cycle_type: { input: string; output: string; }
-  payroll_date_type: { input: string; output: string; }
-  payroll_status: { input: import("../graphql/types").PayrollStatusEnum; output: import("../graphql/types").PayrollStatusEnum; }
-  timestamp: { input: string; output: string; }
-  timestamptz: { input: string; output: string; }
-  user_role: { input: import("../graphql/types").UserRoleEnum; output: import("../graphql/types").UserRoleEnum; }
-  uuid: { input: string; output: string; }
+  payroll_cycle_type: { input: import("../graphql/enums").PayrollCycleEnum; output: import("../graphql/enums").PayrollCycleEnum; }
+  payroll_date_type: { input: import("../graphql/enums").PayrollDateTypeEnum; output: import("../graphql/enums").PayrollDateTypeEnum; }
+  payroll_status: { input: import("../graphql/enums").PayrollStatusEnum; output: import("../graphql/enums").PayrollStatusEnum; }
+  timestamp: { input: any; output: any; }
+  timestamptz: { input: any; output: any; }
+  user_role: { input: import("../graphql/enums").UserRoleEnum; output: import("../graphql/enums").UserRoleEnum; }
+  uuid: { input: any; output: any; }
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */

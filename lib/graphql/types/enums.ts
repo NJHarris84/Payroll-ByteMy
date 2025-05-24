@@ -2,7 +2,8 @@
  * Enum Type Handling Utilities
  * Provides type-safe enum validation and conversion with advanced error handling
  */
-import { Logger } from '../utils/logger';
+import { Logger } from '../../utils';
+
 
 // Create a logger instance for enum handling
 const logger = new Logger({
@@ -44,6 +45,18 @@ export enum PayrollStatusEnum {
   Inactive = 'Inactive'
 }
 
+export enum PayrollCycleEnum {
+  Weekly = 'Weekly',
+  Fortnightly = 'Fortnightly',
+  Monthly = 'Monthly'
+}
+
+export enum PayrollDateTypeEnum {
+  PaymentDate = 'PaymentDate',
+  PeriodStartDate = 'PeriodStartDate',
+  PeriodEndDate = 'PeriodEndDate'
+}
+
 // Enhanced utility function to validate enum values with configurable error handling
 export function validateEnum<T extends Record<string, string>>(
   enumType: T, 
@@ -83,6 +96,14 @@ export function isPayrollStatus(value: string): value is PayrollStatusEnum {
   return Object.values(PayrollStatusEnum).includes(value as PayrollStatusEnum);
 }
 
+export function isPayrollCycle(value: string): value is PayrollCycleEnum {
+  return Object.values(PayrollCycleEnum).includes(value as PayrollCycleEnum);
+}
+
+export function isPayrollDateType(value: string): value is PayrollDateTypeEnum {
+  return Object.values(PayrollDateTypeEnum).includes(value as PayrollDateTypeEnum);
+}
+
 // Enhanced conversion utilities with error configuration
 export const enumUtils = {
   toLeaveStatus: (value: string, config?: EnumErrorConfig): LeaveStatusEnum => 
@@ -92,7 +113,13 @@ export const enumUtils = {
     validateEnum(UserRoleEnum, value, config) as UserRoleEnum,
   
   toPayrollStatus: (value: string, config?: EnumErrorConfig): PayrollStatusEnum => 
-    validateEnum(PayrollStatusEnum, value, config) as PayrollStatusEnum
+    validateEnum(PayrollStatusEnum, value, config) as PayrollStatusEnum,
+
+  toPayrollCycle: (value: string, config?: EnumErrorConfig): PayrollCycleEnum => 
+    validateEnum(PayrollCycleEnum, value, config) as PayrollCycleEnum,
+
+  toPayrollDateType: (value: string, config?: EnumErrorConfig): PayrollDateTypeEnum => 
+    validateEnum(PayrollDateTypeEnum, value, config) as PayrollDateTypeEnum
 };
 
 // Export configuration type for external use

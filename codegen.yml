@@ -20,30 +20,31 @@ generates:
         # Common custom scalar types
         DateTime: string
         Date: string
-        date: string  # Added explicit mapping for date scalar
+        date: string
         JSON: { [key: string]: any }
 
         # Project-specific scalar types
         _Any: any
         bpchar: string
-        uuid: string
-        timestamptz: string
-        jsonb: { [key: string]: any }
+        uuid: any
+        timestamptz: any
+        jsonb: any
         numeric: number
-        timestamp: string
+        timestamp: any
 
         # Enum-like scalar types mapped to project enums
         leave_status_enum: 'import("../graphql/enums").LeaveStatusEnum'
-        payroll_cycle_type: string
-        payroll_date_type: string
+        payroll_cycle_type: 'import("../graphql/enums").PayrollCycleEnum'
+        payroll_date_type: 'import("../graphql/enums").PayrollDateTypeEnum'
         payroll_status: 'import("../graphql/enums").PayrollStatusEnum'
         user_role: 'import("../graphql/enums").UserRoleEnum'
 
   lib/graphql/:
     preset: near-operation-file
     presetConfig:
-      extension: .generated.ts
-      baseTypesPath: ../generated/types.ts
+      extension: .ts
+      baseTypesPath: ../generated
+      folder: ""
     plugins:
       - typescript-operations
       - typescript-react-apollo
@@ -53,3 +54,26 @@ generates:
       withComponent: false
       useTypeImports: true
       enumsAsTypes: true
+      documentMode: "documentNode"
+      fragmentImports: true
+      documentVariableSuffix: ""
+      fragmentVariableSuffix: ""
+      namingConvention:
+        typeNames: change-case-all#pascalCase
+        enumValues: change-case-all#upperCase
+        transformUnderscore: true
+      # Fixed suffix handling for all operation types
+      querySuffix: "Query"
+      mutationSuffix: "Mutation"
+      subscriptionSuffix: "Subscription"
+      dedupeOperationSuffix: true  # Added to prevent double suffixes
+      dedupeFragments: true
+      exportFragmentSpreadSubTypes: true
+      skipTypename: false
+      addDocBlocks: true
+
+hooks:
+  afterAllFileWrite:
+    - prettier --write
+    - eslint --fix
+    - echo "Code generation completed!"

@@ -8,3 +8,4 @@ export * from './date-utils';
 export * from './env-validator';
 export * from './jwt-utils';
 export * from './utils';
+export * from './logger';
