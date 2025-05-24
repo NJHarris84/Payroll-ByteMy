@@ -1,6 +1,6 @@
 // app/api/chat/route.ts
-import { openai } from "@ai-sdk/openai"
-import { streamText } from "ai"
+import { openai } from "@ai-sdk/openai";
+import { streamText } from "ai";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30

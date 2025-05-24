@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectItem } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
+import { useState, ChangeEvent } from "react";
+
+import { Button, Input, Label, Select, SelectItem } from "@/components/ui";
 
 export default function CreateUserPage() {
   const router = useRouter();

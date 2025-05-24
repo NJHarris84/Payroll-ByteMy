@@ -1,10 +1,10 @@
 "use client"
 
-import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
-import { useUser } from "@clerk/nextjs"
+import * as React from "react"
+import { useUser } from "@clerk/nextjs";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
@@ -46,7 +46,7 @@ const AvatarFallback = React.forwardRef<
   const { user } = useUser()
   const initials =
     children ??
-    user?.firstName?.[0]?.toUpperCase() + user?.lastName?.[0]?.toUpperCase()
+    (user?.firstName?.[0]?.toUpperCase() || '') + (user?.lastName?.[0]?.toUpperCase() || '')
 
   return (
     <AvatarPrimitive.Fallback

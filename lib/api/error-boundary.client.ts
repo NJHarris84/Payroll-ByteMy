@@ -3,7 +3,7 @@
  * IMPORTANT: This file contains client-side error handling utilities.
  * Only use these in client components.
  */
-
+import 'client-only';
 import React from 'react';
 
 interface ErrorBoundaryProps {

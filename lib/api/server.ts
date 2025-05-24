@@ -3,5 +3,4 @@
 import 'server-only';
 
 // Export server-only modules
-export * from './auth-guard.server'; // FIX: Updated path
 export { getServerApolloClient, adminApolloClient } from './apollo-client.server';

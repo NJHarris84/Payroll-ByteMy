@@ -1,20 +1,16 @@
 // app/(dashboard)/clients/page.tsx
 'use client'
 
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
 import Link from "next/link";
-import { useQuery } from "@apollo/client";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
 import { PlusCircle, Search } from "lucide-react";
+import { useQuery } from "@apollo/client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { useSmartPolling, useUserRole } from '@/lib/hooks';
-import { GET_CLIENTS_LIST as GET_CLIENTS } from "@/lib/graphql/queries/clients/getClientsList"; 
+import { ClientsTable } from "@/components/client";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui";
+import { GET_CLIENTS_LIST as GET_CLIENTS } from "@/lib/graphql";
+import { useSmartPolling, useUserRole } from "@/lib/hooks";
 import { Client } from "@/types/interface";
-import { ClientsTable } from "@/components/client/clients-table";
 
 export default function ClientsPage() {
   const { isAdmin, isManager, isDeveloper } = useUserRole();

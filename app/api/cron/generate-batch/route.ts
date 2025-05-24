@@ -1,7 +1,7 @@
 // app/api/cron/generate-batch/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { addMonths, format } from "date-fns";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: NextRequest) {
   try {

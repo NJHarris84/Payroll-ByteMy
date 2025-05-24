@@ -1,17 +1,11 @@
 // app/error.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
+import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { useEffect } from "react";
+
+import { Button, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui";
 
 export default function GlobalError({
   error,

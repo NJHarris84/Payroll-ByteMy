@@ -1,25 +1,19 @@
 // pages/payroll-page.tsx
 'use client'
 
-import { useParams, notFound } from "next/navigation";
-import { useQuery } from "@apollo/client";
-import { GET_PAYROLL_BY_ID } from '@/lib/graphql';
-import { PayrollDatesView } from "@/components/payroll/payroll-dates-view";
-import { ClientCard } from "@/components/client/client-card";
-import { PayrollDetailsCard } from "@/components/payroll/payroll-details-card";
-import { ExportCsv } from "@/components/common/export-csv";
-import { ExportPdf } from "@/components/common/export-pdf";
-import { toast } from 'sonner';
-
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, RefreshCw } from "lucide-react";
-import { RefreshButton } from "@/components/common/refresh-button";
-import { NotesListWithAdd } from "@/components/common/notes-list-with-add";
+import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { handleApiError } from '@/lib/utils';
-import { ErrorBoundary } from "@/components/common/error-boundary";
-import { Card, CardContent } from "@/components/ui/card";
+import { useParams, notFound } from "next/navigation";
+import { useQuery } from "@apollo/client";
+
+import { ClientCard } from "@/components/client";
+import { ErrorBoundary, ExportCsv, ExportPdf, NotesListWithAdd, RefreshButton } from "@/components/common";
+import { PayrollDatesView, PayrollDetailsCard } from "@/components/payroll";
+import { Button, Card, CardContent } from "@/components/ui";
+import { GET_PAYROLL_BY_ID } from "@/lib/graphql";
+import { handleApiError } from "@/lib/utils";
 
 export default function PayrollPage() {
   const params = useParams();

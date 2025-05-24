@@ -1,18 +1,14 @@
 // app/(dashboard)/clients/new/page.tsx
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useMutation } from "@apollo/client"
-import { toast } from "sonner"
+import { toast } from "sonner";
+import { useMutation } from "@apollo/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { useUserRole } from '@/lib/hooks'
-import { CREATE_CLIENT } from '@/lib/graphql'
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Input, Label, Switch } from "@/components/ui";
+import { CREATE_CLIENT } from "@/lib/graphql";
+import { useUserRole } from "@/lib/hooks";
 
 export default function NewClientPage() {
   const router = useRouter()

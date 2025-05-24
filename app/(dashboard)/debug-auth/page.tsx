@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { auth, useUser } from "@clerk/nextjs";
-import { tokenManager } from "@/lib/auth/token-manager";
-import { parseJWT } from "@/lib/utils/jwt-utils";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
+import { tokenManager } from "@/lib/auth";
+import { parseJWT } from "@/lib/utils";
 
 export default function DebugAuth() {
   const { user } = useUser();

@@ -1,6 +1,7 @@
 // app/api/cron/sync-holidays/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { syncAustralianHolidays, syncMultipleYears } from '@/lib/services';
+
+import { syncAustralianHolidays, syncMultipleYears } from "@/lib/services";
 
 export async function GET(req: NextRequest) {
   try {

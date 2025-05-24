@@ -7,11 +7,9 @@
  * - Anything that imports 'server-only'
  * - Modules from @clerk/nextjs/server
  * - Direct access to database or other server resources
- * 
- * For server-side authentication, use the /lib/auth/server.ts module instead.
  */
 
 // Only export client-safe modules
-export { getClientApolloClient, apolloClient } from './apollo-client.client'; // FIX: Updated path
-export * from './error-boundary.client'; // FIX: Updated path
-export * from './optimistic-updates.client'; // FIX: Updated path
+export { getClientApolloClient, apolloClient } from './apollo-client.client';
+export * from './optimistic-updates.client';
+export * from './api-response';

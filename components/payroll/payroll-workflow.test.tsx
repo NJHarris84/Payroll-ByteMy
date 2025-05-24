@@ -1,11 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-import { useRouter } from 'next/navigation';
-import { GET_PAYROLLS } from "@/lib/graphql/queries/payrolls/getPayrolls";
-import { CREATE_PAYROLL } from "@/lib/graphql/mutations/payrolls/createPayroll";
-import { GET_CLIENTS_LIST } from "@/lib/graphql/queries/clients/getClientsList";
-import PayrollPage from '@/app/(dashboard)/payrolls/page';
-import { toast } from 'sonner';
+import { MockedProvider } from "@apollo/client/testing";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+import { CreatePayroll, GetClientsList, GetPayrolls } from "@/lib/graphql";
+import PayrollPage from "@/app/(dashboard)/payrolls/page";
 
 // Mock the router
 jest.mock('next/navigation', () => ({
@@ -67,7 +66,7 @@ describe('Payroll Workflow Integration', () => {
   const mocks = [
     {
       request: {
-        query: GET_PAYROLLS,
+        query: GetPayrolls,
       },
       result: {
         data: {
@@ -77,7 +76,7 @@ describe('Payroll Workflow Integration', () => {
     },
     {
       request: {
-        query: GET_CLIENTS_LIST,
+        query: GetClientsList,
       },
       result: {
         data: {
@@ -87,7 +86,7 @@ describe('Payroll Workflow Integration', () => {
     },
     {
       request: {
-        query: CREATE_PAYROLL,
+        query: CreatePayroll,
         variables: {
           input: {
             name: 'New Payroll',

@@ -1,0 +1,57 @@
+Component Renaming Log (Other Components)
+=====================================
+
+Date: 2025-05-24T09:25:23.050Z
+
+
+Directory: auth
+----------------
+RoleGates.tsx → role-gates.tsx
+UserRoleManagement.tsx → user-role-management.tsx
+
+Directory: client
+----------------
+ClientThemeProvider.tsx → client-theme-provider.tsx
+ClientWrapper.tsx → client-wrapper.tsx
+ClientsTable.tsx → clients-table.tsx
+ErrorBoundary.client.tsx → error-boundary.client.tsx
+
+Directory: common
+----------------
+AddNote.tsx → add-note.tsx
+AiChat.tsx → ai-chat.tsx
+DataTable.tsx → data-table.tsx
+ErrorBoundary.tsx → error-boundary.tsx
+ErrorDisplay.tsx → error-display.tsx
+ErrorHandling.tsx → error-handling.tsx
+ExportCsv.tsx → export-csv.tsx
+ExportPdf.tsx → export-pdf.tsx
+LiveDataTable.tsx → live-data-table.tsx
+LoadingStates.tsx → loading-states.tsx
+MarkdownViewer.tsx → markdown-viewer.tsx
+NotesList.tsx → notes-list.tsx
+NotesListWithAdd.tsx → notes-list-with-add.tsx
+RecentActivity.tsx → recent-activity.tsx
+
+Directory: layout
+----------------
+DashboardShell.tsx → dashboard-shell.tsx
+MainNav.tsx → main-nav.tsx
+PageHeader.tsx → page-header.tsx
+UserNav.tsx → user-nav.tsx
+
+Directory: payroll
+----------------
+AustralianTaxCalculator.tsx → australian-tax-calculator.tsx
+ClientPayrollTable.tsx → client-payroll-table.tsx
+EditPayrollDateDialog.tsx → edit-payroll-date-dialog.tsx
+PayrollDatesView.tsx → payroll-dates-view.tsx
+PayrollScheduleView.tsx → payroll-schedule-view.tsx
+PayrollsMissingDates.tsx → payrolls-missing-dates.tsx
+RegenerateDates.tsx → regenerate-dates.tsx
+UpcomingPayrolls.tsx → upcoming-payrolls.tsx
+
+Directory: providers
+----------------
+RootProviders.tsx → root-providers.tsx
+ThemeProvider.tsx → theme-provider.tsx

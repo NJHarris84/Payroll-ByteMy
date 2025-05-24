@@ -1,7 +1,7 @@
 // components/ui/modal.tsx
 'use client';
 
-import React from 'react';
+import React from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -30,3 +30,5 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }
     </div>
   );
 };
+
+export default Modal;

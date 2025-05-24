@@ -1,8 +1,9 @@
 // app/api/user/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { adminApolloClient } from '@/lib/api';
-import { UPDATE_USER_PROFILE } from "@/lib/graphql/mutations/staff/updateUser";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+
+import { adminApolloClient } from "@/lib/api";
+import { UPDATE_USER_PROFILE } from "@/lib/graphql";
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {

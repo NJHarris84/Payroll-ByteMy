@@ -1,14 +1,14 @@
 // app/(dashboard)/payrolls/page.tsx - UPDATED VERSION
 'use client'
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { PayrollsMissingDates } from "@/components/payroll/payrolls-missing-dates";
 import { toast } from "sonner";
-import { useUserRole } from '@/lib/hooks';
-import { PayrollListCard } from "@/components/payroll/payroll-list-card";
+import { useState, useEffect } from "react";
+
+import { PayrollListCard, PayrollsMissingDates } from "@/components/payroll";
+import { Button } from "@/components/ui";
+import { useUserRole } from "@/lib/hooks";
 
 export default function PayrollsPage() {
   const [searchQuery, setSearchQuery] = useState("");

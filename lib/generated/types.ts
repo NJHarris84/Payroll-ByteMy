@@ -17,14 +17,14 @@ export type Scalars = {
   bpchar: { input: string; output: string; }
   date: { input: string; output: string; }
   jsonb: { input: any; output: any; }
-  leave_status_enum: { input: import("../graphql/enums").LeaveStatusEnum; output: import("../graphql/enums").LeaveStatusEnum; }
+  leave_status_enum: { input: import("../graphql/types").LeaveStatusEnum; output: import("../graphql/types").LeaveStatusEnum; }
   numeric: { input: number; output: number; }
-  payroll_cycle_type: { input: import("../graphql/enums").PayrollCycleEnum; output: import("../graphql/enums").PayrollCycleEnum; }
-  payroll_date_type: { input: import("../graphql/enums").PayrollDateTypeEnum; output: import("../graphql/enums").PayrollDateTypeEnum; }
-  payroll_status: { input: import("../graphql/enums").PayrollStatusEnum; output: import("../graphql/enums").PayrollStatusEnum; }
+  payroll_cycle_type: { input: import("../graphql/types").PayrollCycleEnum; output: import("../graphql/types").PayrollCycleEnum; }
+  payroll_date_type: { input: import("../graphql/types").PayrollDateTypeEnum; output: import("../graphql/types").PayrollDateTypeEnum; }
+  payroll_status: { input: import("../graphql/types").PayrollStatusEnum; output: import("../graphql/types").PayrollStatusEnum; }
   timestamp: { input: any; output: any; }
   timestamptz: { input: any; output: any; }
-  user_role: { input: import("../graphql/enums").UserRoleEnum; output: import("../graphql/enums").UserRoleEnum; }
+  user_role: { input: import("../graphql/types").UserRoleEnum; output: import("../graphql/types").UserRoleEnum; }
   uuid: { input: any; output: any; }
 };
 

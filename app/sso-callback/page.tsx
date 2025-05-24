@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { useClerk } from "@clerk/nextjs";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SSOCallback() {

@@ -1,38 +1,16 @@
 "use client";
 
 import * as React from "react";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  CellContext
-} from "@tanstack/react-table";
-import { useQuery, useMutation } from "@apollo/client";
-import { GET_STAFF_LIST } from '@/lib/graphql';
-import { UPDATE_STAFF } from '@/lib/graphql';
-import { DELETE_STAFF } from '@/lib/graphql';
-import { useUserRole } from '@/lib/hooks';
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { ChevronDown, PlusCircle, Trash2, UserPlus } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { roleMapping, validRoles } from '@/lib/auth';
+import { ChevronDown, PlusCircle, Trash2, UserPlus } from "lucide-react";
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, CellContext } from "@tanstack/react-table";
+import { toast } from "sonner";
+import { useQuery, useMutation } from "@apollo/client";
+
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, Button, Card, CardContent, CardHeader, CardTitle, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui";
+import { roleMapping, validRoles } from "@/lib/auth";
+import { DELETE_STAFF, GET_STAFF_LIST, UPDATE_STAFF } from "@/lib/graphql";
+import { useUserRole } from "@/lib/hooks";
 
 // Define Staff Type
 interface Staff {

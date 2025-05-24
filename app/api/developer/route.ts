@@ -1,8 +1,9 @@
 // app/api/developer/route.ts
-import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@clerk/nextjs/server"
-import { gql } from "@apollo/client"
-import { adminClient } from "@/lib/apollo-admin"
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { gql } from "@apollo/client";
+
+import { adminClient } from "@/lib/apollo-admin";
 
 // Define GraphQL operations for all tables
 const GET_ALL_CLIENTS = gql`

@@ -1,9 +1,10 @@
 // app/layout.tsx
-import { type Metadata } from 'next'
-import { ClerkProvider } from '@clerk/nextjs'
-import { Inter } from 'next/font/google'
+import { ClerkProvider } from "@clerk/nextjs";
+import { Inter } from "next/font/google";
+import { Metadata } from "next";
+
 import './globals.css'
-import { AppProviders } from './providers'
+import { AppProviders } from "./providers";
 
 const inter = Inter({
   subsets: ['latin'],

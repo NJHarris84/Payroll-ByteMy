@@ -1,13 +1,11 @@
 // app/(dashboard)/developer/page.tsx
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
-import { useUserRole } from '@/lib/hooks'
+import { toast } from "sonner";
+import { useState } from "react";
+
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Switch } from "@/components/ui";
+import { useUserRole } from "@/lib/hooks";
 
 const features = [
 	{ id: "tax-calculator", name: "Tax Calculator", description: "Enable the Australian tax calculator feature" },

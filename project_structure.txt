@@ -39,6 +39,8 @@ __tests__/
 
 _cleanup/
   add-relative-paths.js
+  addNote.generated.ts
+  AdjustmentRuleFragment.generated.ts
   apollo-auth-link.ts
   apollo-client.original.bak
   apollo-client2.bak
@@ -56,180 +58,136 @@ _cleanup/
           error.tsx
           loading.tsx
         loading.tsx
+  AppSettingsFragment.generated.ts
   auth-debug.txt
+  ClientExternalSystemFragment.generated.ts
+  ClientFragment.generated.ts
   codegen.yml
   components/
     ui/
       alert.tsx
     upcoming-payrolls.tsx
+  createAdjustmentRule.generated.ts
+  createClient.generated.ts
+  createLeave.generated.ts
+  createPayroll.generated.ts
+  createStaff.generated.ts
+  createWorkSchedule.generated.ts
+  db.ts
+  deleteAdjustmentRule.generated.ts
+  deleteClient.generated.ts
+  deletePayroll.generated.ts
+  deleteStaff.generated.ts
+  ExternalSystemFragment.generated.ts
+  FeatureFlagFragment.generated.ts
   file-list.txt
   generated/
     fragments/
-      AdjustmentRuleFragment.generated.ts
-      AppSettingsFragment.generated.ts
-      ClientExternalSystemFragment.generated.ts
-      ClientFragment.generated.ts
-      ExternalSystemFragment.generated.ts
-      FeatureFlagFragment.generated.ts
-      HolidayFragment.generated.ts
-      LeaveFragment.generated.ts
-      NoteFragment.generated.ts
-      PayrollCycleFragment.generated.ts
-      PayrollDateFragment.generated.ts
-      PayrollDateTypeFragment.generated.ts
-      PayrollDetailFragment.generated.ts
-      PayrollFragment.generated.ts
-      StaffFragment.generated.ts
-      StaffLeaveFragment.generated.ts
-      StaffManagerFragment.generated.ts
-      WorkScheduleFragment.generated.ts
+
     generated/
-      addNote.generated.ts
-      AdjustmentRuleFragment.generated.ts
-      AppSettingsFragment.generated.ts
-      ClientExternalSystemFragment.generated.ts
-      ClientFragment.generated.ts
-      createAdjustmentRule.generated.ts
-      createClient.generated.ts
-      createLeave.generated.ts
-      createPayroll.generated.ts
-      createStaff.generated.ts
-      createWorkSchedule.generated.ts
-      deleteAdjustmentRule.generated.ts
-      deleteClient.generated.ts
-      deletePayroll.generated.ts
-      deleteStaff.generated.ts
-      ExternalSystemFragment.generated.ts
-      FeatureFlagFragment.generated.ts
-      generatePayrollDates.generated.ts
-      getAdjustmentRuleByCycleAndType.generated.ts
-      getAdjustmentRules.generated.ts
-      getAppSettings.generated.ts
-      getClientById.generated.ts
-      getClientExternalSystems.generated.ts
-      getClientsList.generated.ts
-      getClientStatistics.generated.ts
-      getDashboardData.generated.ts
-      getExternalSystems.generated.ts
-      getFeatureFlags.generated.ts
-      getHolidays.generated.ts
-      getHolidaysByCountry.generated.ts
-      getLeave.generated.ts
-      getLeaveStatistics.generated.ts
-      getNotes.generated.ts
-      getPayrollById.generated.ts
-      getPayrollCycles.generated.ts
-      getPayrollDates.generated.ts
-      getPayrollDateTypes.generated.ts
-      getPayrollList.generated.ts
-      getPayrolls.generated.ts
-      getPayrollsByMonth.generated.ts
-      getPayrollsMissingDates.generated.ts
-      getPayrollStatistics.generated.ts
-      getStaffById.generated.ts
-      getStaffList.generated.ts
-      getUserPayrolls.generated.ts
-      getUserWorkSchedule.generated.ts
-      HolidayFragment.generated.ts
-      insertBulkPayrollDates.generated.ts
-      insertPayroll.generated.ts
-      LeaveFragment.generated.ts
-      NoteFragment.generated.ts
-      PayrollCycleFragment.generated.ts
-      PayrollDateFragment.generated.ts
-      PayrollDateTypeFragment.generated.ts
-      PayrollDetailFragment.generated.ts
-      PayrollFragment.generated.ts
-      simple.generated.ts
-      StaffFragment.generated.ts
-      StaffLeaveFragment.generated.ts
-      StaffManagerFragment.generated.ts
-      syncHolidays.generated.ts
-      updateAdjustmentRule.generated.ts
-      updateClient.generated.ts
-      updateLeave.generated.ts
-      updateNote.generated.ts
-      updatePayroll.generated.ts
-      updatePayrollDate.generated.ts
-      updatePayrollStatus.generated.ts
-      updateStaff.generated.ts
-      updateUser.generated.ts
-      with-variables.generated.ts
-      WorkScheduleFragment.generated.ts
+
     lib/
       graphql/
-        getDashboardData.generated.ts
-        getExternalSystems.generated.ts
+
     mutations/
       adjustment-rules/
-        createAdjustmentRule.generated.ts
-        deleteAdjustmentRule.generated.ts
-        updateAdjustmentRule.generated.ts
+
       clients/
-        createClient.generated.ts
-        deleteClient.generated.ts
-        updateClient.generated.ts
+
       holidays/
-        syncHolidays.generated.ts
+
       leave/
-        createLeave.generated.ts
-        updateLeave.generated.ts
+
       notes/
-        addNote.generated.ts
-        updateNote.generated.ts
+
       payrolls/
-        createPayroll.generated.ts
-        deletePayroll.generated.ts
-        insertBulkPayrollDates.generated.ts
-        insertPayroll.generated.ts
-        updatePayroll.generated.ts
-        updatePayrollDate.generated.ts
-        updatePayrollStatus.generated.ts
+
       staff/
-        createStaff.generated.ts
-        deleteStaff.generated.ts
-        updateStaff.generated.ts
-        updateUser.generated.ts
+
       work-schedule/
-        createWorkSchedule.generated.ts
+
     querys/
       adjustment-rules/
-        getAdjustmentRuleByCycleAndType.generated.ts
-        getAdjustmentRules.generated.ts
+
       app-settings/
-        getAppSettings.generated.ts
+
       clients/
-        getClientById.generated.ts
-        getClientExternalSystems.generated.ts
-        getClientsList.generated.ts
-        getClientStatistics.generated.ts
+
       feature-flags/
-        getFeatureFlags.generated.ts
+
       holidays/
-        getHolidays.generated.ts
-        getHolidaysByCountry.generated.ts
+
       leave/
-        getLeave.generated.ts
-        getLeaveStatistics.generated.ts
+
       notes/
-        getNotes.generated.ts
+
       payrolls/
-        generatePayrollDates.generated.ts
-        getPayrollById.generated.ts
-        getPayrollCycles.generated.ts
-        getPayrollDates.generated.ts
-        getPayrollDateTypes.generated.ts
-        getPayrollList.generated.ts
-        getPayrolls.generated.ts
-        getPayrollsByMonth.generated.ts
-        getPayrollsMissingDates.generated.ts
-        getPayrollStatistics.generated.ts
-        getUserPayrolls.generated.ts
+
       staff/
-        getStaffById.generated.ts
-        getStaffList.generated.ts
-        getUserWorkSchedule.generated.ts
+
+  generatePayrollDates.generated.ts
+  getAdjustmentRuleByCycleAndType.generated.ts
+  getAdjustmentRules.generated.ts
+  getAppSettings.generated.ts
+  getClientById.generated.ts
+  getClientExternalSystems.generated.ts
+  getClientsList.generated.ts
+  getClientStatistics.generated.ts
+  getDashboardData.generated.ts
+  getExternalSystems.generated.ts
+  getFeatureFlags.generated.ts
+  getHolidays.generated.ts
+  getHolidaysByCountry.generated.ts
+  getLeave.generated.ts
+  getLeaveStatistics.generated.ts
+  getNotes.generated.ts
+  getPayrollById.generated.ts
+  getPayrollCycles.generated.ts
+  getPayrollDates.generated.ts
+  getPayrollDateTypes.generated.ts
+  getPayrollList.generated.ts
+  getPayrolls.generated.ts
+  getPayrollsByMonth.generated.ts
+  getPayrollsMissingDates.generated.ts
+  getPayrollStatistics.generated.ts
+  getStaffById.generated.ts
+  getStaffList.generated.ts
+  getUserPayrolls.generated.ts
+  getUserWorkSchedule.generated.ts
   graphql/
+    entity/
+      index.ts
+      useAdjustmentRules.ts
+      useAppSettings.ts
+      useDashboard.ts
+      useExternalSystems.ts
+      useFeatureFlags.ts
+      useHolidays.ts
+      useLeave.ts
+      useNotes.ts
+      useStatistics.ts
+      useWorkSchedule.ts
+    mutations/
+      lib/
+        graphql/
+          mutations/
+            adjustment-rules/
+              index.ts
+            clients/
+              index.ts
+            holidays/
+              index.ts
+            index.ts
+            leave/
+              index.ts
+            notes/
+              index.ts
+            payrolls/
+              index.ts
+            staff/
+              index.ts
+            work-schedule/
+              index.ts
     original/
       fragments/
         AdjustmentRuleFragment.ts
@@ -314,7 +272,48 @@ _cleanup/
           index.ts
         work_schedule/
           index.ts
+    queries/
+      lib/
+        graphql/
+          queries/
+            adjustment-rules/
+              index.ts
+            app-settings/
+              index.ts
+            clients/
+              index.ts
+            dashboard/
+              index.ts
+            externalSystems/
+              index.ts
+            feature-flags/
+              index.ts
+            holidays/
+              index.ts
+            index.ts
+            leave/
+              index.ts
+            notes/
+              index.ts
+            payrolls/
+              index.ts
+            staff/
+              index.ts
+  HolidayFragment.generated.ts
+  hook/
+    api/
+      useClient.ts
+      useClientQueries.ts
   hooks
+  insertBulkPayrollDates.generated.ts
+  insertPayroll.generated.ts
+  LeaveFragment.generated.ts
+  NoteFragment.generated.ts
+  PayrollCycleFragment.generated.ts
+  PayrollDateFragment.generated.ts
+  PayrollDateTypeFragment.generated.ts
+  PayrollDetailFragment.generated.ts
+  PayrollFragment.generated.ts
   permissions
   review/
     lib/
@@ -322,151 +321,68 @@ _cleanup/
         client.ts
         optimistic-updates.client.ts
       graphql/
-        AddNote.generated.ts
-        CreateAdjustmentRule.generated.ts
-        CreateClient.generated.ts
-        CreateLeave.generated.ts
-        CreatePayroll.generated.ts
-        CreateStaff.generated.ts
-        CreateWorkSchedule.generated.ts
-        DeleteAdjustmentRule.generated.ts
-        DeleteClient.generated.ts
-        DeletePayroll.generated.ts
-        DeleteStaff.generated.ts
         fragments/
-          AdjustmentRuleFragment.generated.ts
           AdjustmentRuleFragment.graphql
           adjustmentRuleFragment.ts
-          AppSettingsFragment.generated.ts
           AppSettingsFragment.graphql
           appSettingsFragment.ts
-          ClientExternalSystemFragment.generated.ts
           ClientExternalSystemFragment.graphql
           clientExternalSystemFragment.ts
-          ClientFragment.generated.ts
           ClientFragment.graphql
           clientFragment.ts
-          ExternalSystemFragment.generated.ts
           ExternalSystemFragment.graphql
           externalSystemFragment.ts
-          FeatureFlagFragment.generated.ts
           FeatureFlagFragment.graphql
           featureFlagFragment.ts
-          HolidayFragment.generated.ts
           HolidayFragment.graphql
           holidayFragment.ts
           index.ts
-          LeaveFragment.generated.ts
           LeaveFragment.graphql
           leaveFragment.ts
-          NoteFragment.generated.ts
           NoteFragment.graphql
           noteFragment.ts
-          PayrollCycleFragment.generated.ts
           PayrollCycleFragment.graphql
           payrollCycleFragment.ts
-          PayrollDateFragment.generated.ts
           PayrollDateFragment.graphql
           payrollDateFragment.ts
-          PayrollDateTypeFragment.generated.ts
           PayrollDateTypeFragment.graphql
-          PayrollDetailFragment.generated.ts
           PayrollDetailFragment.graphql
-          PayrollFragment.generated.ts
           PayrollFragment.graphql
           payrollFragment.ts
-          StaffFragment.generated.ts
           StaffFragment.graphql
           staffFragment.ts
-          StaffLeaveFragment.generated.ts
           StaffLeaveFragment.graphql
-          StaffManagerFragment.generated.ts
           StaffManagerFragment.graphql
-          WorkScheduleFragment.generated.ts
           WorkScheduleFragment.graphql
           workScheduleFragment.ts
         generated/
           index.ts
-        GeneratePayrollDates.generated.ts
-        GetAdjustmentRuleByCycleAndType.generated.ts
-        GetAdjustmentRules.generated.ts
-        GetAppSettings.generated.ts
-        GetClientById.generated.ts
-        GetClientExternalSystems.generated.ts
-        GetClientsList.generated.ts
-        GetClientStatistics.generated.ts
-        GetDashboardData.generated.ts
-        GetExternalSystems.generated.ts
-        GetFeatureFlags.generated.ts
-        GetHolidays.generated.ts
-        GetHolidaysByCountry.generated.ts
-        GetLeave.generated.ts
-        GetLeaveStatistics.generated.ts
-        GetNotes.generated.ts
-        GetPayrollById.generated.ts
-        GetPayrollCycles.generated.ts
-        GetPayrollDates.generated.ts
-        GetPayrollDateTypes.generated.ts
-        GetPayrollList.generated.ts
-        GetPayrolls.generated.ts
-        GetPayrollsByMonth.generated.ts
-        GetPayrollsMissingDates.generated.ts
-        GetPayrollStatistics.generated.ts
-        GetStaffById.generated.ts
-        GetStaffList.generated.ts
-        GetUserPayrolls.generated.ts
-        GetUserWorkSchedule.generated.ts
         index.ts
-        InsertBulkPayrollDates.generated.ts
-        InsertPayroll.generated.ts
         mutations/
           adjustment-rules/
-            CreateAdjustmentRule.generated.ts
-            DeleteAdjustmentRule.generated.ts
             index.ts
-            UpdateAdjustmentRule.generated.ts
           adjustmentRules/
             index.ts
           clients/
-            CreateClient.generated.ts
-            DeleteClient.generated.ts
             index.ts
-            UpdateClient.generated.ts
           holidays/
             index.ts
-            SyncHolidays.generated.ts
           index.ts
           leave/
-            CreateLeave.generated.ts
             index.ts
-            UpdateLeave.generated.ts
           notes/
-            AddNote.generated.ts
             index.ts
-            UpdateNote.generated.ts
           payroll_dates/
             index.ts
           payrollDates/
             index.ts
           payrolls/
-            CreatePayroll.generated.ts
-            DeletePayroll.generated.ts
             index.ts
-            InsertBulkPayrollDates.generated.ts
-            InsertPayroll.generated.ts
-            UpdatePayroll.generated.ts
-            UpdatePayrollDate.generated.ts
-            UpdatePayrollStatus.generated.ts
           staff/
-            CreateStaff.generated.ts
-            DeleteStaff.generated.ts
             index.ts
-            UpdateStaff.generated.ts
-            UpdateUser.generated.ts
           work_schedule/
             index.ts
           work-schedule/
-            CreateWorkSchedule.generated.ts
             index.ts
           workSchedule/
             index.ts
@@ -508,66 +424,28 @@ _cleanup/
             index.ts
         querys/
           adjustment-rules/
-            GetAdjustmentRuleByCycleAndType.generated.ts
-            GetAdjustmentRules.generated.ts
             index.ts
           app-settings/
-            GetAppSettings.generated.ts
             index.ts
           clients/
-            GetClientById.generated.ts
-            GetClientExternalSystems.generated.ts
-            GetClientsList.generated.ts
-            GetClientStatistics.generated.ts
             index.ts
           feature-flags/
-            GetFeatureFlags.generated.ts
             index.ts
           holidays/
-            GetHolidays.generated.ts
-            GetHolidaysByCountry.generated.ts
             index.ts
           index.ts
           leave/
-            GetLeave.generated.ts
-            GetLeaveStatistics.generated.ts
             index.ts
           notes/
-            GetNotes.generated.ts
             index.ts
           payrolls/
-            GeneratePayrollDates.generated.ts
-            GetPayrollById.generated.ts
-            GetPayrollCycles.generated.ts
-            GetPayrollDates.generated.ts
-            GetPayrollDateTypes.generated.ts
-            GetPayrollList.generated.ts
-            GetPayrolls.generated.ts
-            GetPayrollsByMonth.generated.ts
-            GetPayrollsMissingDates.generated.ts
-            GetPayrollStatistics.generated.ts
-            GetUserPayrolls.generated.ts
             index.ts
           staff/
-            GetStaffById.generated.ts
-            GetStaffList.generated.ts
-            GetUserWorkSchedule.generated.ts
             index.ts
-        simple.generated.ts
-        SyncHolidays.generated.ts
         test/
           index.ts
         types/
           index.ts
-        UpdateAdjustmentRule.generated.ts
-        UpdateClient.generated.ts
-        UpdateLeave.generated.ts
-        UpdateNote.generated.ts
-        UpdatePayroll.generated.ts
-        UpdatePayrollDate.generated.ts
-        UpdatePayrollStatus.generated.ts
-        UpdateStaff.generated.ts
-        UpdateUser.generated.ts
   scripts/
     analysis.ts
     check-fragments.js
@@ -585,6 +463,11 @@ _cleanup/
     project-structure.sh
     standardize-imports.sh
     tsconfig.json
+  simple.generated.ts
+  StaffFragment.generated.ts
+  StaffLeaveFragment.generated.ts
+  StaffManagerFragment.generated.ts
+  syncHolidays.generated.ts
   test/
     employee.test.js
   text.txt
@@ -592,8 +475,19 @@ _cleanup/
   token-manager.bak
   tree-structure.txt
   update-imports.js
+  updateAdjustmentRule.generated.ts
+  updateClient.generated.ts
+  updateLeave.generated.ts
+  updateNote.generated.ts
+  updatePayroll.generated.ts
+  updatePayrollDate.generated.ts
+  updatePayrollStatus.generated.ts
+  updateStaff.generated.ts
+  updateUser.generated.ts
   users.txt
   vercel.json.txt
+  with-variables.generated.ts
+  WorkScheduleFragment.generated.ts
 _schema/
   hasura-metadata.json
   list_tables.sql
@@ -610,8 +504,6 @@ _schema/
   settings.json
 app/
   (auth)/
-    lint-results.json
-    lint-results.log
     sign-in/
       [[...sign-in]]/
         page.tsx
@@ -696,132 +588,133 @@ app/
   sso-callback/
     page.tsx
 codegen.yml
+component-rename-other.log
+component-rename.log
 components/
-  AiChat.tsx
-  AspectRatio.tsx
-  AustralianTaxCalculator.tsx
-  chart.tsx
+  auth/
+    index.ts
+    role-gates.tsx
+    user-role-management.tsx
   client/
-    ClientsTable.tsx
-    ClientThemeProvider.tsx
-    ClientWrapper.tsx
-    ErrorBoundary.client.tsx
+    client-theme-provider.tsx
+    client-wrapper.tsx
+    clients-table.tsx
+    error-boundary.client.tsx
     index.ts
-  collapsible.tsx
-  command.tsx
   common/
-    AddNote.tsx
+    add-note.tsx
+    ai-chat.tsx
     data-table.test.tsx
-    DataTable.tsx
+    data-table.tsx
     error-boundary.test.tsx
+    error-boundary.tsx
+    error-display.tsx
+    error-handling.tsx
     error.tsx
-    ErrorBoundary.tsx
-    ErrorDisplay.tsx
-    ErrorHandling.tsx
+    export-csv.tsx
+    export-pdf.tsx
     index.ts
-    LiveDataTable.tsx
+    live-data-table.tsx
+    loading-states.tsx
     loading.tsx
-    LoadingStates.tsx
-    MarkdownViewer.tsx
-    NotesList.tsx
-    NotesListWithAdd.tsx
+    markdown-viewer.tsx
+    notes-list-with-add.tsx
+    notes-list.tsx
+    recent-activity.tsx
     table.tsx
-  COMPONENT_TEMPLATE.md
-  DatePicker.tsx
-  dialogs/
-    index.ts
-    README.md
-  ExportCsv.tsx
-  ExportPdf.tsx
-  forms/
-    index.ts
   index.ts
-  label.tsx
   layout/
-    DashboardShell.tsx
+    dashboard-shell.tsx
     index.ts
     layout.tsx
-    MainNav.tsx
+    main-nav.tsx
+    page-header.tsx
     sidebar.tsx
-    UserNav.tsx
-  PageHeader.tsx
+    user-nav.tsx
   payroll/
-    ClientPayrollTable.tsx
+    australian-tax-calculator.tsx
+    client-payroll-table.tsx
+    edit-payroll-date-dialog.tsx
     index.ts
+    payroll-dates-view.tsx
     payroll-flow.test.tsx
+    payroll-schedule-view.tsx
     payroll-workflow.test.tsx
-    PayrollDatesView.tsx
-    PayrollScheduleView.tsx
-    PayrollsMissingDates.tsx
-    UpcomingPayrolls.tsx
+    payrolls-missing-dates.tsx
+    regenerate-dates.tsx
+    upcoming-payrolls.tsx
   providers/
     index.ts
     providers.tsx
-    RootProviders.tsx
-    ThemeProvider.tsx
-  RadioGroup.tsx
+    root-providers.tsx
+    theme-provider.tsx
   README.md
-  RecentActivity.tsx
-  RegenerateDates.tsx
-  resizable.tsx
-  RoleGates.tsx
-  ScrollArea.tsx
-  separator.tsx
-  sheet.tsx
-  sonner.tsx
-  switch.tsx
-  toast.tsx
-  toolbar.tsx
   ui/
     accordion.tsx
+    alert-dialog.tsx
     alert.tsx
-    AlertDialog.tsx
+    aspect-ratio.tsx
+    avatar-group.tsx
     avatar.tsx
-    AvatarGroup.tsx
     badge.tsx
     button.tsx
     calendar.tsx
     card.tsx
+    chart.tsx
     checkbox.tsx
     client-card.test.tsx
-    ClientCard.tsx
+    client-card.tsx
+    collapsible.tsx
     combobox.tsx
-    ConfirmDialog.tsx
-    ContextMenu.tsx
-    CustomDialog.tsx
+    command.tsx
+    confirm-dialog.tsx
+    context-menu.tsx
+    custom-dialog.tsx
+    date-picker.tsx
     dialog.tsx
-    DropdownMenu.tsx
-    EditPayrollDialog.tsx
-    FormField.tsx
-    FormLayout.tsx
-    GenerateMissingDatesButton.tsx
-    HoverCard.tsx
+    dropdown-menu.tsx
+    edit-payroll-dialog.tsx
+    form-field.tsx
+    form-layout.tsx
+    generate-missing-dates-button.tsx
+    hover-card.tsx
     index.ts
     input.tsx
+    label.tsx
     menubar.tsx
+    modal-form.tsx
     modal.tsx
-    ModalForm.tsx
-    NavigationMenu.tsx
-    NotesModal.tsx
+    navigation-menu.tsx
+    notes-modal.tsx
     payroll-details-card.test.tsx
+    payroll-details-card.tsx
     payroll-list-card.test.tsx
-    PayrollDetailsCard.tsx
-    PayrollListCard.tsx
+    payroll-list-card.tsx
     popover.tsx
     progress.tsx
-    RefreshButton.tsx
-    SectionCard.tsx
+    radio-group.tsx
+    readme.md
+    refresh-button.tsx
+    resizable.tsx
+    scroll-area.tsx
+    section-card.tsx
     select.tsx
+    separator.tsx
+    sheet.tsx
     skeleton.tsx
     slider.tsx
+    sonner.tsx
     spinner.tsx
+    switch.tsx
+    table.tsx
     tabs.tsx
     textarea.tsx
-    ThemeToggle.tsx
+    theme-toggle.tsx
+    toast.tsx
+    toggle-group.tsx
     toggle.tsx
-    ToggleGroup.tsx
-    UrgentAlerts.tsx
-  UserRoleManagement.tsx
+    toolbar.tsx
+    urgent-alerts.tsx
 components.json
 cypress/
   e2e/
@@ -839,9 +732,9 @@ documentation/
   t.md
   TESTING.md
   typescript-exports.md
-drizzle/
-  schema.ts
 eslint.config.mjs
+import-changes.md
+index-exports.txt
 jest.config.js
 jest.setup.js
 lib/
@@ -868,233 +761,190 @@ lib/
     token-manager.base.ts
     token-manager.client.ts
     token-manager.server.ts
-  db.ts
   generated/
     graphql.ts
     index.ts
     types.ts
   graphql/
     fragments/
-      AdjustmentRuleFragment.generated.ts
       AdjustmentRuleFragment.graphql
-      AppSettingsFragment.generated.ts
+      AdjustmentRuleFragment.ts
       AppSettingsFragment.graphql
-      ClientExternalSystemFragment.generated.ts
+      AppSettingsFragment.ts
       ClientExternalSystemFragment.graphql
-      ClientFragment.generated.ts
+      ClientExternalSystemFragment.ts
       ClientFragment.graphql
-      ExternalSystemFragment.generated.ts
+      ClientFragment.ts
       ExternalSystemFragment.graphql
-      FeatureFlagFragment.generated.ts
+      ExternalSystemFragment.ts
       FeatureFlagFragment.graphql
-      HolidayFragment.generated.ts
+      FeatureFlagFragment.ts
       HolidayFragment.graphql
+      HolidayFragment.ts
       index.ts
-      LeaveFragment.generated.ts
       LeaveFragment.graphql
-      NoteFragment.generated.ts
+      LeaveFragment.ts
       NoteFragment.graphql
-      PayrollCycleFragment.generated.ts
+      NoteFragment.ts
       PayrollCycleFragment.graphql
-      PayrollDateFragment.generated.ts
+      PayrollCycleFragment.ts
       PayrollDateFragment.graphql
-      PayrollDateTypeFragment.generated.ts
+      PayrollDateFragment.ts
       PayrollDateTypeFragment.graphql
-      PayrollDetailFragment.generated.ts
+      PayrollDateTypeFragment.ts
       PayrollDetailFragment.graphql
-      PayrollFragment.generated.ts
+      PayrollDetailFragment.ts
       PayrollFragment.graphql
-      StaffFragment.generated.ts
+      PayrollFragment.ts
       StaffFragment.graphql
-      StaffLeaveFragment.generated.ts
+      StaffFragment.ts
       StaffLeaveFragment.graphql
-      StaffManagerFragment.generated.ts
+      StaffLeaveFragment.ts
       StaffManagerFragment.graphql
-      WorkScheduleFragment.generated.ts
+      StaffManagerFragment.ts
       WorkScheduleFragment.graphql
+      WorkScheduleFragment.ts
     index.ts
     mutations/
       adjustment-rules/
-        createAdjustmentRule.generated.ts
         CreateAdjustmentRule.graphql
-        deleteAdjustmentRule.generated.ts
+        CreateAdjustmentRule.ts
         DeleteAdjustmentRule.graphql
-        index.ts
-        updateAdjustmentRule.generated.ts
+        DeleteAdjustmentRule.ts
         UpdateAdjustmentRule.graphql
+        UpdateAdjustmentRule.ts
       clients/
-        createClient.generated.ts
         CreateClient.graphql
-        deleteClient.generated.ts
+        CreateClient.ts
         DeleteClient.graphql
-        index.ts
-        updateClient.generated.ts
+        DeleteClient.ts
         UpdateClient.graphql
+        UpdateClient.ts
       holidays/
-        index.ts
-        syncHolidays.generated.ts
         SyncHolidays.graphql
+        SyncHolidays.ts
       index.ts
       leave/
-        createLeave.generated.ts
         CreateLeave.graphql
-        index.ts
-        updateLeave.generated.ts
+        CreateLeave.ts
         UpdateLeave.graphql
+        UpdateLeave.ts
       notes/
-        addNote.generated.ts
         AddNote.graphql
-        index.ts
-        updateNote.generated.ts
+        AddNote.ts
         UpdateNote.graphql
+        UpdateNote.ts
       payrolls/
-        createPayroll.generated.ts
         CreatePayroll.graphql
-        deletePayroll.generated.ts
+        CreatePayroll.ts
         DeletePayroll.graphql
-        index.ts
-        insertBulkPayrollDates.generated.ts
+        DeletePayroll.ts
         InsertBulkPayrollDates.graphql
-        insertPayroll.generated.ts
+        InsertBulkPayrollDates.ts
         InsertPayroll.graphql
-        updatePayroll.generated.ts
+        InsertPayroll.ts
         UpdatePayroll.graphql
-        updatePayrollDate.generated.ts
+        UpdatePayroll.ts
         UpdatePayrollDate.graphql
-        updatePayrollStatus.generated.ts
+        UpdatePayrollDate.ts
         UpdatePayrollStatus.graphql
+        UpdatePayrollStatus.ts
       staff/
-        createStaff.generated.ts
         CreateStaff.graphql
-        deleteStaff.generated.ts
+        CreateStaff.ts
         DeleteStaff.graphql
-        index.ts
-        updateStaff.generated.ts
+        DeleteStaff.ts
         UpdateStaff.graphql
-        updateUser.generated.ts
+        UpdateStaff.ts
         UpdateUser.graphql
+        UpdateUser.ts
       work-schedule/
-        createWorkSchedule.generated.ts
         CreateWorkSchedule.graphql
-        index.ts
-    querys/
+        CreateWorkSchedule.ts
+    queries/
       adjustment-rules/
-        getAdjustmentRuleByCycleAndType.generated.ts
         GetAdjustmentRuleByCycleAndType.graphql
-        getAdjustmentRules.generated.ts
+        GetAdjustmentRuleByCycleAndType.ts
         GetAdjustmentRules.graphql
-        index.ts
+        GetAdjustmentRules.ts
       app-settings/
-        getAppSettings.generated.ts
         GetAppSettings.graphql
-        index.ts
+        GetAppSettings.ts
       clients/
-        getClientById.generated.ts
         GetClientById.graphql
-        getClientExternalSystems.generated.ts
+        GetClientById.ts
         GetClientExternalSystems.graphql
-        getClientsList.generated.ts
+        GetClientExternalSystems.ts
         GetClientsList.graphql
-        getClientStatistics.generated.ts
+        GetClientsList.ts
         GetClientStatistics.graphql
-        index.ts
+        GetClientStatistics.ts
       dashboard/
-        getDashboardData.generated.ts
         GetDashboardData.graphql
-        index.ts
+        GetDashboardData.ts
       externalSystems/
-        getExternalSystems.generated.ts
         GetExternalSystems.graphql
-        index.ts
+        GetExternalSystems.ts
       feature-flags/
-        getFeatureFlags.generated.ts
         GetFeatureFlags.graphql
-        index.ts
+        GetFeatureFlags.ts
       holidays/
-        getHolidays.generated.ts
         GetHolidays.graphql
-        getHolidaysByCountry.generated.ts
+        GetHolidays.ts
         GetHolidaysByCountry.graphql
-        index.ts
+        GetHolidaysByCountry.ts
       index.ts
       leave/
-        getLeave.generated.ts
         GetLeave.graphql
-        getLeaveStatistics.generated.ts
+        GetLeave.ts
         GetLeaveStatistics.graphql
-        index.ts
+        GetLeaveStatistics.ts
       notes/
-        getNotes.generated.ts
         GetNotes.graphql
-        index.ts
+        GetNotes.ts
       payrolls/
-        generatePayrollDates.generated.ts
         GeneratePayrollDates.graphql
-        getPayrollById.generated.ts
+        GeneratePayrollDates.ts
         GetPayrollById.graphql
-        getPayrollCycles.generated.ts
+        GetPayrollById.ts
         GetPayrollCycles.graphql
-        getPayrollDates.generated.ts
+        GetPayrollCycles.ts
         GetPayrollDates.graphql
-        getPayrollDateTypes.generated.ts
+        GetPayrollDates.ts
         GetPayrollDateTypes.graphql
-        getPayrollList.generated.ts
+        GetPayrollDateTypes.ts
         GetPayrollList.graphql
-        getPayrolls.generated.ts
+        GetPayrollList.ts
         GetPayrolls.graphql
-        getPayrollsByMonth.generated.ts
+        GetPayrolls.ts
         GetPayrollsByMonth.graphql
-        getPayrollsMissingDates.generated.ts
+        GetPayrollsByMonth.ts
         GetPayrollsMissingDates.graphql
-        getPayrollStatistics.generated.ts
+        GetPayrollsMissingDates.ts
         GetPayrollStatistics.graphql
-        getUserPayrolls.generated.ts
+        GetPayrollStatistics.ts
         GetUserPayrolls.graphql
-        index.ts
+        GetUserPayrolls.ts
       staff/
-        getStaffById.generated.ts
         GetStaffById.graphql
-        getStaffList.generated.ts
+        GetStaffById.ts
         GetStaffList.graphql
-        getUserWorkSchedule.generated.ts
+        GetStaffList.ts
         GetUserWorkSchedule.graphql
-        index.ts
+        GetUserWorkSchedule.ts
     types/
       enums.ts
       index.ts
       scalars.ts
       types.ts
-    utils/
-      index.ts
-      logger.ts
   hooks/
     api/
       index.ts
       useApolloQuery.test.ts
       useApolloQuery.ts
       useAuth.ts
-      useClient.ts
-      useClientExternalSystems.ts
-      useClientQueries.ts
-      usePayroll.ts
-      usePayrollCycles.ts
-      usePayrollDateTypes.ts
-      usePayrollQueries.ts
-      useStaff.ts
       useUserRole.ts
       useUsers.ts
-    entity/
-      index.ts
-      useAdjustmentRules.ts
-      useAppSettings.ts
-      useDashboard.ts
-      useExternalSystems.ts
-      useFeatureFlags.ts
-      useHolidays.ts
-      useLeave.ts
-      useNotes.ts
-      useStatistics.ts
-      useWorkSchedule.ts
     index.ts
     README.md
     ui/
@@ -1131,6 +981,7 @@ lib/
     env-validator.ts
     index.ts
     jwt-utils.ts
+    logger.ts
     utils.ts
   webhooks/
     clerk.ts
@@ -1152,6 +1003,13 @@ middleware.ts
 next-env.d.ts
 next.config.js
 package.json
+Personal/
+  Payroll-ByteMy/
+    _cleanup/
+      hooks/
+        api/
+          Git/
+
 pnpm-lock.yaml
 postcss.config.mjs
 project_structure.txt
@@ -1162,17 +1020,18 @@ public/
   vercel.svg
   window.svg
 README.md
+rename-components.js
+rename-components.mjs
 schema.graphql
 scripts/
-  check-graphql.js
-  clean-graphql-format.ts
   cleanup-graphql.mjs
   cleanup.sh
   enhanced-cleanup.ts
   extract-graphql.mjs
-  find-server-imports.js
+  fix-all-imports.js
   fix-graphql-exports.ts
   fix-graphql-files.mjs
+  fix-graphql-fragment-imports.ts
   fix-imports-enhanced.js
   fix-imports.js
   fix-server-imports.js
@@ -1180,11 +1039,12 @@ scripts/
   generated-file-support.ts
   import-mappings.json
   organize-files.ts
-  organize-graphql.js
-  rename-files.js
-  update-barrel-imports.js
+  quick-fix-fragments.js
+  standardize-imports.ts
 tailwind.config.ts
+test-script.js
 tsconfig.json
 types/
   globals.d.ts
   interface.ts
+  jest.d.ts

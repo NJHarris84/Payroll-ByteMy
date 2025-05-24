@@ -1,7 +1,8 @@
 // app/api/clerk-webhooks/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { syncUserWithDatabase, deleteUserFromDatabase } from '@/lib/services';
+
+import { deleteUserFromDatabase, syncUserWithDatabase } from "@/lib/services";
 
 export async function POST(req: NextRequest) {
   try {

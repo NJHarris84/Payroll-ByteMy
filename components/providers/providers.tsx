@@ -1,11 +1,12 @@
 // app/providers.tsx
 "use client"
 
-import { ApolloProvider } from "@apollo/client"
-import { Toaster } from "sonner"
-import { getClientApolloClient } from "@/lib/api/client"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { ClerkProvider } from "@clerk/nextjs"
+import { ApolloProvider } from "@apollo/client";
+import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { Toaster } from "sonner";
+
+import { getClientApolloClient } from "@/lib/api";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const client = getClientApolloClient()

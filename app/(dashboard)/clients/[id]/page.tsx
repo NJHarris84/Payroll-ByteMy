@@ -1,20 +1,17 @@
 // app/(dashboard)/clients/[id]/page.tsx
 'use client'
 
-import { useParams } from "next/navigation";
-import { useQuery } from "@apollo/client";
-import { gql } from "@apollo/client";
 import Link from "next/link";
 import { Pencil, RefreshCw } from "lucide-react";
+import { gql } from "@apollo/client";
+import { useParams } from "next/navigation";
+import { useQuery } from "@apollo/client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { NotesListWithAdd } from "@/components/common/notes-list-with-add";
-import { useSmartPolling } from '@/lib/hooks';
-import { ClientPayrollTable } from "@/components/client/client-payroll-table";
-import { GET_CLIENT_BY_ID } from '@/lib/graphql';
+import { ClientPayrollTable } from "@/components/client";
+import { NotesListWithAdd } from "@/components/common";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui";
+import { GET_CLIENT_BY_ID } from "@/lib/graphql";
+import { useSmartPolling } from "@/lib/hooks";
 
 export default function ClientPage() {
   const params = useParams();

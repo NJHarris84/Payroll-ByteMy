@@ -1,10 +1,10 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-import { GET_PAYROLL_BY_ID } from "@/lib/graphql/queries/payrolls/getPayrollById";
-import { UPDATE_PAYROLL_DATE } from "@/lib/graphql/mutations/payroll_dates/updatePayrollDate";
-import PayrollPage from '@/app/(dashboard)/payrolls/[id]/page';
-import { useParams } from 'next/navigation';
+import React from "react";
+import { MockedProvider } from "@apollo/client/testing";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { useParams } from "next/navigation";
+
+import { CreatePayroll, GetPayrollById, UpdatePayroll } from "@/lib/graphql";
+import PayrollPage from "@/app/(dashboard)/payrolls/[id]/page";
 
 // Mock next/navigation hooks
 jest.mock('next/navigation', () => ({
@@ -76,7 +76,7 @@ const mockPayroll = {
 const mocks = [
   {
     request: {
-      query: GET_PAYROLL_BY_ID,
+      query: GetPayrollById,
       variables: { id: 'payroll-1' }
     },
     result: {
@@ -87,7 +87,7 @@ const mocks = [
   },
   {
     request: {
-      query: UPDATE_PAYROLL_DATE,
+      query: UpdatePayroll,
       variables: {
         id: 'date-1',
         adjusted_eft_date: '2023-05-18'
@@ -145,7 +145,7 @@ describe('Payroll Page Integration Flow', () => {
     const errorMock = [
       {
         request: {
-          query: GET_PAYROLL_BY_ID,
+          query: GetPayrollById,
           variables: { id: 'payroll-1' }
         },
         error: new Error('An error occurred')
@@ -175,7 +175,7 @@ describe('Payroll Page Integration Flow', () => {
     const emptyMock = [
       {
         request: {
-          query: GET_PAYROLL_BY_ID,
+          query: GetPayrollById,
           variables: { id: 'payroll-1' }
         },
         result: {

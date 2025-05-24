@@ -1,6 +1,7 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { PayrollDetailsCard } from '@/components/payroll/payroll-details-card';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+
+import { PayrollDetailsCard } from "@/components/payroll";
 
 // Mock payroll data
 const mockPayroll = {

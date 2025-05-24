@@ -1,21 +1,13 @@
 // app/(dashboard)/settings/page.tsx
 "use client"
 
-import type React from "react"
+import React from "react";
+import { Loader2, Save } from "lucide-react";
+import { useSession } from "@clerk/nextjs";
+import { useState } from "react";
 
-import { useState } from "react"
-import { Loader2, Save } from "lucide-react"
-import { useSession } from "@clerk/nextjs"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { UserRoleManagement } from "@/components/forms/user-role-management"
+import { UserRoleManagement } from "@/components/forms";
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Separator, Switch, Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
 
 const roles = ["dev", "admin", "manager", "consultant"]
 const features = [

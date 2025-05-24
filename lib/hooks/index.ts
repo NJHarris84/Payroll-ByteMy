@@ -5,7 +5,6 @@
 
 // Explicitly import all hook categories
 export * from './ui';
-export * from './entity';
 export * from './api';
 export * from './utils';
 

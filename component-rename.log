@@ -1,0 +1,33 @@
+Component Renaming Log
+======================
+
+Date: 2025-05-24T09:06:33.009Z
+
+Files Renamed:
+AlertDialog.tsx → alert-dialog.tsx
+AspectRatio.tsx → aspect-ratio.tsx
+AvatarGroup.tsx → avatar-group.tsx
+ClientCard.tsx → client-card.tsx
+ConfirmDialog.tsx → confirm-dialog.tsx
+ContextMenu.tsx → context-menu.tsx
+CustomDialog.tsx → custom-dialog.tsx
+DatePicker.tsx → date-picker.tsx
+DropdownMenu.tsx → dropdown-menu.tsx
+EditPayrollDialog.tsx → edit-payroll-dialog.tsx
+FormField.tsx → form-field.tsx
+FormLayout.tsx → form-layout.tsx
+GenerateMissingDatesButton.tsx → generate-missing-dates-button.tsx
+HoverCard.tsx → hover-card.tsx
+ModalForm.tsx → modal-form.tsx
+NavigationMenu.tsx → navigation-menu.tsx
+NotesModal.tsx → notes-modal.tsx
+PayrollDetailsCard.tsx → payroll-details-card.tsx
+PayrollListCard.tsx → payroll-list-card.tsx
+README.md → readme.md
+RadioGroup.tsx → radio-group.tsx
+RefreshButton.tsx → refresh-button.tsx
+ScrollArea.tsx → scroll-area.tsx
+SectionCard.tsx → section-card.tsx
+ThemeToggle.tsx → theme-toggle.tsx
+ToggleGroup.tsx → toggle-group.tsx
+UrgentAlerts.tsx → urgent-alerts.tsx

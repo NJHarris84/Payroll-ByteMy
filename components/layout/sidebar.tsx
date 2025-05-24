@@ -1,27 +1,15 @@
 // components/sidebar.tsx
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import {
-  LayoutDashboard,
-  Users,
-  Calculator,
-  CalendarDays,
-  UserCog,
-  Settings,
-  DollarSign,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-  Code,
-  MessageSquare,
-} from "lucide-react"
-import { cn } from '@/lib/utils'
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { ThemeToggle } from "./.."
+import Link from "next/link";
+import { LayoutDashboard, Users, Calculator, CalendarDays, UserCog, Settings, DollarSign, ChevronLeft, ChevronRight, Loader2, Code, MessageSquare } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+import { Button, ScrollArea } from "@/components/ui";
+import { cn } from "@/lib/utils";
+
+import { ThemeToggle } from "./..";
 
 const routes = [
   {

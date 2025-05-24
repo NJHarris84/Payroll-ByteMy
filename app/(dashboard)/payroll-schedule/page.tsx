@@ -1,40 +1,15 @@
 // app/(dashboard)/payroll-schedule/page.tsx
 "use client"
 
-import { useState, useEffect } from "react"
-import {
-  format,
-  addMonths,
-  subMonths,
-  eachDayOfInterval,
-  startOfMonth,
-  endOfMonth,
-  isSameDay,
-  isWeekend,
-  addWeeks,
-  subWeeks,
-  startOfWeek,
-  endOfWeek,
-  addDays,
-  parseISO,
-  isWithinInterval
-} from "date-fns"
-import { ChevronLeft, ChevronRight, CalendarIcon, Download } from "lucide-react"
-import { useQuery } from "@apollo/client"
+import { ChevronLeft, ChevronRight, CalendarIcon, Download } from "lucide-react";
+import { format, addMonths, subMonths, eachDayOfInterval, startOfMonth, endOfMonth, isSameDay, isWeekend, addWeeks, subWeeks, startOfWeek, endOfWeek, addDays, parseISO, isWithinInterval } from "date-fns";
+import { useQuery } from "@apollo/client";
+import { useState, useEffect } from "react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { cn } from '@/lib/utils'
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { GET_PAYROLLS_BY_MONTH } from '@/lib/graphql'
-import { GET_HOLIDAYS } from '@/lib/graphql'
-import { useSmartPolling } from '@/lib/hooks'
+import { Badge, Button, Calendar, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch, Tabs, TabsList, TabsTrigger } from "@/components/ui";
+import { GET_HOLIDAYS, GET_PAYROLLS_BY_MONTH } from "@/lib/graphql";
+import { useSmartPolling } from "@/lib/hooks";
+import { cn } from "@/lib/utils";
 
 // Types for our data
 interface Leave {

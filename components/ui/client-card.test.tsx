@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import { ClientCard } from '@/components/client/client-card';
-import { mockClients } from '../../../../__mocks__/mockData';
+import { render, screen } from "@testing-library/react";
+
+import { ClientCard } from "@/components/client";
+
+import { mockClients } from "../../../../__mocks__/mockData";
 
 describe('ClientCard', () => {
   const mockClient = mockClients[0];

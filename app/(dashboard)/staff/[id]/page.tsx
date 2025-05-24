@@ -1,13 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useQuery } from "@apollo/client";
-import { UserDetails } from "@/types/interface";
-import { GET_STAFF_BY_ID } from '@/lib/graphql';
-import { useUserRole } from '@/lib/hooks';
-import { Button } from "@/components/ui/button";
-import { Table, TableHead, TableRow, TableCell, TableBody } from "@/components/ui/table";
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
+import { useQuery } from "@apollo/client";
+import { useRouter } from "next/navigation";
+
+import { Button, Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui";
+import { GET_STAFF_BY_ID } from "@/lib/graphql";
+import { useUserRole } from "@/lib/hooks";
+import { UserDetails } from "@/types/interface";
 
 export default function UserInfoPage({ params }: { params: { id: string } }) {
   const { id } = params;

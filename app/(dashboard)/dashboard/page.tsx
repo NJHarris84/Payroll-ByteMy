@@ -1,11 +1,10 @@
 // app/(dashboard)/dashboard/page.tsx
-import { CalendarDays, Users, Calculator, AlertTriangle } from "lucide-react"
-import Link from "next/link"
+import Link from "next/link";
+import { CalendarDays, Users, Calculator, AlertTriangle } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { UpcomingPayrolls } from "@/components/payroll"
-import { UrgentAlerts } from "@/components/common/urgent-alerts"
+import { UrgentAlerts } from "@/components/common";
+import { UpcomingPayrolls } from "@/components/payroll";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 
 
 export default function DashboardPage() {

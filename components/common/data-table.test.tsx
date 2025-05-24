@@ -1,6 +1,7 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { DataTable } from '@/components/common/data-table';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+
+import { DataTable } from "@/components/common";
 
 // Sample data for testing
 const mockData = [

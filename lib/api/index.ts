@@ -5,7 +5,5 @@
 
 export * from './api-response';
 export * from './apollo-client.client';
-export * from './apollo-client.server';
 export * from './client';
 export * from './optimistic-updates.client';
-export * from './server';

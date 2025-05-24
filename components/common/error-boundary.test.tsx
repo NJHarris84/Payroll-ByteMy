@@ -1,6 +1,7 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { ErrorBoundary, withErrorBoundary } from '@/components/common/error-boundary';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+
+import { ErrorBoundary, withErrorBoundary } from "@/components/common";
 
 // Mock console.error to prevent test output noise
 const originalConsoleError = console.error;

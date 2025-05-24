@@ -4,7 +4,7 @@ import type { DocumentNode } from 'graphql';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type CreatePayrollMutationVariables = Types.Exact<{
-  input: Types.PayrollsInsertInput;
+ input: Types.Payrolls_Insert_Input;
 }>;
 
 

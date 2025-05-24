@@ -1,7 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { PayrollListCard } from '@/components/payroll/payroll-list-card';
-import { useQuery } from '@apollo/client';
-import { mockPayrolls } from '../../../../__mocks__/mockData';
+import { render, screen, fireEvent } from "@testing-library/react";
+import { useQuery } from "@apollo/client";
+
+import { PayrollListCard } from "@/components/payroll";
+
+import { mockPayrolls } from "../../../../__mocks__/mockData";
 
 // Mock the Apollo useQuery hook
 jest.mock('@apollo/client', () => ({

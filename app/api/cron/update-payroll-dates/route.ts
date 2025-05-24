@@ -1,10 +1,10 @@
 // app/api/cron/update-payroll-dates/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { getServerApolloClient } from '@/lib/api';
 import { format, addMonths } from "date-fns";
-import { GENERATE_PAYROLL_DATES } from '@/lib/graphql';
-import { UPDATE_PAYROLL_STATUS } from '@/lib/graphql';
+
+import { getServerApolloClient } from "@/lib/api";
+import { GENERATE_PAYROLL_DATES, UPDATE_PAYROLL_STATUS } from "@/lib/graphql";
 
 export async function POST(req: NextRequest) {
   try {

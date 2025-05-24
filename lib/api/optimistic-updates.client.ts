@@ -1,8 +1,9 @@
 // lib/api/optimistic-updates.ts
+import 'client-only';
 import { ApolloCache, Reference } from '@apollo/client';
-import { PAYROLL_FRAGMENT } from '../graphql';
-import { PAYROLL_DATE_FRAGMENT } from '../graphql';
-import { GET_PAYROLLS } from '../graphql';
+import { PayrollFragment } from '../graphql';
+import { PayrollDateFragment } from '../graphql';
+import { GetPayrolls } from '../graphql';
 
 /**
  * Helper functions for working with optimistic updates in Apollo Client
@@ -21,7 +22,7 @@ export function updatePayrollInCache(
     const cacheId = `payrolls:${payrollId}`;
     const existingPayroll = cache.readFragment({
       id: cacheId,
-      fragment: PAYROLL_FRAGMENT,
+      fragment: PayrollFragment,
       fragmentName: 'PayrollFragment'
     });
     
@@ -33,7 +34,7 @@ export function updatePayrollInCache(
     // Write the updated payroll back to the cache
     cache.writeFragment({
       id: cacheId,
-      fragment: PAYROLL_FRAGMENT,
+      fragment: PayrollFragment,
       fragmentName: 'PayrollFragment',
       data: {
         ...existingPayroll,
@@ -62,7 +63,7 @@ export function updatePayrollDateInCache(
     const cacheId = `payroll_dates:${payrollDateId}`;
     const existingDate = cache.readFragment({
       id: cacheId,
-      fragment: PAYROLL_DATE_FRAGMENT,
+      fragment: PayrollDateFragment,
       fragmentName: 'PayrollDateFragment'
     });
     
@@ -73,7 +74,7 @@ export function updatePayrollDateInCache(
     
     cache.writeFragment({
       id: cacheId,
-      fragment: PAYROLL_DATE_FRAGMENT,
+      fragment: PayrollDateFragment,
       fragmentName: 'PayrollDateFragment',
       data: {
         ...existingDate,
@@ -110,7 +111,7 @@ export function addPayrollToCache(
   try {
     // Read the existing query from the cache
     const existingQuery = cache.readQuery({
-      query: GET_PAYROLLS
+      query: GetPayrolls
     }) as { payrolls: any[] } | null;
     
     if (!existingQuery) {
@@ -120,7 +121,7 @@ export function addPayrollToCache(
     
     // Add the new payroll to the list
     cache.writeQuery({
-      query: GET_PAYROLLS,
+      query: GetPayrolls,
       data: {
         ...(existingQuery || {}),
         payrolls: [...existingQuery.payrolls, newPayroll]

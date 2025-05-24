@@ -1,5 +1,6 @@
 // lib/auth/auth.client.ts
 // Client-side auth utilities (no server imports)
+import 'client-only';
 import type { HasuraRole, Permission } from './roles';
 import { hasPermission } from './'; // Use ES6 import instead of require
 

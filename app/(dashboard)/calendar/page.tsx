@@ -1,20 +1,13 @@
 // app/(dashboard)/calendar/page.tsx
 "use client"
 
-import { useState } from "react"
-import { useQuery } from "@apollo/client"
-import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, addDays } from "date-fns"
-import { ChevronLeft, ChevronRight, CalendarIcon, Download } from "lucide-react"
+import { ChevronLeft, ChevronRight, CalendarIcon, Download } from "lucide-react";
+import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, addDays } from "date-fns";
+import { useQuery } from "@apollo/client";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { PageLoading } from "@/components/ui/loading-states"
-import { GET_PAYROLLS } from '@/lib/graphql'
-import { GET_HOLIDAYS_BY_YEAR } from '@/lib/graphql'
+import { Badge, Button, Calendar, Card, CardContent, CardDescription, CardHeader, CardTitle, PageLoading, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
+import { GET_HOLIDAYS_BY_YEAR, GET_PAYROLLS } from "@/lib/graphql";
 
 // Helper to format date for display
 const formatDateForDisplay = (date: Date): string => {

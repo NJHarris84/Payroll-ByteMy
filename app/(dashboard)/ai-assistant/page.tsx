@@ -1,5 +1,5 @@
 // app/(dashboard)/ai-assistant/page.tsx
-import { AIChat } from "@/components/common/ai-chat"
+import { AIChat } from "@/components/common";
 
 export default function AIAssistantPage() {
   return (
