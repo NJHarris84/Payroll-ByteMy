@@ -1,0 +1,228 @@
+
+> my-app@0.1.0 lint /Users/nathanharris/Git Personal/Payroll-ByteMy
+> eslint . --ignore-pattern .next/\*\* --ignore-pattern dist/\*\* --ignore-pattern _\*/\*\* --ignore-pattern .vscode/\*\* --ignore-pattern lib/\*\* --ignore-pattern scripts/\*\*
+
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/calendar/page.tsx
+   6:10  error  'format' is defined but never used. Allowed unused vars must match /^_/u                      @typescript-eslint/no-unused-vars
+   6:18  error  'addMonths' is defined but never used. Allowed unused vars must match /^_/u                   @typescript-eslint/no-unused-vars
+   6:29  error  'subMonths' is defined but never used. Allowed unused vars must match /^_/u                   @typescript-eslint/no-unused-vars
+   6:56  error  'startOfMonth' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+   6:70  error  'getDay' is defined but never used. Allowed unused vars must match /^_/u                      @typescript-eslint/no-unused-vars
+   6:78  error  'addDays' is defined but never used. Allowed unused vars must match /^_/u                     @typescript-eslint/no-unused-vars
+   7:37  error  'CalendarIcon' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+   7:51  error  'Download' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+  11:10  error  'Popover' is defined but never used. Allowed unused vars must match /^_/u                     @typescript-eslint/no-unused-vars
+  11:19  error  'PopoverContent' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+  11:35  error  'PopoverTrigger' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+  12:10  error  'Calendar' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+  13:10  error  'Select' is defined but never used. Allowed unused vars must match /^_/u                      @typescript-eslint/no-unused-vars
+  13:18  error  'SelectContent' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+  13:33  error  'SelectItem' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  13:45  error  'SelectTrigger' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+  13:60  error  'SelectValue' is defined but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+  14:10  error  'Badge' is defined but never used. Allowed unused vars must match /^_/u                       @typescript-eslint/no-unused-vars
+  33:7   error  'generateMonthDays' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  68:45  error  Unexpected any. Specify a different type                                                      @typescript-eslint/no-explicit-any
+  70:46  error  Unexpected any. Specify a different type                                                      @typescript-eslint/no-explicit-any
+  88:45  error  Unexpected any. Specify a different type                                                      @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/clients/[id]/page.tsx
+   6:10  error  'gql' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  12:10  error  'Table' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+  12:17  error  'TableBody' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  12:28  error  'TableCell' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  12:39  error  'TableHead' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  12:50  error  'TableHeader' is defined but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+  12:63  error  'TableRow' is defined but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+  57:9   error  'formatName' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/clients/new/page.tsx
+  74:22  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/clients/page.tsx
+   4:10  error  'JSXElementConstructor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   4:33  error  'Key' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+   4:38  error  'ReactElement' is defined but never used. Allowed unused vars must match /^_/u           @typescript-eslint/no-unused-vars
+   4:52  error  'ReactNode' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+   4:63  error  'ReactPortal' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+   4:76  error  'useState' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+   5:8   error  'Link' is defined but never used. Allowed unused vars must match /^_/u                   @typescript-eslint/no-unused-vars
+   7:10  error  'PlusCircle' is defined but never used. Allowed unused vars must match /^_/u             @typescript-eslint/no-unused-vars
+   7:22  error  'Search' is defined but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+   9:10  error  'Button' is defined but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+  11:10  error  'Input' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  12:10  error  'Table' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  12:17  error  'TableBody' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+  12:28  error  'TableCell' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+  12:39  error  'TableHead' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+  12:50  error  'TableHeader' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  12:63  error  'TableRow' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+  13:10  error  'Badge' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  16:10  error  'Client' is defined but never used. Allowed unused vars must match /^_/u                 @typescript-eslint/no-unused-vars
+  20:11  error  'isAdmin' is assigned a value but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+  20:20  error  'isManager' is assigned a value but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+  20:31  error  'isDeveloper' is assigned a value but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/debug-auth/page.tsx
+   4:10  error  'auth' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  13:19  error  Unexpected any. Specify a different type                                @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/developer/page.tsx
+  71:15  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/payroll-schedule/page.tsx
+   18:3  error  'addDays' is defined but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+  172:9  error  'formatName' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/payrolls/[id]/page.tsx
+  16:18  error  'RefreshCw' is defined but never used. Allowed unused vars must match /^_/u                                                   @typescript-eslint/no-unused-vars
+  34:45  error  React Hook "useQuery" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  42:3   error  React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  87:9   error  'payrollDates' is assigned a value but never used. Allowed unused vars must match /^_/u                                       @typescript-eslint/no-unused-vars
+  87:57  error  Unexpected any. Specify a different type                                                                                      @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/settings/account/page.tsx
+  154:26  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/staff/[id]/page.tsx
+  30:62   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  47:178  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  47:334  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  47:502  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  47:658  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/staff/new/page.tsx
+  3:20  error  'ChangeEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/(dashboard)/staff/page.tsx
+   11:3   error    'CellContext' is defined but never used. Allowed unused vars must match /^_/u                                          @typescript-eslint/no-unused-vars
+   21:10  error    'ChevronDown' is defined but never used. Allowed unused vars must match /^_/u                                          @typescript-eslint/no-unused-vars
+   21:23  error    'PlusCircle' is defined but never used. Allowed unused vars must match /^_/u                                           @typescript-eslint/no-unused-vars
+   61:31  error    'isConsultant' is assigned a value but never used. Allowed unused vars must match /^_/u                                @typescript-eslint/no-unused-vars
+  308:6   warning  React Hook React.useMemo has a missing dependency: 'saveRoleChange'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  331:9   error    'canViewUser' is assigned a value but never used. Allowed unused vars must match /^_/u                                 @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/api/cron/generate-batch/route.ts
+   50:14  error  'parseError' is defined but never used. Allowed unused caught errors must match /^_/u  @typescript-eslint/no-unused-vars
+  112:35  error  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  138:53  error  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  138:75  error  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  155:59  error  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  155:81  error  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/api/cron/update-payroll-dates/route.ts
+  85:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/app/api/payroll-dates/generated/route.ts
+  4:10  error  'getServerApolloClient' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  5:10  error  'gql' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/RoleGates.tsx
+  35:64  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  76:64  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/UserRoleManagement.tsx
+  29:20  error  'validRoles' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/client/index.ts
+  9:33  error  Parsing error: ',' expected
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/collapsible.tsx
+  3:13  error  'React' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/command.tsx
+  26:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/common/AddNote.tsx
+  104:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/common/ErrorHandling.tsx
+  126:12  error  'e' is defined but never used. Allowed unused caught errors must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/common/LiveDataTable.tsx
+  70:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/common/LoadingStates.tsx
+  3:41  error  'CardTitle' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/common/MarkdownViewer.tsx
+  54:16  error  'node' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  62:19  error  'node' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/common/NotesListWithAdd.tsx
+  68:14  error  'e' is defined but never used. Allowed unused caught errors must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/common/error.tsx
+  41:17  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/index.ts
+  32:26  error  Parsing error: ',' expected
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/layout/DashboardShell.tsx
+  3:10  error  'MainNav' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  4:10  error  'ThemeToggle' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  6:10  error  'Sidebar' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/payroll/ClientPayrollTable.tsx
+  4:10  error  'ChevronRight' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  4:24  error  'Circle' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/payroll/PayrollDatesView.tsx
+  64:24  error  'setSelectedNote' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/payroll/payroll-flow.test.tsx
+    2:26  error  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  191:6   error  A `require()` style import is forbidden                                      @typescript-eslint/no-require-imports
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/ui/ClientCard.tsx
+  9:9  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/ui/ConfirmDialog.tsx
+  42:3  error  'confirmVariant' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/ui/FormField.tsx
+  14:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/ui/GenerateMissingDatesButton.tsx
+   3:10  error  'ApolloClient' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+   3:24  error  'NormalizedCacheObject' is defined but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+   5:23  error  'gql' is defined but never used. Allowed unused vars must match /^_/u                         @typescript-eslint/no-unused-vars
+   9:10  error  'GET_PAYROLLS_MISSING_DATES' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  21:34  error  'error' is assigned a value but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/ui/ModalForm.tsx
+   6:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   9:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  13:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  36:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/ui/RefreshButton.tsx
+  21:65  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/components/ui/button.tsx
+  38:32  error  'asChild' is assigned a value but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/jest.config.js
+  1:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/middleware.ts
+    5:10  error  'getAuth' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  117:76  error  Unexpected any. Specify a different type                                   @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/next.config.js
+  8:28  error  'isServer' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/tailwind.config.ts
+  79:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/types/globals.d.ts
+  49:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nathanharris/Git Personal/Payroll-ByteMy/types/interface.ts
+  204:32  error  Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  208:8   error  ES2015 module syntax is preferred over namespaces  @typescript-eslint/no-namespace
+
+✖ 130 problems (128 errors, 2 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.

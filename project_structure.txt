@@ -610,6 +610,8 @@ _schema/
   settings.json
 app/
   (auth)/
+    lint-results.json
+    lint-results.log
     sign-in/
       [[...sign-in]]/
         page.tsx
@@ -689,6 +691,7 @@ app/
       route.ts
   favicon.ico
   globals.css
+  layout.tsx
   page.tsx
   sso-callback/
     page.tsx
@@ -828,6 +831,7 @@ cypress/
 documentation/
   Authentication-flow.md
   Database & Hasura Integration: Technical Overview.md
+  Fix Checklist.md
   fix-imports-README.md
   graphql-fragments.md
   graphql-import-updates.md
@@ -838,17 +842,18 @@ documentation/
 drizzle/
   schema.ts
 eslint.config.mjs
-Fix Checklist.md
 jest.config.js
 jest.setup.js
 lib/
   admin/
+    index.ts
     sync-users.ts
   api/
     api-response.ts
     apollo-client.client.ts
     apollo-client.server.ts
     client.ts
+    error-boundary.client.ts
     index.ts
     optimistic-updates.client.ts
     server.ts
@@ -866,6 +871,7 @@ lib/
   db.ts
   generated/
     graphql.ts
+    index.ts
     types.ts
   graphql/
     fragments/
@@ -1058,6 +1064,9 @@ lib/
       index.ts
       scalars.ts
       types.ts
+    utils/
+      index.ts
+      logger.ts
   hooks/
     api/
       index.ts
@@ -1125,6 +1134,8 @@ lib/
     utils.ts
   webhooks/
     clerk.ts
+    index.ts
+lint-results.log
 logs/
   enhanced-cleanup-createdDirectories.txt
   enhanced-cleanup-fixedGraphQLExports.txt

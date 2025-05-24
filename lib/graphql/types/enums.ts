@@ -2,7 +2,13 @@
  * Enum Type Handling Utilities
  * Provides type-safe enum validation and conversion with advanced error handling
  */
-import { Logger } from '../utils/logger'; // Assume a logger utility exists
+import { Logger } from '../utils/logger';
+
+// Create a logger instance for enum handling
+const logger = new Logger({
+  minLevel: 'warn',
+  enableTimestamp: true
+});
 
 // Configuration for enum error handling
 interface EnumErrorConfig {
@@ -54,7 +60,7 @@ export function validateEnum<T extends Record<string, string>>(
   const errorMessage = `Invalid enum value: ${value} for enum ${enumType.constructor.name}`;
   
   if (mergedConfig.logErrors) {
-    Logger.warn(errorMessage);
+    logger.warn(errorMessage);
   }
 
   if (mergedConfig.throwOnInvalid) {
