@@ -6,5 +6,5 @@
 export { default as DashboardShell } from "./dashboard-shell";
 export { default as MainNav } from "./main-nav";
 export { default as UserNav } from "./user-nav";
-export { default as layout } from './layout';
-export { default as sidebar } from './sidebar';
+export { default as Layout } from './layout';
+export { default as Sidebar } from './sidebar';
