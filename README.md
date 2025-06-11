@@ -229,7 +229,7 @@ import { Button, Card } from "@/components/ui";
 import { ClientCard } from "@/components/client";
 ```
 
-psql "postgres://neondb_owner:npg_WavFRZ1lEx4U@ep-black-sunset-a7wbc0zq-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require" -f list_tables.sql > schema_reference.txt
+psql "$DATABASE_URL" -f list_tables.sql > schema_reference.txt
 
 ## Contributing
 
