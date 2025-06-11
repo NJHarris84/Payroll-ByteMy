@@ -15,7 +15,7 @@ export * from './app-settings/GetAppSettings'
 // Clients queries
 export * from './clients/GetClientById'
 export * from './clients/GetClientExternalSystems'
-export * from './clients/getClientsList'
+export * from './clients/GetClientsList'
 export * from './clients/GetClientStatistics'
 
 // Dashboard queries
@@ -49,7 +49,7 @@ export * from './payrolls/GetPayrollsByMonth'
 export * from './payrolls/GetPayrollsMissingDates'
 export * from './payrolls/GetPayrollStatistics'
 export * from './payrolls/GetUserPayrolls'
-export * from './payrolls/getPayrollById'
+export * from './payrolls/GetPayrollById'
 
 // Staff queries
 export * from './staff/GetStaffById'
