@@ -104,6 +104,67 @@ import {
     
     return adjustedDate;
   }
+
+  /**
+   * Returns true if the provided date is a business day (not a weekend or holiday)
+   */
+  export function isBusinessDay(date: Date, holidays: Holiday[] = []): boolean {
+    return !isWeekend(date) && !isHoliday(date, holidays);
+  }
+
+  /**
+   * Gets the next business day after the provided date
+   */
+  export function getNextBusinessDay(
+    date: Date,
+    holidays: Holiday[] = []
+  ): Date {
+    let nextDate = addDays(date, 1);
+    while (!isBusinessDay(nextDate, holidays)) {
+      nextDate = addDays(nextDate, 1);
+    }
+    return nextDate;
+  }
+
+  /**
+   * Gets the previous business day before the provided date
+   */
+  export function getPreviousBusinessDay(
+    date: Date,
+    holidays: Holiday[] = []
+  ): Date {
+    let prevDate = addDays(date, -1);
+    while (!isBusinessDay(prevDate, holidays)) {
+      prevDate = addDays(prevDate, -1);
+    }
+    return prevDate;
+  }
+
+  /**
+   * Finds the next occurrence of the specified day of the week after the base date
+   * Day of week is 0 (Sunday) through 6 (Saturday)
+   */
+  export function getDateByDayOfWeek(
+    baseDate: Date,
+    dayOfWeek: number
+  ): Date {
+    let date = new Date(baseDate);
+    if (dayOfWeek < 0 || dayOfWeek > 6) return date;
+    while (date.getDay() !== dayOfWeek) {
+      date = addDays(date, 1);
+    }
+    return date;
+  }
+
+  /** Returns the first day of the month for the provided date */
+  export function getStartOfMonthDate(date: Date): Date {
+    return startOfMonth(date);
+  }
+
+  /** Returns the last day of the month for the provided date */
+  export function getEndOfMonthDate(date: Date): Date {
+    return endOfMonth(date);
+  }
   
   /**
    * Calculates the next EFT date based on cycle type, date type, and date value
